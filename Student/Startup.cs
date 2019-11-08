@@ -28,7 +28,7 @@ namespace Student
         {
             services.AddDbContext<OurDbContext>((options) =>
                 options.UseSqlite(
-                    Configuration.GetConnectionString("DefaultConection")));
+                    Configuration["DBConnection"]));
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();

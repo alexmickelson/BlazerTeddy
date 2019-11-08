@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Student.Models;
 
 namespace Student.Data
 {
@@ -13,5 +14,6 @@ namespace Student.Data
         {
 
         }
+        public DbSet<Student.Models.Student> Student { get; set; }
     }
 }

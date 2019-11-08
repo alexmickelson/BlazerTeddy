@@ -42,5 +42,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        Student.Models.Student s = new Models.Student();
     }
 }
