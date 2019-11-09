@@ -12,6 +12,6 @@ namespace Student.Models
 
         public string Content { get; set; }
 
-        public Student Student  { get; set; }
+        public StudentInfo Student  { get; set; }
     }
 }

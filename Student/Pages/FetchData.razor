@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 
 @using Student.Data
+@using Student.Models
 @inject WeatherForecastService ForecastService
 
 <h1>Weather forecast</h1>
@@ -42,6 +43,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-        Student.Models.Student s = new Models.Student();
+        StudentInfo s = new StudentInfo();
     }
 }

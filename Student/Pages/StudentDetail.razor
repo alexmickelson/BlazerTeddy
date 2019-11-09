@@ -1,0 +1,60 @@
+@page "/StudentDetail/{id:int}"
+
+@using Student.Services
+@using Student.Models
+@using Student.Components
+
+<h1>@student.Name</h1>
+<br/>
+<h3>Notes:</h3>
+
+@foreach (var note in student.Notes)
+{
+    <p>@note.Content</p>
+}
+
+<input type="text"
+       placeholder="New Note"
+       @bind="newComment" />
+<button class="btn btn-secondary"
+        type="submit"
+        @onclick="addNote"  >Add Note</button>
+<div class="text-danger">@errorAlert</div>
+<StudentListComponent></StudentListComponent>
+
+
+@code {
+    [Parameter]
+    public int id {get; set;}
+
+    private StudentRepository studentRepository;
+    private StudentInfo student;
+    private string newComment {get; set;}
+    private string errorAlert; 
+
+    protected override void OnParametersSet()
+    {
+        studentRepository = StudentRepository.GetRepository(); // #badcode
+        student = studentRepository.GetStudent(id);
+
+    }
+    protected override void OnInitialized()
+    {
+        OnParametersSet();
+    }
+
+    private void addNote()
+    {
+        if( String.IsNullOrEmpty(newComment)){
+            errorAlert = "Note cannot be Empty";
+        }
+        else
+        {
+            student.Notes.Add(new Note(){ 
+                Content=newComment
+            });
+            errorAlert="";
+            newComment="";
+        }
+    }
+}

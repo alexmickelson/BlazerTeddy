@@ -1,5 +1,20 @@
 ﻿@page "/"
+@using Student.Services
+@using Student.Components
 
-<h1>Hello, world!</h1>
+<h1>Welcome to the Dad Lounge</h1>
 
-Welcome to your new app.
+<h3 class="jumbotron centered">@Joke</h3>
+<StudentListComponent></StudentListComponent>
+
+
+@code {
+
+    private DadJokeService dadJokeService;
+    private string Joke {get;set;}
+    protected override async Task OnInitializedAsync()
+    {
+        dadJokeService = new DadJokeService{};
+        Joke = dadJokeService.GetDadJoke();
+    }
+}

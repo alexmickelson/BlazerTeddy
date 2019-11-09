@@ -14,6 +14,6 @@ namespace Student.Data
         {
 
         }
-        public DbSet<Student.Models.Student> Student { get; set; }
+        public DbSet<StudentInfo> Student { get; set; }
     }
 }
