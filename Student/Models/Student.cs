@@ -12,6 +12,7 @@ namespace Student.Models
 
         public List<Note> Notes { get; set; }
 
+        public List<Restriction> Restrictions { get; set; }
 
     }
 }
