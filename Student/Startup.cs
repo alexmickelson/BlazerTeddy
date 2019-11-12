@@ -10,17 +10,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Student.Data;
+using Student.ViewModels;
 
 namespace Student
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -29,9 +30,11 @@ namespace Student
             services.AddDbContext<OurDbContext>((options) =>
                 options.UseSqlite(
                     Configuration["DBConnection"]));
+            
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<StudentListViewModel>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

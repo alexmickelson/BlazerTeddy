@@ -1,5 +1,5 @@
 @page "/StudentDetail/{id:int}"
-
+<!-- 
 @using Student.Services
 @using Student.Models
 @using Student.Components
@@ -34,9 +34,9 @@
 
     protected override void OnParametersSet()
     {
-        var studentRepository = StudentRepository.GetRepository(); // #badcode
+        // var studentRepository = StudentRepository.GetRepository(); // #badcode
 
-        viewModel = new StudentDetailViewModel(studentRepository,id);
+        //viewModel = new StudentDetailViewModel(studentRepository,id);
 
     }
     protected override void OnInitialized()
@@ -45,4 +45,4 @@
     }
 
 
-}
+} -->

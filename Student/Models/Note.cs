@@ -8,10 +8,9 @@ namespace Student.Models
     public class Note
     {
 
-        public int ID { get; set; }
+        public int NoteId { get; set; }
 
         public string Content { get; set; }
 
-        public StudentInfo Student  { get; set; }
     }
 }

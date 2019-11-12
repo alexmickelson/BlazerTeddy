@@ -1,20 +1,21 @@
 @using Student.Models
 @using Student.Services
+@using Student.ViewModels
+
+@inject StudentListViewModel vm
 
 <h3>StudentList</h3>
 
-@foreach (var student in StudentRepository.GetStudents())
+@foreach (var student in vm.GetStudents())
 {
  <div><a class="btn btn-secondary" href="/studentdetail/@student.ID">@student.Name</a></div>
 }
 
 
 @code { 
-    private StudentRepository StudentRepository;
 
     protected override async Task OnInitializedAsync()
     {
-        StudentRepository = StudentRepository.GetRepository();
     }
 
 }

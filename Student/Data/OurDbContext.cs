@@ -1,19 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Student.Models;
 
 namespace Student.Data
 {
-    public class OurDbContext:IdentityDbContext
+    public class OurDbContext : DbContext
     {
         public OurDbContext(DbContextOptions<OurDbContext> options) : base(options)
         {
 
         }
-        public DbSet<StudentInfo> Student { get; set; }
+        public DbSet<StudentInfo> Students { get; set; }
+
     }
 }

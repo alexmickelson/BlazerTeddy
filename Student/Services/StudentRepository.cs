@@ -1,47 +1,35 @@
 
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
+using Student.Data;
 using Student.Models;
 
 namespace Student.Services {
     public class StudentRepository {
-        private static StudentRepository singletonRepo { get; set; }
-        public static StudentRepository GetRepository()
-        {
-            return singletonRepo ?? (singletonRepo = new StudentRepository());
-        }
-
-        public List<StudentInfo> students { get; set; }
+        private readonly OurDbContext dbContext;
+        public IEnumerable<StudentInfo> students { get; set; }
         
-        private StudentRepository()
+        public StudentRepository(OurDbContext dbContext)
         {
-            students = new List<StudentInfo>();
-            students.Add(new StudentInfo(){
-                ID=1,
-                Name="jerry",
-                Notes=new List<Note>()
-            });
-            students.Add(new StudentInfo(){
-                ID=2,
-                Name="Gerry",
-                Notes=new List<Note>()
-            });
-            students.Add(new StudentInfo(){
-                ID=3,
-                Name="ahjerry",
-                Notes=new List<Note>()
-            });
-
-            
+            this.dbContext = dbContext;
+            asyncConstructor();
         }
-        public List<StudentInfo> GetStudents()
+        private async void asyncConstructor()
+        {
+            students = await dbContext.Students.ToArrayAsync();
+        }
+        
+        public async Task<IEnumerable<StudentInfo>> GetStudentsAsync()
         {
             return students;
         }
 
-        public StudentInfo GetStudent(int id)
+        public async Task<StudentInfo> GetStudentAsync(int id)
         {
-            return students.FirstOrDefault(s => s.ID == id);
+            students = await dbContext.Students.ToArrayAsync();
+            return students.FirstOrDefault(s => s.StudentInfoId == id);
         }
 
     }

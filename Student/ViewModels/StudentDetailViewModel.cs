@@ -14,10 +14,10 @@ namespace Student.ViewModels
         public string newComment;
         public string errorAlert;
 
-        public StudentDetailViewModel(StudentRepository studentRepository, int studentID)
+        public StudentDetailViewModel()
         {
-            this.studentRepository = studentRepository;
-            student = this.studentRepository.GetStudent(studentID);
+            // this.studentRepository = studentRepository;
+            // student = this.studentRepository.GetStudent(studentID);
 
         }
         public void addNote()
