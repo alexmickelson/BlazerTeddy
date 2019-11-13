@@ -10,19 +10,29 @@ namespace Student.Services {
     public class StudentRepository {
         private readonly OurDbContext dbContext;
         public IEnumerable<StudentInfo> students { get; set; }
-        
+
         public StudentRepository(OurDbContext dbContext)
         {
+            students = new StudentInfo[0];
             this.dbContext = dbContext;
-            asyncConstructor();
+            InitializeStudentAsync();
         }
-        private async void asyncConstructor()
+        private async void InitializeStudentAsync()
         {
-            students = await dbContext.Students.ToArrayAsync();
+            var tempList = await dbContext.Students.ToArrayAsync();
+
+            foreach(var student in tempList)
+            {
+                if (!students.Contains(student)){
+                    students.Append(student);
+                }
+            }
+
         }
-        
-        public async Task<IEnumerable<StudentInfo>> GetStudentsAsync()
+
+        public IEnumerable<StudentInfo> GetStudents()
         {
+            InitializeStudentAsync();
             return students;
         }
 
@@ -31,6 +41,9 @@ namespace Student.Services {
             students = await dbContext.Students.ToArrayAsync();
             return students.FirstOrDefault(s => s.StudentInfoId == id);
         }
+
+
+
 
     }
 }

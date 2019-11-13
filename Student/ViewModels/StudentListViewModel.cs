@@ -10,15 +10,16 @@ namespace Student.ViewModels
     public class StudentListViewModel
     {
         private readonly StudentRepository studentRepository;
-
+        public IEnumerable<StudentInfo> Students;
         public StudentListViewModel(StudentRepository studentRepository)
         {
             this.studentRepository = studentRepository;
+            Students = this.studentRepository.GetStudents();
         }
 
-        public async Task<IEnumerable<StudentInfo>> GetStudentsAsync()
+        public  IEnumerable<StudentInfo> GetStudents()
         {
-            return await studentRepository.GetStudentsAsync(); 
+            return  studentRepository.GetStudents(); 
         }
     }
 }
