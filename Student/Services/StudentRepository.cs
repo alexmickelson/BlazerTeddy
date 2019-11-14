@@ -9,41 +9,35 @@ using Student.Models;
 namespace Student.Services {
     public class StudentRepository {
         private readonly OurDbContext dbContext;
-        public IEnumerable<StudentInfo> students { get; set; }
+        public List<StudentInfo> students { get; set; }
 
         public StudentRepository(OurDbContext dbContext)
         {
-            students = new StudentInfo[0];
+            students = new List<StudentInfo>();
             this.dbContext = dbContext;
-            InitializeStudentAsync();
+            var t = InitializeStudentAsync();
         }
-        private async void InitializeStudentAsync()
+        private async Task InitializeStudentAsync()
         {
             var tempList = await dbContext.Students.ToArrayAsync();
-
             foreach(var student in tempList)
             {
                 if (!students.Contains(student)){
                     students.Append(student);
                 }
             }
-
         }
 
         public IEnumerable<StudentInfo> GetStudents()
         {
-            InitializeStudentAsync();
+            var t = InitializeStudentAsync();
             return students;
         }
 
         public async Task<StudentInfo> GetStudentAsync(int id)
         {
-            students = await dbContext.Students.ToArrayAsync();
+            await InitializeStudentAsync();
             return students.FirstOrDefault(s => s.StudentInfoId == id);
         }
-
-
-
-
     }
 }

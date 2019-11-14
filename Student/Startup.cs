@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Student.Data;
+using Student.Services;
 using Student.ViewModels;
 
 namespace Student
@@ -34,7 +35,8 @@ namespace Student
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddScoped<StudentListViewModel>();
+            services.AddTransient<StudentRepository>();
+            services.AddTransient<StudentListViewModel>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
