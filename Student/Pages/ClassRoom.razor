@@ -1,7 +1,30 @@
 ﻿@page "/classroom"
+@using Student.Components
 
 <h3>ClassRoom</h3>
 
+<button @onclick="switchView">
+    <!--<SeatingChartComponent></SeatingChartComponent>-->
+    Seating Chart
+</button>
+<button @onclick="switchView">
+    <!--<AssignmentComponent></AssignmentComponent>-->
+    Assignments
+</button>
+
+<div id="ClassRoomViewPort">
+
+    <SeatingChartComponent></SeatingChartComponent>
+    <AssignmentComponent></AssignmentComponent>
+</div>
+
 @code {
+
+    private void switchView()
+    {
+
+    }
+
+
 
 }
