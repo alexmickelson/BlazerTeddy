@@ -38,12 +38,18 @@ namespace Test.ServiceTests
         public void EditingReferenceOfStudentListEditsRepostoryList()
         {
             var students = studentRepostiory.GetStudents();
-            students.Append(new StudentInfo(){
-                StudentInfoId = 3,
+            int studentId = 3;
+            var student = new StudentInfo(){
+                StudentInfoId = studentId,
                 Name = "Sam"
-            });
+            };
+
+            students.Add(student);
+            var sam = studentRepostiory.Get(studentId);
+
 
             students.Should().BeSameAs(studentRepostiory.GetStudents());
+            sam.Name.Should().Be(student.Name);
         }
     }
 }

@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Student.Services {
             }
         }
 
-        public IEnumerable<StudentInfo> GetStudents()
+        public List<StudentInfo> GetStudents()
         {
             var t = InitializeStudentAsync();
             return students;
@@ -38,6 +39,17 @@ namespace Student.Services {
         {
             await InitializeStudentAsync();
             return students.FirstOrDefault(s => s.StudentInfoId == id);
+        }
+
+        public StudentInfo Get(int studentId)
+        {
+            var s = students.FirstOrDefault(s => s.StudentInfoId == studentId);
+            return s;
+        }
+
+        public void Add(StudentInfo student)
+        {
+            students.Add(student);
         }
     }
 }
