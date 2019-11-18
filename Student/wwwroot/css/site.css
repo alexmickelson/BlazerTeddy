@@ -2,7 +2,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-image: linear-gradient(180deg, #ff911c 0%, #eafffd 70%);
+    background-image: linear-gradient(180deg, #706677 0%, #a4c3b2 80%);
 }
 
 a, .btn-link {
@@ -42,7 +42,7 @@ app {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, #ff911c 0%, #eafffd 70%);
+    background-image: linear-gradient(180deg, #706677 0%, #a4c3b2 80%);
 }
 
     .sidebar .top-row {
