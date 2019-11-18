@@ -24,19 +24,19 @@ namespace Student.ViewModels
         {
             if(CourseIdFilter > 0)
             {
-                var s = studentRepository.GetList();
-                var n = s.Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower())).ToArray();
-                var d = n.Where(s => {
-                        return s.Courses == null
-                            ? false
-                            : s.Courses.Where(c => c.CourseId == CourseIdFilter).Count() > 0;
-                    }).ToArray();
+                // var s = studentRepository.GetList();
+                // var n = s.Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower())).ToArray();
+                // var d = n.Where(s => {
+                //         return s.Courses == null
+                //             ? false
+                //             : s.Courses.Where(c => c.CourseId == CourseIdFilter).Count() > 0;
+                //     }).ToArray();
                 return studentRepository.GetList()
                     .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()))
                     .Where(s => {
-                        return s.Courses == null
+                        return s.StudentCourses == null
                             ? false
-                            : s.Courses.Where(c => c.CourseId == CourseIdFilter).Count() > 0;
+                            : s.StudentCourses.Where(sc => sc.CourseId == CourseIdFilter).Count() > 0;
                     })
                     .ToArray();
             }

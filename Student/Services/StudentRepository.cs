@@ -27,18 +27,19 @@ namespace Student.Services {
         // dbContext.Courses.Add(math);
         // dbContext.Courses.Add(science);
         // dbContext.SaveChanges();
-
         // Add(student1);
         // Add(student2);
         // Add(student3);
         // var ta = UpdateDatabaseAsync();
         // ta.Wait();
+
+
             var t = InitializeStudentAsync();
         }
         public async Task InitializeStudentAsync()
         {
             var tempList = await dbContext.Students
-                .Include(s => s.Courses)
+                .Include(s => s.StudentCourses.Select(sc => sc.StudentInfoId == s.StudentInfoId))
                 .ToArrayAsync();
             foreach (var student in tempList)
             {

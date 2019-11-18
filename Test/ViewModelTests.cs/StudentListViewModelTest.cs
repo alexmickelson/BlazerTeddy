@@ -33,6 +33,7 @@ namespace Test.ViewModelTests
             studentRepoMoq.Setup(sr => sr.GetList()).Returns(studentlist);
 
             viewModel.NameFilter = "a";
+            viewModel.CourseIdFilter = -1;
 
             var actual = viewModel.GetFilteredStudents();
             actual.Count().Should().Be(1);
@@ -44,16 +45,20 @@ namespace Test.ViewModelTests
         {
             var math = new Course(){ CourseId = 1, Name = "math"};
             var science = new Course(){ CourseId = 2, Name = "science"};
+            var relationship1 = new StudentCourseRelationship(){CourseId = math.CourseId, StudentInfoId = 1};
+            var relationship2 = new StudentCourseRelationship(){CourseId = math.CourseId, StudentInfoId = 2};
+            var relationship3 = new StudentCourseRelationship(){CourseId = science.CourseId, StudentInfoId = 2};
+            var relationship4 = new StudentCourseRelationship(){CourseId = science.CourseId, StudentInfoId = 3};
+            var student1 = new StudentInfo(){ StudentInfoId=1, Name="adam", StudentCourses = new [] {relationship1}};
+            var student2 = new StudentInfo(){ StudentInfoId=2, Name="benny", StudentCourses = new [] {relationship2, relationship3}};
+            var student3 = new StudentInfo(){ StudentInfoId=3, Name="spencer", StudentCourses = new [] {relationship4}};
             var studentlist = new List<StudentInfo>()
-            {
-                new StudentInfo(){ Name="adam", Courses = new []{math}},
-                new StudentInfo(){ Name="benny", Courses = new []{math, science}},
-                new StudentInfo(){ Name="spencer", Courses = new []{science}}
-            };
+                { student1, student2, student3};
+
             studentRepoMoq.Setup(sr => sr.GetList()).Returns(studentlist);
 
             viewModel.NameFilter = "";
-            viewModel.ClassIdFilter = math.CourseId;
+            viewModel.CourseIdFilter = math.CourseId;
 
             var actual = viewModel.GetFilteredStudents();
             actual.Count().Should().Be(2);
@@ -67,13 +72,18 @@ namespace Test.ViewModelTests
         {
             var math = new Course(){ CourseId = 1, Name = "math"};
             var science = new Course(){ CourseId = 2, Name = "science"};
-            var student1 = new StudentInfo(){ Name="adam", Courses = new []{math}};
-            var student2 = new StudentInfo(){ Name="benny", Courses = new []{math, science}};
-            var student3 = new StudentInfo(){ Name="spencer", Courses = new []{science}};
-
+            var relationship1 = new StudentCourseRelationship(){CourseId = math.CourseId, StudentInfoId = 1};
+            var relationship2 = new StudentCourseRelationship(){CourseId = math.CourseId, StudentInfoId = 2};
+            var relationship3 = new StudentCourseRelationship(){CourseId = science.CourseId, StudentInfoId = 2};
+            var relationship4 = new StudentCourseRelationship(){CourseId = science.CourseId, StudentInfoId = 3};
+            var student1 = new StudentInfo(){ StudentInfoId=1, Name="adam", StudentCourses = new [] {relationship1}};
+            var student2 = new StudentInfo(){ StudentInfoId=2, Name="benny", StudentCourses = new [] {relationship2, relationship3}};
+            var student3 = new StudentInfo(){ StudentInfoId=3, Name="spencer", StudentCourses = new [] {relationship4}};
             var studentlist = new List<StudentInfo>()
-                { student1, student2, student3 };
+                { student1, student2, student3};
+
             studentRepoMoq.Setup(sr => sr.GetList()).Returns(studentlist);
+            viewModel.CourseIdFilter = -1;
 
             var actual = viewModel.GetFilteredStudents();
             actual.Should().Contain(student1);
