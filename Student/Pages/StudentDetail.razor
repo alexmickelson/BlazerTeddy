@@ -21,9 +21,24 @@
        @bind="vm.newNote" />
 <button class="btn btn-secondary"
         type="submit"
-        @onclick="vm.addNote">Add Note</button>
+        @onclick="vm.AddNote">Add Note</button>
 <div class="text-danger">@vm.errorAlert</div>
-<!-- <StudentListComponent></StudentListComponent> -->
+
+
+<br/>
+<h3>Restrictions:</h3>
+<ul>
+    @foreach(var restriction in vm.GetRestrictions())
+    {
+        <li>@restriction.Name</li>
+    }
+</ul>
+<input type="number"
+       placeholder="StudentId"
+       @bind="vm.NewRestrictionId" />
+<button class="btn btn-secondary"
+        type="submit"
+        @onclick="vm.AddRestriction">Add Restriction</button>
 
 
 @code {

@@ -13,7 +13,7 @@ namespace Student.ViewModels
     {
         public readonly IStudentRepository studentRepository;
         public string NameFilter = "";
-        public int ClassIdFilter = -1;
+        public int CourseIdFilter = -1;
 
         public StudentListViewModel(IStudentRepository studentRepository)
         {
@@ -22,17 +22,36 @@ namespace Student.ViewModels
 
         public IEnumerable<StudentInfo> GetFilteredStudents()
         {
-            if(ClassIdFilter > 0)
+            if(CourseIdFilter > 0)
             {
+                var s = studentRepository.GetList();
+                var n = s.Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower())).ToArray();
+                var d = n.Where(s => {
+                        return s.Courses == null
+                            ? false
+                            : s.Courses.Where(c => c.CourseId == CourseIdFilter).Count() > 0;
+                    }).ToArray();
                 return studentRepository.GetList()
                     .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()))
-                    .Where(s => s.Courses.Where(c => c.CourseId == ClassIdFilter).Count() > 0);
+                    .Where(s => {
+                        return s.Courses == null
+                            ? false
+                            : s.Courses.Where(c => c.CourseId == CourseIdFilter).Count() > 0;
+                    })
+                    .ToArray();
             }
             else
             {
                 return studentRepository.GetList()
                     .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()));
             }
+        }
+
+        public IEnumerable<Course> GetCourses()
+        {
+            var t = studentRepository.GetCoursesAsync();
+            t.Wait();
+            return t.Result;
         }
     }
 }
