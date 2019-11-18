@@ -181,20 +181,5 @@ namespace Test.ServiceTests
             await studentRepostiory2.InitializeStudentAsync();
             studentRepostiory2.Get(3).Notes.Should().Contain(note);
         }
-
-        [Test]
-        public async Task GetStudentsAlsoReturnsCourseInformation()
-        {
-            var math = new Course(){ CourseId = 1, Name = "math"};
-            var student1 = new StudentInfo(){ StudentInfoId=1, Name="adam"};
-            var relation = new StudentCourseRelationship(){StudentInfoId = 1, CourseId = 1};
-
-            studentRepostiory.Add(student1);
-
-            await studentRepostiory.UpdateDatabaseAsync();
-
-            var actual = studentRepostiory.Get(1);
-            actual.StudentCourses.First(sc => sc.CourseId == 1).Should().NotBeNull();
-        }
     }
 }

@@ -38,9 +38,7 @@ namespace Student.Services {
         }
         public async Task InitializeStudentAsync()
         {
-            var tempList = await dbContext.Students
-                .Include(s => s.StudentCourses.Select(sc => sc.StudentInfoId == s.StudentInfoId))
-                .ToArrayAsync();
+            var tempList = await dbContext.Students.ToArrayAsync();
             foreach (var student in tempList)
             {
                 if (!students.Contains(student))

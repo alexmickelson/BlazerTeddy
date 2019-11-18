@@ -6,6 +6,5 @@ namespace Student.Models
     {
         public int CourseId { get; set; }
         public string Name { get; set; }
-        public ICollection<StudentCourseRelationship> StudentCourses { get; set; }
     }
 }

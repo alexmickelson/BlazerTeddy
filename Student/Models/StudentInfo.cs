@@ -17,7 +17,7 @@ namespace Student.Models
         [ForeignKey("StudentInfoForeignKey")]
         public List<StudentInfo> Restrictions { get; set; }
 
-        public ICollection<StudentCourseRelationship> StudentCourses { get; set; }
+        public IEnumerable<Course> Courses {get; set;}
         
         internal void Update(StudentInfo updated)
         {
