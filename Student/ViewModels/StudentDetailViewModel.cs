@@ -13,7 +13,6 @@ namespace Student.ViewModels
         public StudentInfo Student;
         public string newNote;
         public string errorAlert;
-        public int NewRestrictionId { get; set; }
 
         public StudentDetailViewModel(IStudentRepository studentRepository)
         {
@@ -30,7 +29,7 @@ namespace Student.ViewModels
             return Student.Notes ?? new List<Note>();
         }
 
-        public void AddNote()
+        public void addNote()
         {
             if (String.IsNullOrEmpty(newNote))
             {
@@ -43,16 +42,6 @@ namespace Student.ViewModels
                 errorAlert = "";
                 newNote = "";
             }
-        }
-
-        public IEnumerable<StudentInfo> GetRestrictions()
-        {
-            return Student.Restrictions ?? new List<StudentInfo>();
-        }
-
-        public void AddRestriction()
-        {
-            studentRepository.AddRestrictionAsync(Student.StudentInfoId, NewRestrictionId);
         }
     }
 }

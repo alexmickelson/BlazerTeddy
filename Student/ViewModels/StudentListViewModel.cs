@@ -13,7 +13,7 @@ namespace Student.ViewModels
     {
         public readonly IStudentRepository studentRepository;
         public string NameFilter = "";
-        public int CourseIdFilter = -1;
+        public int ClassIdFilter = -1;
 
         public StudentListViewModel(IStudentRepository studentRepository)
         {
@@ -22,8 +22,9 @@ namespace Student.ViewModels
 
         public IEnumerable<StudentInfo> GetFilteredStudents()
         {
-            if(CourseIdFilter > 0)
+            if(ClassIdFilter > 0)
             {
+<<<<<<< HEAD
                 // var s = studentRepository.GetList();
                 // var n = s.Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower())).ToArray();
                 // var d = n.Where(s => {
@@ -39,19 +40,17 @@ namespace Student.ViewModels
                             : s.StudentCourses.Where(sc => sc.CourseId == CourseIdFilter).Count() > 0;
                     })
                     .ToArray();
+=======
+                return studentRepository.GetList()
+                    .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()))
+                    .Where(s => s.Courses.Where(c => c.CourseId == ClassIdFilter).Count() > 0);
+>>>>>>> parent of 7e8e239... many to many course to students giving issues
             }
             else
             {
                 return studentRepository.GetList()
                     .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()));
             }
-        }
-
-        public IEnumerable<Course> GetCourses()
-        {
-            var t = studentRepository.GetCoursesAsync();
-            t.Wait();
-            return t.Result;
         }
     }
 }

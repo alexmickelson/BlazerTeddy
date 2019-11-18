@@ -21,9 +21,9 @@ namespace Student.Services {
 
         // var math = new Course(){ CourseId = 1, Name = "math"};
         // var science = new Course(){ CourseId = 2, Name = "science"};
-        // var student1 = new StudentInfo(){ StudentInfoId=1, Name="adam", Courses = new List<Course>(){math}};
-        // var student2 = new StudentInfo(){ StudentInfoId=2, Name="benny", Courses = new List<Course>(){math, science}};
-        // var student3 = new StudentInfo(){ StudentInfoId=3, Name="spencer", Courses = new List<Course>(){science}};
+        // var student1 = new StudentInfo(){ StudentInfoId=1, Name="adam"};
+        // var student2 = new StudentInfo(){ StudentInfoId=2, Name="benny"};
+        // var student3 = new StudentInfo(){ StudentInfoId=3, Name="spencer"};
         // dbContext.Courses.Add(math);
         // dbContext.Courses.Add(science);
         // dbContext.SaveChanges();
@@ -38,9 +38,13 @@ namespace Student.Services {
         }
         public async Task InitializeStudentAsync()
         {
+<<<<<<< HEAD
             var tempList = await dbContext.Students
                 .Include(s => s.StudentCourses.Select(sc => sc.StudentInfoId == s.StudentInfoId))
                 .ToArrayAsync();
+=======
+            var tempList = await dbContext.Students.ToArrayAsync();
+>>>>>>> parent of 7e8e239... many to many course to students giving issues
             foreach (var student in tempList)
             {
                 if (!students.Contains(student))
@@ -100,28 +104,6 @@ namespace Student.Services {
             await dbContext.Notes.AddAsync(note);
             student.Notes.Add(note);
             await dbContext.SaveChangesAsync();
-        }
-
-        public async Task AddRestrictionAsync(int studentId1, int studentId2)
-        {
-            var student1 = Get(studentId1);
-            var student2 = Get(studentId2);
-            if (student1.Restrictions == null)
-            {
-                student1.Restrictions = new List<StudentInfo>();
-            }
-            if (student2.Restrictions == null)
-            {
-                student2.Restrictions = new List<StudentInfo>();
-            }
-            student1.Restrictions.Add(student2);
-            student2.Restrictions.Add(student1);
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<Course>> GetCoursesAsync()
-        {
-            return await dbContext.Courses.ToArrayAsync();
         }
     }
 }

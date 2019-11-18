@@ -6,20 +6,6 @@
 
 <h3>StudentList</h3>
 
-<input type="text"
-        @bind-value="vm.NameFilter" 
-        @bind-value:event="oninput"/>
-
-<select @bind-value="vm.CourseIdFilter" 
-        @bind-value:event="oninput"
-        name="Class Filter">
-    <option value="-1">None</option>
-    @foreach(var course in vm.GetCourses())
-    {
-    <option value="@course.CourseId">@course.Name</option>
-    }
-</select> 
-
 @foreach (var student in vm.GetFilteredStudents())
 {
  <div><a class="btn btn-secondary" href="/studentdetail/@student.StudentInfoId">@student.Name</a></div>
@@ -31,4 +17,5 @@
     protected override void OnInitialized()
     {
     }
+
 }
