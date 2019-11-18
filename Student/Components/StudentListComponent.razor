@@ -6,7 +6,7 @@
 
 <h3>StudentList</h3>
 
-@foreach (var student in vm.Students)
+@foreach (var student in vm.studentRepository.GetList())
 {
  <div><a class="btn btn-secondary" href="/studentdetail/@student.StudentInfoId">@student.Name</a></div>
 }

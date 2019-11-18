@@ -9,17 +9,15 @@ namespace Student.ViewModels
 {
     public class StudentListViewModel
     {
-        private readonly StudentRepository studentRepository;
-        public IEnumerable<StudentInfo> Students;
+        public readonly StudentRepository studentRepository;
         public StudentListViewModel(StudentRepository studentRepository)
         {
             this.studentRepository = studentRepository;
-            Students = this.studentRepository.GetStudents();
         }
 
         public  IEnumerable<StudentInfo> GetStudents()
         {
-            return  studentRepository.GetStudents(); 
+            return  studentRepository.GetList(); 
         }
     }
 }
