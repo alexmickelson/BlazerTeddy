@@ -38,13 +38,9 @@ namespace Student.Services {
         }
         public async Task InitializeStudentAsync()
         {
-<<<<<<< HEAD
             var tempList = await dbContext.Students
                 .Include(s => s.StudentCourses.Select(sc => sc.StudentInfoId == s.StudentInfoId))
                 .ToArrayAsync();
-=======
-            var tempList = await dbContext.Students.ToArrayAsync();
->>>>>>> parent of 7e8e239... many to many course to students giving issues
             foreach (var student in tempList)
             {
                 if (!students.Contains(student))
