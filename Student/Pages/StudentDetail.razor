@@ -1,48 +1,44 @@
 @page "/StudentDetail/{id:int}"
-<!-- 
+
 @using Student.Services
 @using Student.Models
 @using Student.Components
 @using Student.ViewModels
 
-<h1>@viewModel.student.Name</h1>
+@inject StudentDetailViewModel vm
+
+<h1>@vm.Student.Name</h1>
 <br/>
 <h3>Notes:</h3>
 
-@foreach (var note in viewModel.student.Notes)
+@foreach (var note in vm.GetNotes())
 {
     <p>@note.Content</p>
 }
 
 <input type="text"
        placeholder="New Note"
-       @bind="viewModel.newComment" />
+       @bind="vm.newNote" />
 <button class="btn btn-secondary"
         type="submit"
-        @onclick="viewModel.addNote"  >Add Note</button>
-<div class="text-danger">@viewModel.errorAlert</div>
-<StudentListComponent></StudentListComponent>
+        @onclick="vm.addNote">Add Note</button>
+<div class="text-danger">@vm.errorAlert</div>
+<!-- <StudentListComponent></StudentListComponent> -->
 
 
 @code {
     [Parameter]
     public int id {get; set;}
 
-
-    private StudentDetailViewModel viewModel;
-
-
     protected override void OnParametersSet()
     {
-        // var studentRepository = StudentRepository.GetRepository(); // #badcode
-
-        //viewModel = new StudentDetailViewModel(studentRepository,id);
-
+        vm.LoadStudent(id);
     }
+
     protected override void OnInitialized()
     {
         OnParametersSet();
     }
 
 
-} -->
+}

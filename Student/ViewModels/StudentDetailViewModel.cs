@@ -9,33 +9,39 @@ namespace Student.ViewModels
 {
     public class StudentDetailViewModel
     {
-        public readonly StudentRepository studentRepository;
-        public StudentInfo student;
-        public string newComment;
+        public readonly IStudentRepository studentRepository;
+        public StudentInfo Student;
+        public string newNote;
         public string errorAlert;
 
-        public StudentDetailViewModel()
+        public StudentDetailViewModel(IStudentRepository studentRepository)
         {
-            // this.studentRepository = studentRepository;
-            // student = this.studentRepository.GetStudent(studentID);
-
+            this.studentRepository = studentRepository;
         }
+
+        public void LoadStudent(int studentId)
+        {
+            Student = studentRepository.Get(studentId);
+        }
+
+        public IEnumerable<Note> GetNotes()
+        {
+            return Student.Notes ?? new List<Note>();
+        }
+
         public void addNote()
         {
-            if (String.IsNullOrEmpty(newComment))
+            if (String.IsNullOrEmpty(newNote))
             {
                 errorAlert = "Note cannot be Empty";
             }
             else
             {
-                student.Notes.Add(new Note()
-                {
-                    Content = newComment
-                });
+                var note = new Note() { Content = newNote };
+                studentRepository.AddNoteAsync(Student, note);
                 errorAlert = "";
-                newComment = "";
+                newNote = "";
             }
         }
-
     }
 }

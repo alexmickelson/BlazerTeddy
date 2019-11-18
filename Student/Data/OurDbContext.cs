@@ -10,6 +10,7 @@ namespace Student.Data
         }
         public DbSet<StudentInfo> Students { get; set; }
         public DbSet<Note> Notes { get; set; }
+        public DbSet<Course> Courses { get; set; }
 
     }
 }

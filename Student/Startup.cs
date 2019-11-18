@@ -35,8 +35,9 @@ namespace Student
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddTransient<StudentRepository>();
+            services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
+            services.AddTransient<StudentDetailViewModel>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

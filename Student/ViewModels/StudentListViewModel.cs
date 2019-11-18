@@ -1,5 +1,7 @@
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Student.Data;
 using Student.Models;
@@ -9,15 +11,28 @@ namespace Student.ViewModels
 {
     public class StudentListViewModel
     {
-        public readonly StudentRepository studentRepository;
-        public StudentListViewModel(StudentRepository studentRepository)
+        public readonly IStudentRepository studentRepository;
+        public string NameFilter = "";
+        public int ClassIdFilter = -1;
+
+        public StudentListViewModel(IStudentRepository studentRepository)
         {
             this.studentRepository = studentRepository;
         }
 
-        public  IEnumerable<StudentInfo> GetStudents()
+        public IEnumerable<StudentInfo> GetFilteredStudents()
         {
-            return  studentRepository.GetList(); 
+            if(ClassIdFilter > 0)
+            {
+                return studentRepository.GetList()
+                    .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()))
+                    .Where(s => s.Courses.Where(c => c.CourseId == ClassIdFilter).Count() > 0);
+            }
+            else
+            {
+                return studentRepository.GetList()
+                    .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()));
+            }
         }
     }
 }
