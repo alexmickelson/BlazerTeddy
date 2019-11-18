@@ -1,35 +1,23 @@
-﻿@page "/classroom"
+﻿@page "/assignments"
+
 @using Student.Components
 
 <h3>ClassRoom</h3>
 
-<button>
+<button >
     <NavLink class="nav-link" href="seatingchart">
         Seating Chart
     </NavLink>
 
 </button>
-<button @onclick="switchView">
+<button >
     <NavLink class="nav-link" href="assignments">
         Assignments
     </NavLink>
 
 </button>
-
-<SeatingChartComponent></SeatingChartComponent>
-
+<AssignmentComponent></AssignmentComponent>
 
 @code {
-
-    private Boolean state = true;
-
-
-
-    private void switchView()
-    {
-
-    }
-
-
 
 }
