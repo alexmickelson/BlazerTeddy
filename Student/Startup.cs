@@ -34,7 +34,6 @@ namespace Student
             
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
