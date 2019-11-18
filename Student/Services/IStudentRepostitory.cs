@@ -14,5 +14,6 @@ namespace Student.Services
         public Task<StudentInfo> GetStudentAsync(int id);
         public Task InitializeStudentAsync();
         Task UpdateDatabaseAsync();
+        public Task AddRestrictionAsync(int studentId1, int studentId2);
     }
 }

@@ -11,8 +11,9 @@ namespace Student.ViewModels
     {
         public readonly IStudentRepository studentRepository;
         public StudentInfo Student;
-        public string newNote;
+        public string NewNote;
         public string errorAlert;
+        public int NewRestrictionId { get; set; }
 
         public StudentDetailViewModel(IStudentRepository studentRepository)
         {
@@ -29,19 +30,31 @@ namespace Student.ViewModels
             return Student.Notes ?? new List<Note>();
         }
 
-        public void addNote()
+        public void AddNote()
         {
-            if (String.IsNullOrEmpty(newNote))
+            if (String.IsNullOrEmpty(NewNote))
             {
                 errorAlert = "Note cannot be Empty";
             }
             else
             {
-                var note = new Note() { Content = newNote };
+                var note = new Note() { Content = NewNote };
                 studentRepository.AddNoteAsync(Student, note);
                 errorAlert = "";
-                newNote = "";
+                NewNote = "";
             }
+        }
+
+
+
+        public IEnumerable<StudentInfo> GetRestrictions()
+        {
+            return Student.Restrictions ?? new List<StudentInfo>();
+        }
+
+        public void AddRestriction()
+        {
+            studentRepository.AddRestrictionAsync(Student.StudentInfoId, NewRestrictionId);
         }
     }
 }

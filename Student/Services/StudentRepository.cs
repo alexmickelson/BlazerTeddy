@@ -99,5 +99,22 @@ namespace Student.Services {
             student.Notes.Add(note);
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task AddRestrictionAsync(int studentId1, int studentId2)
+        {
+            var student1 = Get(studentId1);
+            var student2 = Get(studentId2);
+            if (student1.Restrictions == null)
+            {
+                student1.Restrictions = new List<StudentInfo>();
+            }
+            if (student2.Restrictions == null)
+            {
+                student2.Restrictions = new List<StudentInfo>();
+            }
+            student1.Restrictions.Add(student2);
+            student2.Restrictions.Add(student1);
+            await dbContext.SaveChangesAsync();
+        }
     }
 }
