@@ -7,9 +7,9 @@ namespace Student.Data
     {
         public OurDbContext(DbContextOptions<OurDbContext> options) : base(options)
         {
-
         }
         public DbSet<StudentInfo> Students { get; set; }
-
+        public DbSet<Note> Notes { get; set; }
+        public DbSet<Course> Courses { get; set; }
     }
 }

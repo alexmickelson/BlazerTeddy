@@ -9,16 +9,19 @@
 
 <h3>StudentList</h3>
 
-@foreach (var student in vm.Students)
+<input type="text"
+        @bind-value="vm.NameFilter" 
+        @bind-value:event="oninput"/>
+
+@foreach (var student in vm.GetFilteredStudents())
 {
  <div><a class="btn btn-secondary" href="/studentdetail/@student.StudentInfoId">@student.Name</a></div>
 }
 
 
-@code { 
+@code {
 
     protected override void OnInitialized()
     {
     }
-
 }
