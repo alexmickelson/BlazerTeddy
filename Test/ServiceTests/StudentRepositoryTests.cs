@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 using Student.Data;
@@ -18,6 +19,7 @@ namespace Test.ServiceTests
         private StudentRepository studentRepostiory;
         private OurDbContext context;
         private OurDbContext context2;
+        private Mock<IConfiguration> configMoq;
 
         [SetUp]
         public void Setup()
@@ -29,7 +31,8 @@ namespace Test.ServiceTests
                 .Options;
             context = new OurDbContext(dbOptions);
             context2 = new OurDbContext(dbOptions);
-            studentRepostiory = new StudentRepository(context);
+            configMoq = new Mock<IConfiguration>();
+            studentRepostiory = new StudentRepository(context, configMoq.Object);
         }
 
         [TearDown]
