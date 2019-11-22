@@ -30,12 +30,27 @@ namespace TeddyBlazor.Services {
             {
                 var multipleResults =  await dbConnection.QueryMultipleAsync(SqlStrings.GetStudents);
                 students = multipleResults.Read<Student>().ToList();
+                var courses  = multipleResults.Read<Course>().ToList();
             }
         }
         public async Task UpdateDatabaseAsync()
         {
+            //get latest student list
+            var dbStudents = new List<Student>();
+            using (var dbConnection = GetDbConnection())
+            {
+
+            }
             foreach (var student in students)
             {
+                //if student did not previously exist, add
+
+                //else if different update name
+
+                //update student notes
+                //update student restrictions
+                //update course relationship
+                
             }
         }
 
@@ -63,15 +78,20 @@ namespace TeddyBlazor.Services {
         }
 
 
-        public async Task AddNoteAsync(Student Student, Note note)
+        public async Task AddNoteAsync(Student student, Note note)
         {
-            if (Student.Notes == null)
+            if (student.Notes == null)
             {
-                Student.Notes = new List<Note>();
+                student.Notes = new List<Note>();
             }
-            //TODO: add note to database
-            Student.Notes.Add(note);
-            //TODO: update student in database
+            using(var dbConnection = GetDbConnection())
+            {
+                dbConnection.Execute(
+                    "insert into Note(Content, StudentId) values (@content, @studentId)",
+                    new { content = note.Content, studentId = student.StudentId });
+            }
+            student.Notes.Add(note);
+            await UpdateDatabaseAsync();
             
         }
 
