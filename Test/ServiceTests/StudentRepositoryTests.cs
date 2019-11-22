@@ -1,17 +1,19 @@
 
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Dapper.Contrib.Extensions;
 using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
-using ServiceStack.OrmLite;
 using TeddyBlazor.Data;
 using TeddyBlazor.Models;
 using TeddyBlazor.Services;
@@ -24,10 +26,9 @@ namespace Test.ServiceTests
         private StudentRepository studentRepository;
         private OurDbContext context;
         private OurDbContext context2;
-        private OrmLiteConnectionFactory dbFactory;
         private SqliteConnection sqlite;
         private Mock<IConfiguration> configMoq;
-
+        private Func<IDbConnection> getDbConnection;
 
         [SetUp]
         public void Setup()
@@ -40,55 +41,15 @@ namespace Test.ServiceTests
             context = new OurDbContext(dbOptions);
             context2 = new OurDbContext(dbOptions);
 
+            getDbConnection = DbConnectionFactory.GetMemoryConnection();
 
-            dbFactory = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
 
-            string createTableScript = File.ReadAllText(Directory.GetCurrentDirectory() + "/../../../../TeddyBlazor/Data/SqlQueries/CreateTables.sql");
-            string seedDatabaseScript = File.ReadAllText(Directory.GetCurrentDirectory() + "/../../../../TeddyBlazor/Data/SqlQueries/SeedDatabase.sql");
-            using (var connection = dbFactory.Open())
-            {
-                var s = connection.QueryMultiple(createTableScript);
-                var e = connection.QueryMultiple(seedDatabaseScript);
-            }
-
-            studentRepository = new StudentRepository(context, () => dbFactory.Open());
+            studentRepository = new StudentRepository(getDbConnection);
         }
 
         [TearDown]
         public void TearDown()
         {
-        }
-
-        [Test]
-        public void can_read_from_in_memory_database()
-        {
-            IEnumerable<Student> students;
-            using (var connection = dbFactory.Open())
-            {
-                var sqlResults = connection.QueryMultiple("select * from Student;");
-                students = sqlResults.Read<Student>();
-            }
-            students.Should().NotBeNullOrEmpty();
-        }
-
-        [Test]
-        public void can_write_to_in_memory_database()
-        {
-            var max = new Student(){Name = "max"};
-            SqlMapper.GridReader sqlResults;
-            
-            using (var connection = dbFactory.Open())
-            {
-                connection.Insert<Student>(max);
-            }
-            using (var connection = dbFactory.Open())
-            {
-                sqlResults = connection.QueryMultiple("select * from TeddyBlazor;");
-            }
-            sqlResults.Read<Student>()
-                      .Where(s => s.Name == max.Name)
-                      .Should()
-                      .NotBeNullOrEmpty();
         }
 
         // [Test]

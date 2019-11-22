@@ -26,9 +26,9 @@ namespace Test.ViewModelTests
         {
             var TeddyBlazorlist = new List<Student>()
             {
-                new Student(){ Name="adam"},
-                new Student(){ Name="benny"},
-                new Student(){ Name="spencer"}
+                new Student(){ StudentName="adam"},
+                new Student(){ StudentName="benny"},
+                new Student(){ StudentName="spencer"}
             };
             TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(TeddyBlazorlist);
 
@@ -36,7 +36,7 @@ namespace Test.ViewModelTests
 
             var actual = viewModel.GetFilteredStudents();
             actual.Count().Should().Be(1);
-            actual.First().Name.Should().Be("adam");
+            actual.First().StudentName.Should().Be("adam");
         }
 
         [Test]
@@ -46,9 +46,9 @@ namespace Test.ViewModelTests
             var science = new Course(){ CourseId = 2, Name = "science"};
             var TeddyBlazorlist = new List<Student>()
             {
-                new Student(){ Name="adam", Courses = new []{math}},
-                new Student(){ Name="benny", Courses = new []{math, science}},
-                new Student(){ Name="spencer", Courses = new []{science}}
+                new Student(){ StudentName="adam", Courses = new []{math}},
+                new Student(){ StudentName="benny", Courses = new []{math, science}},
+                new Student(){ StudentName="spencer", Courses = new []{science}}
             };
             TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(TeddyBlazorlist);
 
@@ -57,8 +57,8 @@ namespace Test.ViewModelTests
 
             var actual = viewModel.GetFilteredStudents();
             actual.Count().Should().Be(2);
-            actual.First().Name.Should().Be("adam");
-            actual.Last().Name.Should().Be("benny");
+            actual.First().StudentName.Should().Be("adam");
+            actual.Last().StudentName.Should().Be("benny");
 
         }
 
@@ -67,9 +67,9 @@ namespace Test.ViewModelTests
         {
             var math = new Course(){ CourseId = 1, Name = "math"};
             var science = new Course(){ CourseId = 2, Name = "science"};
-            var student1 = new Student(){ Name="adam", Courses = new []{math}};
-            var student2 = new Student(){ Name="benny", Courses = new []{math, science}};
-            var student3 = new Student(){ Name="spencer", Courses = new []{science}};
+            var student1 = new Student(){ StudentName="adam", Courses = new []{math}};
+            var student2 = new Student(){ StudentName="benny", Courses = new []{math, science}};
+            var student3 = new Student(){ StudentName="spencer", Courses = new []{science}};
 
             var studentList = new List<Student>()
                 { student1, student2, student3 };
