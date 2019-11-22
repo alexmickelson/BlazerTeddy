@@ -10,17 +10,7 @@ namespace TeddyBlazor.Models
     {
 
         public int Id{ get; set; }
-
-        [ForeignKey("TeddyBlazorForeignKey")]
-        public List<Student> students { get; set; }
-
-        [ForeignKey("TeacherForeignKey")]
-        public List<TeacherInfo> Teachers { get; set; }
-
-        public int[,] SeatingChartByTeddyBlazorID { get; set; }
-
+        public int[,] SeatingChartByStudentID { get; set; }
         public string Name { get; set; }
-
-        public string Description { get; set; }
     }
 }

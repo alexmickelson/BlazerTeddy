@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TeddyBlazor.Models
 {
-    public class TeacherInfo
+    public class Teacher
     {
         public int TeacherId { get; set; }
         public string Name { get; set; }
