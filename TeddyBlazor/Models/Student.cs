@@ -1,31 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
+using Dapper.Contrib.Extensions;
 
 namespace TeddyBlazor.Models
 {
     public class Student
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int StudentId { get; set; }
+        public string StudentName { get; set; }
 
-        [ForeignKey("NoteForeignKey")]
-        public List<Note> Notes { get; set; }
+        [Write(false)]
+        public List<Note> Notes { get; set; } = new List<Note>();
 
-        [ForeignKey("TeddyBlazorInfoForeignKey")]
-        public List<Student> Restrictions { get; set; }
+        [Write(false)]
+        public List<Student> Restrictions { get; set; } = new List<Student>();
 
-        public IEnumerable<Course> Courses {get; set;}
+        [Write(false)]
+        public IEnumerable<Course> Courses {get; set;} = new List<Course>();
         
         internal void Update(Student updated)
         {
-            if(updated.Id != Id)
+            if(updated.StudentId != StudentId)
             {
                 return;
             }
-            Name = updated.Name;
+            StudentName = updated.StudentName;
             Notes = updated.Notes ?? Notes;
             Restrictions = updated.Restrictions ?? Restrictions;
         }

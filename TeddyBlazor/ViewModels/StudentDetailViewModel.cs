@@ -18,11 +18,13 @@ namespace TeddyBlazor.ViewModels
         public StudentDetailViewModel(IStudentRepository StudentRepository)
         {
             this.StudentRepository = StudentRepository;
+            Student = new Student();
         }
 
-        public void LoadTeddyBlazor(int TeddyBlazorId)
+        public async Task LoadStudentAsync(int studentId)
         {
-            Student = StudentRepository.Get(TeddyBlazorId);
+            await StudentRepository.InitializeStudentsAsync();
+            Student = StudentRepository.Get(studentId);
         }
 
         public IEnumerable<Note> GetNotes()
@@ -54,7 +56,7 @@ namespace TeddyBlazor.ViewModels
 
         public void AddRestriction()
         {
-            StudentRepository.AddRestrictionAsync(Student.Id, NewRestrictionId);
+            StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
         }
     }
 }

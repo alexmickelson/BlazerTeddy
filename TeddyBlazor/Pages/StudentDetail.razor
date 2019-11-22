@@ -1,4 +1,4 @@
-@page "/TeddyBlazorDetail/{id:int}"
+@page "/StudentDetail/{id:int}"
 
 @using TeddyBlazor.Services
 @using TeddyBlazor.Models
@@ -7,7 +7,7 @@
 
 @inject StudentDetailViewModel vm
 
-<h1>@vm.Student.Name</h1>
+<h1>@vm.Student.StudentName</h1>
 <br/>
 <h3>Notes:</h3>
 
@@ -30,7 +30,7 @@
 <ul>
     @foreach(var restriction in vm.GetRestrictions())
     {
-        <li>@restriction.Name</li>
+        <li>@restriction.StudentName</li>
     }
 </ul>
 
@@ -45,14 +45,14 @@
     [Parameter]
     public int id {get; set;}
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        vm.LoadTeddyBlazor(id);
+        await vm.LoadStudentAsync(id);
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        OnParametersSet();
+        await OnParametersSetAsync();
     }
 
 

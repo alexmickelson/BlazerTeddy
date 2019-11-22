@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 using TeddyBlazor.Data;
 using TeddyBlazor.Services;
 using TeddyBlazor.ViewModels;
@@ -36,7 +37,7 @@ namespace TeddyBlazor
             
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddTransient<Func<IDbConnection>>(c => () => new SqlConnection(Configuration["DBConnection"]));
+            services.AddTransient<Func<IDbConnection>>(c => () => new NpgsqlConnection(Configuration["DBConnection"]));
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();

@@ -25,13 +25,13 @@ namespace TeddyBlazor.ViewModels
             if(ClassIdFilter > 0)
             {
                 return StudentRepository.GetList()
-                    .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()))
+                    .Where(s => s.StudentName.ToLower().StartsWith(NameFilter.ToLower()))
                     .Where(s => s.Courses.Where(c => c.CourseId == ClassIdFilter).Count() > 0);
             }
             else
             {
                 return StudentRepository.GetList()
-                    .Where(s => s.Name.ToLower().StartsWith(NameFilter.ToLower()));
+                    .Where(s => s.StudentName.ToLower().StartsWith(NameFilter.ToLower()));
             }
         }
     }

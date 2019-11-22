@@ -15,28 +15,20 @@ namespace TeddyBlazor.Services {
 
     public class StudentRepository : IStudentRepository
     {
-        private readonly OurDbContext dbContext;
-        private readonly string connectionString;
-        private string getStudentsSql;
 
         public List<Student> students { get; set; }
         public Func<IDbConnection> GetDbConnection { get; }
 
-        public StudentRepository(OurDbContext dbContext, Func<IDbConnection> getDbConnection)
+        public StudentRepository(Func<IDbConnection> getDbConnection)
         {
-
-            getStudentsSql = File.ReadAllText(Directory.GetCurrentDirectory() + "/../../../../TeddyBlazor/Data/SqlQueries/GetStudents.sql");
             students = new List<Student>();
-            this.dbContext = dbContext;
             GetDbConnection = getDbConnection;
-
-            var t = InitializeStudentsAsync();
         }
         public async Task InitializeStudentsAsync()
         {
             using (var dbConnection = GetDbConnection())
             {
-                var multipleResults =  await dbConnection.QueryMultipleAsync(getStudentsSql);
+                var multipleResults =  await dbConnection.QueryMultipleAsync(SqlStrings.GetStudents);
                 students = multipleResults.Read<Student>().ToList();
             }
         }
@@ -44,16 +36,6 @@ namespace TeddyBlazor.Services {
         {
             foreach (var student in students)
             {
-                if (dbContext.Students.Contains(student))
-                {
-                    var s = dbContext.Students.First(s => s.Id == student.Id);
-                    s.Update(student);
-                    dbContext.Students.Update(s);
-                }
-                else
-                {
-                    await dbContext.Students.AddAsync(student);
-                }
             }
         }
 
@@ -66,12 +48,12 @@ namespace TeddyBlazor.Services {
         public async Task<Student> GetStudentAsync(int id)
         {
             await InitializeStudentsAsync();
-            return students.FirstOrDefault(s => s.Id == id);
+            return students.FirstOrDefault(s => s.StudentId == id);
         }
 
         public Student Get(int StudentId)
         {
-            var s = students.FirstOrDefault(s => s.Id == StudentId);
+            var s = students.FirstOrDefault(s => s.StudentId == StudentId);
             return s;
         }
 
@@ -87,9 +69,10 @@ namespace TeddyBlazor.Services {
             {
                 Student.Notes = new List<Note>();
             }
-            await dbContext.Notes.AddAsync(note);
+            //TODO: add note to database
             Student.Notes.Add(note);
-            await dbContext.SaveChangesAsync();
+            //TODO: update student in database
+            
         }
 
         public async Task AddRestrictionAsync(int StudentId1, int StudentId2)
@@ -106,7 +89,7 @@ namespace TeddyBlazor.Services {
             }
             Student1.Restrictions.Add(Student2);
             Student2.Restrictions.Add(Student1);
-            await dbContext.SaveChangesAsync();
+            //TODO: Update database to include student restrictions
         }
 
     }

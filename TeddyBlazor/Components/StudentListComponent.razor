@@ -4,9 +4,6 @@
 
 @inject StudentListViewModel vm
 
-
-
-
 <h3>StudentList</h3>
 
 <input type="text"
@@ -15,13 +12,14 @@
 
 @foreach (var student in vm.GetFilteredStudents())
 {
- <div><a class="btn btn-secondary" href="/TeddyBlazordetail/@student.Id">@student.Name</a></div>
+ <div><a class="btn btn-secondary" href="/StudentDetail/@student.StudentId">@student.StudentName</a></div>
 }
 
 
 @code {
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await vm.StudentRepository.InitializeStudentsAsync();
     }
 }
