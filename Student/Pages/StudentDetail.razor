@@ -11,10 +11,12 @@
 <br/>
 <h3>Notes:</h3>
 
-@foreach (var note in vm.GetNotes())
-{
-    <p>@note.Content</p>
-}
+<div class="jumbotron centered" >
+    @foreach (var note in vm.GetNotes())
+    {
+        <p>@note.Content</p>
+    }
+</div>
 
 <input type="text"
        placeholder="New Note"
@@ -22,15 +24,18 @@
 <button class="btn btn-secondary"
         type="submit"
         @onclick="vm.AddNote">Add Note</button>
+<br />
+<input type="radio" name="SignIt" value="Sign it?" checked/>Sign it
+<input type="radio" name="SignIt" value="Dont sign it?" />Dont sign it
 <div class="text-danger">@vm.errorAlert</div>
 
 
 <br/>
 <h3>Restrictions:</h3>
-<ul>
+<ul class="jumbotron centered">
     @foreach(var restriction in vm.GetRestrictions())
     {
-        <li>@restriction.Name</li>
+    <li>@restriction.Name</li>
     }
 </ul>
 
@@ -38,7 +43,7 @@
        @bind="vm.NewRestrictionId" />
 <button class="btn btn-secondary"
         type="submit"
-        @onclick="vm.AddRestriction">Add Note</button>
+        @onclick="vm.AddRestriction">Add Restriction</button>
 
 
 @code {
