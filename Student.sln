@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29318.209
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Student", "Student\Student.csproj", "{C767F1CC-9B02-423D-9C5F-DA99B5B912CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeddyBlazor", "TeddyBlazor\TeddyBlazor.csproj", "{C767F1CC-9B02-423D-9C5F-DA99B5B912CF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{9DEE4136-5986-4E3C-98B6-8F2459598C1A}"
 EndProject

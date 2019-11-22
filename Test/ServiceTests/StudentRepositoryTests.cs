@@ -1,25 +1,33 @@
 
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using FluentAssertions;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
-using Student.Data;
-using Student.Models;
-using Student.Services;
+using ServiceStack.OrmLite;
+using TeddyBlazor.Data;
+using TeddyBlazor.Models;
+using TeddyBlazor.Services;
 
 namespace Test.ServiceTests
 {
-    public class StudentRepostoryTests
+    public class StudentRepositoryTests
     {
         private DbContextOptions<OurDbContext> dbOptions;
-        private StudentRepository studentRepostiory;
+        private StudentRepository TeddyBlazorRepostiory;
         private OurDbContext context;
         private OurDbContext context2;
+        private OrmLiteConnectionFactory dbFactory;
+        private SqliteConnection sqlite;
         private Mock<IConfiguration> configMoq;
+
 
         [SetUp]
         public void Setup()
@@ -31,158 +39,201 @@ namespace Test.ServiceTests
                 .Options;
             context = new OurDbContext(dbOptions);
             context2 = new OurDbContext(dbOptions);
-            configMoq = new Mock<IConfiguration>();
-            studentRepostiory = new StudentRepository(context, configMoq.Object);
+
+
+            dbFactory = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
+
+            string createTableScript = File.ReadAllText(Directory.GetCurrentDirectory() + "/../../../../TeddyBlazor/Data/SqlQueries/CreateTables.sql");
+            string seedDatabaseScript = File.ReadAllText(Directory.GetCurrentDirectory() + "/../../../../TeddyBlazor/Data/SqlQueries/SeedDatabase.sql");
+            using (var connection = dbFactory.Open())
+            {
+                var s = connection.QueryMultiple(createTableScript);
+                var e = connection.QueryMultiple(seedDatabaseScript);
+            }
+
+            TeddyBlazorRepostiory = new StudentRepository(context, () => dbFactory.Open());
         }
 
         [TearDown]
         public void TearDown()
         {
-
         }
 
         [Test]
-        public void EditingReferenceOfStudentListEditsRepostoryList()
+        public async Task can_read_from_in_memory_database()
         {
-            var students = studentRepostiory.GetList();
-            int studentId = 3;
-            var student = new StudentInfo(){
-                StudentInfoId = studentId,
-                Name = "Sam"
-            };
-
-            students.Add(student);
-            var sam = studentRepostiory.Get(studentId);
-
-
-            students.Should().BeSameAs(studentRepostiory.GetList());
-            sam.Name.Should().Be(student.Name);
+            IEnumerable<Student> students;
+            using (var connection = dbFactory.Open())
+            {
+                var sqlResults = connection.QueryMultiple("select * from TeddyBlazor;");
+                students = sqlResults.Read<Student>();
+            }
+            students.Should().NotBeNullOrEmpty();
         }
 
         [Test]
-        public void AddingNotesOnStudentsPersistsToRepostitory()
+        public void can_write_to_in_memory_database()
         {
-            var students = studentRepostiory.GetList();
-            int studentId = 3;
-            var student = new StudentInfo(){
-                StudentInfoId = studentId,
+            var max = new Student(){Name = "max"};
+            SqlMapper.GridReader sqlResults;
+            
+            using (var connection = dbFactory.Open())
+            {
+                connection.Insert<Student>(max);
+            }
+            using (var connection = dbFactory.Open())
+            {
+                sqlResults = connection.QueryMultiple("select * from TeddyBlazor;");
+            }
+            sqlResults.Read<Student>()
+                      .Where(s => s.Name == max.Name)
+                      .Should()
+                      .NotBeNullOrEmpty();
+        }
+
+        // [Test]
+        // public async Task EditingReferenceOfTeddyBlazorListEditsRepostoryList()
+        // {
+        //     var students = TeddyBlazorRepostiory.GetList();
+        //     var TeddyBlazor = new TeddyBlazorInfo()
+        //     {
+        //         Name = "Sam"
+        //     };
+
+        //     students.Add(TeddyBlazor);
+        //     await TeddyBlazorRepostiory.UpdateDatabaseAsync();
+        //     await TeddyBlazorRepostiory.InitializeTeddyBlazorAsync();
+
+        //     var sam = TeddyBlazorRepostiory.Get(3);
+        //     students.Should().BeSameAs(TeddyBlazorRepostiory.GetList());
+        //     sam.Name.Should().Be(TeddyBlazor.Name);
+        // }
+
+        [Test]
+        public void AddingNotesOnstudentsPersistsToRepostitory()
+        {
+            var students = TeddyBlazorRepostiory.GetList();
+            int TeddyBlazorId = 3;
+            var TeddyBlazor = new Student()
+            {
+                StudentId = TeddyBlazorId,
                 Name = "Sam"
             };
 
-            students.Add(student);
-            student.Notes = new List<Note>();
-            student.Notes.Add(new Note(){Content = "this is a note"});
+            students.Add(TeddyBlazor);
+            TeddyBlazor.Notes = new List<Note>();
+            TeddyBlazor.Notes.Add(new Note() { Content = "this is a note" });
 
-            var sam = studentRepostiory.Get(studentId);
+            var sam = TeddyBlazorRepostiory.Get(TeddyBlazorId);
             sam.Notes.First().Content.Should().Be("this is a note");
         }
 
-        [Test]
-        public async Task ChangesPersistAfterReloadingDatabase()
-        {
-            var students = studentRepostiory.GetList();
-            int studentId = 3;
-            var student = new StudentInfo(){
-                StudentInfoId = studentId,
-                Name = "Sam"
-            };
-            students.Add(student);
+        // [Test]
+        // public async Task ChangesPersistAfterReloadingDatabase()
+        // {
+        //     var students = TeddyBlazorRepostiory.GetList();
+        //     int TeddyBlazorId = 3;
+        //     var TeddyBlazor = new TeddyBlazorInfo(){
+        //         TeddyBlazorInfoId = TeddyBlazorId,
+        //         Name = "Sam"
+        //     };
+        //     students.Add(TeddyBlazor);
 
-            await studentRepostiory.InitializeStudentAsync();
+        //     await TeddyBlazorRepostiory.InitializeTeddyBlazorAsync();
 
-            var sam = studentRepostiory.Get(studentId);
-            students.Should().BeSameAs(studentRepostiory.GetList());
-            sam.Name.Should().Be(student.Name);
-        }
+        //     var sam = TeddyBlazorRepostiory.Get(TeddyBlazorId);
+        //     students.Should().BeSameAs(TeddyBlazorRepostiory.GetList());
+        //     sam.Name.Should().Be(TeddyBlazor.Name);
+        // }
 
-        [Test]
-        public async Task ChangesToStudentsPersistAcrossStudentRepositoryInstances()
-        {
-            var studentRepostiory2 = new StudentRepository(context2);
-            var students = studentRepostiory.GetList();
-            int studentId = 3;
-            var student = new StudentInfo(){
-                StudentInfoId = studentId,
-                Name = "Sam"
-            };
-            studentRepostiory.Add(student);
+        // [Test]
+        // public async Task ChangesTostudentsPersistAcrossStudentRepositoryInstances()
+        // {
+        //     var TeddyBlazorRepostiory2 = new StudentRepository(context2, configMoq.Object);
+        //     var students = TeddyBlazorRepostiory.GetList();
+        //     int TeddyBlazorId = 3;
+        //     var TeddyBlazor = new TeddyBlazorInfo(){
+        //         TeddyBlazorInfoId = TeddyBlazorId,
+        //         Name = "Sam"
+        //     };
+        //     TeddyBlazorRepostiory.Add(TeddyBlazor);
 
-            await studentRepostiory.UpdateDatabaseAsync();
-            await studentRepostiory2.InitializeStudentAsync();
+        //     await TeddyBlazorRepostiory.UpdateDatabaseAsync();
+        //     await TeddyBlazorRepostiory2.InitializeTeddyBlazorAsync();
 
-            studentRepostiory2.Get(studentId).Name.Should().Be("Sam");
-        }
+        //     TeddyBlazorRepostiory2.Get(TeddyBlazorId).Name.Should().Be("Sam");
+        // }
 
-        [Test]
-        public async Task UpdatingSingleStudentPersistAcrossStudentRepositoryInstances()
-        {
-            var studentRepostiory2 = new StudentRepository(context);
-            var students = studentRepostiory.GetList();
-            int studentId = 3;
-            var student = new StudentInfo(){
-                StudentInfoId = studentId,
-                Name = "Sam"
-            };
+        // [Test]
+        // public async Task UpdatingSingleTeddyBlazorPersistAcrossStudentRepositoryInstances()
+        // {
+        //     var TeddyBlazorRepostiory2 = new StudentRepository(context, configMoq.Object);
+        //     var students = TeddyBlazorRepostiory.GetList();
+        //     int TeddyBlazorId = 3;
+        //     var TeddyBlazor = new TeddyBlazorInfo(){
+        //         TeddyBlazorInfoId = TeddyBlazorId,
+        //         Name = "Sam"
+        //     };
 
-            studentRepostiory.Add(student);
-            await studentRepostiory.UpdateDatabaseAsync();
-            
-            student.Name = "richard";
-            studentRepostiory2.Add(student);
-            await studentRepostiory2.UpdateDatabaseAsync();
+        //     TeddyBlazorRepostiory.Add(TeddyBlazor);
+        //     await TeddyBlazorRepostiory.UpdateDatabaseAsync();
 
-            await studentRepostiory.InitializeStudentAsync();
+        //     TeddyBlazor.Name = "richard";
+        //     TeddyBlazorRepostiory2.Add(TeddyBlazor);
+        //     await TeddyBlazorRepostiory2.UpdateDatabaseAsync();
 
-            studentRepostiory.Get(studentId).Name.Should().Be("richard");
-        }
+        //     await TeddyBlazorRepostiory.InitializeTeddyBlazorAsync();
 
-        [Test]
-        public async Task UpdatingStudentRestrictionsPersists()
-        {
-            var studentRepostiory2 = new StudentRepository(context);
-            var students = studentRepostiory.GetList();
-            var student = new StudentInfo(){
-                StudentInfoId = 3,
-                Name = "Sam"
-            };
-            var student2 = new StudentInfo(){
-                StudentInfoId = 4,
-                Name = "bill"
-            };
-            studentRepostiory.Add(student);
-            studentRepostiory.Add(student2);
-            await studentRepostiory.UpdateDatabaseAsync();
+        //     TeddyBlazorRepostiory.Get(TeddyBlazorId).Name.Should().Be("richard");
+        // }
 
-            student.Restrictions = new List<StudentInfo>(){ student2 };
-            await studentRepostiory.UpdateDatabaseAsync();
+        // [Test]
+        // public async Task UpdatingTeddyBlazorRestrictionsPersists()
+        // {
+        //     var TeddyBlazorRepostiory2 = new StudentRepository(context, configMoq.Object);
+        //     var students = TeddyBlazorRepostiory.GetList();
+        //     var TeddyBlazor = new TeddyBlazorInfo(){
+        //         TeddyBlazorInfoId = 3,
+        //         Name = "Sam"
+        //     };
+        //     var TeddyBlazor2 = new TeddyBlazorInfo(){
+        //         TeddyBlazorInfoId = 4,
+        //         Name = "bill"
+        //     };
+        //     TeddyBlazorRepostiory.Add(TeddyBlazor);
+        //     TeddyBlazorRepostiory.Add(TeddyBlazor2);
+        //     await TeddyBlazorRepostiory.UpdateDatabaseAsync();
 
-            await studentRepostiory2.InitializeStudentAsync();
-            studentRepostiory2.Get(3).Restrictions.Should().Contain(student2);
-        }
+        //     TeddyBlazor.Restrictions = new List<TeddyBlazorInfo>(){ TeddyBlazor2 };
+        //     await TeddyBlazorRepostiory.UpdateDatabaseAsync();
 
-        [Test]
-        public async Task UpdatingStudentNotesPersists()
-        {
-            var studentRepostiory2 = new StudentRepository(context);
-            var students = studentRepostiory.GetList();
-            var student = new StudentInfo()
-            {
-                StudentInfoId = 3,
-                Name = "Sam"
-            };
-            var note = new Note()
-            {
-                NoteId = 5,
-                Content = "sam's note"
-            };
-            studentRepostiory.Add(student);
-            await studentRepostiory.UpdateDatabaseAsync();
+        //     await TeddyBlazorRepostiory2.InitializeTeddyBlazorAsync();
+        //     TeddyBlazorRepostiory2.Get(3).Restrictions.Should().Contain(TeddyBlazor2);
+        // }
 
-            await studentRepostiory.AddNoteAsync(student, note);
-            await studentRepostiory.UpdateDatabaseAsync();
+        // [Test]
+        // public async Task UpdatingTeddyBlazorNotesPersists()
+        // {
+        //     var TeddyBlazorRepostiory2 = new StudentRepository(context, configMoq.Object);
+        //     var students = TeddyBlazorRepostiory.GetList();
+        //     var TeddyBlazor = new TeddyBlazorInfo()
+        //     {
+        //         TeddyBlazorInfoId = 3,
+        //         Name = "Sam"
+        //     };
+        //     var note = new Note()
+        //     {
+        //         NoteId = 5,
+        //         Content = "sam's note"
+        //     };
+        //     TeddyBlazorRepostiory.Add(TeddyBlazor);
+        //     await TeddyBlazorRepostiory.UpdateDatabaseAsync();
 
-            await studentRepostiory2.InitializeStudentAsync();
-            studentRepostiory2.Get(3).Notes.Should().Contain(note);
-        }
+        //     await TeddyBlazorRepostiory.AddNoteAsync(TeddyBlazor, note);
+        //     await TeddyBlazorRepostiory.UpdateDatabaseAsync();
+
+        //     await TeddyBlazorRepostiory2.InitializeTeddyBlazorAsync();
+        //     TeddyBlazorRepostiory2.Get(3).Notes.Should().Contain(note);
+        // }
     }
 }

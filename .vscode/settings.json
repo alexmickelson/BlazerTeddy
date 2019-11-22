@@ -1,9 +1,9 @@
 {
     "sqltools.connections": [
         {
-            "database": "${workspaceFolder}/Student/ourDB.sqlite",
+            "database": "${workspaceFolder}/TeddyBlazor/ourDB.sqlite",
             "dialect": "SQLite",
-            "name": "BlazorTeddy"
+            "name": "TeddyBlazorTeddy"
         }
     ],
     "sqltools.useNodeRuntime": true

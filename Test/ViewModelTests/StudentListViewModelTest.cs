@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using Student.Models;
-using Student.Services;
-using Student.ViewModels;
+using TeddyBlazor.Models;
+using TeddyBlazor.Services;
+using TeddyBlazor.ViewModels;
 using System.Linq;
 using FluentAssertions;
 
@@ -11,26 +11,26 @@ namespace Test.ViewModelTests
 {
     public class StudentListViewModelTests
     {
-        private Mock<IStudentRepository> studentRepoMoq;
+        private Mock<IStudentRepository> TeddyBlazorRepoMoq;
         private StudentListViewModel viewModel;
 
         [SetUp]
         public void SetUp()
         {
-            studentRepoMoq = new Mock<IStudentRepository>();
-            viewModel = new StudentListViewModel(studentRepoMoq.Object);
+            TeddyBlazorRepoMoq = new Mock<IStudentRepository>();
+            viewModel = new StudentListViewModel(TeddyBlazorRepoMoq.Object);
         }
 
         [Test]
-        public void FilterStudentListByName()
+        public void FilterTeddyBlazorListByName()
         {
-            var studentlist = new List<StudentInfo>()
+            var TeddyBlazorlist = new List<Student>()
             {
-                new StudentInfo(){ Name="adam"},
-                new StudentInfo(){ Name="benny"},
-                new StudentInfo(){ Name="spencer"}
+                new Student(){ Name="adam"},
+                new Student(){ Name="benny"},
+                new Student(){ Name="spencer"}
             };
-            studentRepoMoq.Setup(sr => sr.GetList()).Returns(studentlist);
+            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(TeddyBlazorlist);
 
             viewModel.NameFilter = "a";
 
@@ -40,17 +40,17 @@ namespace Test.ViewModelTests
         }
 
         [Test]
-        public void CanFilterStudentsByCourse()
+        public void CanFilterstudentsByCourse()
         {
             var math = new Course(){ CourseId = 1, Name = "math"};
             var science = new Course(){ CourseId = 2, Name = "science"};
-            var studentlist = new List<StudentInfo>()
+            var TeddyBlazorlist = new List<Student>()
             {
-                new StudentInfo(){ Name="adam", Courses = new []{math}},
-                new StudentInfo(){ Name="benny", Courses = new []{math, science}},
-                new StudentInfo(){ Name="spencer", Courses = new []{science}}
+                new Student(){ Name="adam", Courses = new []{math}},
+                new Student(){ Name="benny", Courses = new []{math, science}},
+                new Student(){ Name="spencer", Courses = new []{science}}
             };
-            studentRepoMoq.Setup(sr => sr.GetList()).Returns(studentlist);
+            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(TeddyBlazorlist);
 
             viewModel.NameFilter = "";
             viewModel.ClassIdFilter = math.CourseId;
@@ -63,17 +63,17 @@ namespace Test.ViewModelTests
         }
 
         [Test]
-        public void NoFiltersSetReturnsAllStudents()
+        public void NoFiltersSetReturnsAllstudents()
         {
             var math = new Course(){ CourseId = 1, Name = "math"};
             var science = new Course(){ CourseId = 2, Name = "science"};
-            var student1 = new StudentInfo(){ Name="adam", Courses = new []{math}};
-            var student2 = new StudentInfo(){ Name="benny", Courses = new []{math, science}};
-            var student3 = new StudentInfo(){ Name="spencer", Courses = new []{science}};
+            var student1 = new Student(){ Name="adam", Courses = new []{math}};
+            var student2 = new Student(){ Name="benny", Courses = new []{math, science}};
+            var student3 = new Student(){ Name="spencer", Courses = new []{science}};
 
-            var studentlist = new List<StudentInfo>()
+            var studentList = new List<Student>()
                 { student1, student2, student3 };
-            studentRepoMoq.Setup(sr => sr.GetList()).Returns(studentlist);
+            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(studentList);
 
             var actual = viewModel.GetFilteredStudents();
             actual.Should().Contain(student1);

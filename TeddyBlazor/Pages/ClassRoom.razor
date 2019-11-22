@@ -1,0 +1,35 @@
+﻿@page "/classroom"
+@using TeddyBlazor.Components
+
+<h3>ClassRoom</h3>
+
+<button>
+    <NavLink class="nav-link" href="seatingchart">
+        Seating Chart
+    </NavLink>
+
+</button>
+<button @onclick="switchView">
+    <NavLink class="nav-link" href="assignments">
+        Assignments
+    </NavLink>
+
+</button>
+
+<SeatingChartComponent></SeatingChartComponent>
+
+
+@code {
+
+    private Boolean state = true;
+
+
+
+    private void switchView()
+    {
+
+    }
+
+
+
+}

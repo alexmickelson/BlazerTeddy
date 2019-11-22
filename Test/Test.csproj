@@ -14,10 +14,12 @@
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="ServiceStack.OrmLite" Version="5.7.0" />
+    <PackageReference Include="ServiceStack.OrmLite.Sqlite" Version="5.7.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Student\Student.csproj" />
+    <ProjectReference Include="..\TeddyBlazor\TeddyBlazor.csproj" />
   </ItemGroup>
 
 </Project>
