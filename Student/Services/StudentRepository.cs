@@ -116,5 +116,7 @@ namespace Student.Services {
             student2.Restrictions.Add(student1);
             await dbContext.SaveChangesAsync();
         }
+
+        
     }
 }

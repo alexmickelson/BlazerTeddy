@@ -56,5 +56,7 @@ namespace Student.ViewModels
         {
             studentRepository.AddRestrictionAsync(Student.StudentInfoId, NewRestrictionId);
         }
+
+
     }
 }
