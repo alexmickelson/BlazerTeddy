@@ -25,14 +25,14 @@ namespace TeddyBlazor.Services {
         public StudentRepository(OurDbContext dbContext, Func<IDbConnection> getDbConnection)
         {
 
-            getStudentsSql = File.ReadAllText(Directory.GetCurrentDirectory() + "/../../../../TeddyBlazor/Data/SqlQueries/Getstudents.sql");
+            getStudentsSql = File.ReadAllText(Directory.GetCurrentDirectory() + "/../../../../TeddyBlazor/Data/SqlQueries/GetStudents.sql");
             students = new List<Student>();
             this.dbContext = dbContext;
             GetDbConnection = getDbConnection;
 
-            var t = InitializeTeddyBlazorAsync();
+            var t = InitializeStudentsAsync();
         }
-        public async Task InitializeTeddyBlazorAsync()
+        public async Task InitializeStudentsAsync()
         {
             using (var dbConnection = GetDbConnection())
             {
@@ -46,7 +46,7 @@ namespace TeddyBlazor.Services {
             {
                 if (dbContext.Students.Contains(student))
                 {
-                    var s = dbContext.Students.First(s => s.StudentId == student.StudentId);
+                    var s = dbContext.Students.First(s => s.Id == student.Id);
                     s.Update(student);
                     dbContext.Students.Update(s);
                 }
@@ -59,53 +59,53 @@ namespace TeddyBlazor.Services {
 
         public List<Student> GetList()
         {
-            var t = InitializeTeddyBlazorAsync();
+            var t = InitializeStudentsAsync();
             return students;
         }
 
-        public async Task<Student> GetTeddyBlazorAsync(int id)
+        public async Task<Student> GetStudentAsync(int id)
         {
-            await InitializeTeddyBlazorAsync();
-            return students.FirstOrDefault(s => s.StudentId == id);
+            await InitializeStudentsAsync();
+            return students.FirstOrDefault(s => s.Id == id);
         }
 
-        public Student Get(int TeddyBlazorId)
+        public Student Get(int StudentId)
         {
-            var s = students.FirstOrDefault(s => s.StudentId == TeddyBlazorId);
+            var s = students.FirstOrDefault(s => s.Id == StudentId);
             return s;
         }
 
-        public void Add(Student TeddyBlazor)
+        public void Add(Student Student)
         {
-            students.Add(TeddyBlazor);
+            students.Add(Student);
         }
 
 
-        public async Task AddNoteAsync(Student TeddyBlazor, Note note)
+        public async Task AddNoteAsync(Student Student, Note note)
         {
-            if (TeddyBlazor.Notes == null)
+            if (Student.Notes == null)
             {
-                TeddyBlazor.Notes = new List<Note>();
+                Student.Notes = new List<Note>();
             }
             await dbContext.Notes.AddAsync(note);
-            TeddyBlazor.Notes.Add(note);
+            Student.Notes.Add(note);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddRestrictionAsync(int TeddyBlazorId1, int TeddyBlazorId2)
+        public async Task AddRestrictionAsync(int StudentId1, int StudentId2)
         {
-            var TeddyBlazor1 = Get(TeddyBlazorId1);
-            var TeddyBlazor2 = Get(TeddyBlazorId2);
-            if (TeddyBlazor1.Restrictions == null)
+            var Student1 = Get(StudentId1);
+            var Student2 = Get(StudentId2);
+            if (Student1.Restrictions == null)
             {
-                TeddyBlazor1.Restrictions = new List<Student>();
+                Student1.Restrictions = new List<Student>();
             }
-            if (TeddyBlazor2.Restrictions == null)
+            if (Student2.Restrictions == null)
             {
-                TeddyBlazor2.Restrictions = new List<Student>();
+                Student2.Restrictions = new List<Student>();
             }
-            TeddyBlazor1.Restrictions.Add(TeddyBlazor2);
-            TeddyBlazor2.Restrictions.Add(TeddyBlazor1);
+            Student1.Restrictions.Add(Student2);
+            Student2.Restrictions.Add(Student1);
             await dbContext.SaveChangesAsync();
         }
 

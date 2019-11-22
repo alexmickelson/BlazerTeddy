@@ -54,7 +54,7 @@ namespace TeddyBlazor.ViewModels
 
         public void AddRestriction()
         {
-            StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
+            StudentRepository.AddRestrictionAsync(Student.Id, NewRestrictionId);
         }
     }
 }

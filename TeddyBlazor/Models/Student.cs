@@ -8,7 +8,7 @@ namespace TeddyBlazor.Models
 {
     public class Student
     {
-        public int StudentId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
 
         [ForeignKey("NoteForeignKey")]
@@ -21,7 +21,7 @@ namespace TeddyBlazor.Models
         
         internal void Update(Student updated)
         {
-            if(updated.StudentId != StudentId)
+            if(updated.Id != Id)
             {
                 return;
             }

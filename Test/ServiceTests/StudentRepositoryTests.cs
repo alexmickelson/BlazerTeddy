@@ -21,7 +21,7 @@ namespace Test.ServiceTests
     public class StudentRepositoryTests
     {
         private DbContextOptions<OurDbContext> dbOptions;
-        private StudentRepository TeddyBlazorRepostiory;
+        private StudentRepository studentRepository;
         private OurDbContext context;
         private OurDbContext context2;
         private OrmLiteConnectionFactory dbFactory;
@@ -51,7 +51,7 @@ namespace Test.ServiceTests
                 var e = connection.QueryMultiple(seedDatabaseScript);
             }
 
-            TeddyBlazorRepostiory = new StudentRepository(context, () => dbFactory.Open());
+            studentRepository = new StudentRepository(context, () => dbFactory.Open());
         }
 
         [TearDown]
@@ -60,12 +60,12 @@ namespace Test.ServiceTests
         }
 
         [Test]
-        public async Task can_read_from_in_memory_database()
+        public void can_read_from_in_memory_database()
         {
             IEnumerable<Student> students;
             using (var connection = dbFactory.Open())
             {
-                var sqlResults = connection.QueryMultiple("select * from TeddyBlazor;");
+                var sqlResults = connection.QueryMultiple("select * from Student;");
                 students = sqlResults.Read<Student>();
             }
             students.Should().NotBeNullOrEmpty();
@@ -109,24 +109,24 @@ namespace Test.ServiceTests
         //     sam.Name.Should().Be(TeddyBlazor.Name);
         // }
 
-        [Test]
-        public void AddingNotesOnstudentsPersistsToRepostitory()
-        {
-            var students = TeddyBlazorRepostiory.GetList();
-            int TeddyBlazorId = 3;
-            var TeddyBlazor = new Student()
-            {
-                StudentId = TeddyBlazorId,
-                Name = "Sam"
-            };
+        // [Test]
+        // public void AddingNotesOnstudentsPersistsToRepostitory()
+        // {
+        //     var students = studentRepository.GetList();
+        //     int studentId = 3;
+        //     var student = new Student()
+        //     {
+        //         StudentId = studentId,
+        //         Name = "Sam"
+        //     };
 
-            students.Add(TeddyBlazor);
-            TeddyBlazor.Notes = new List<Note>();
-            TeddyBlazor.Notes.Add(new Note() { Content = "this is a note" });
+        //     students.Add(student);
+        //     student.Notes = new List<Note>();
+        //     student.Notes.Add(new Note() { Content = "this is a note" });
 
-            var sam = TeddyBlazorRepostiory.Get(TeddyBlazorId);
-            sam.Notes.First().Content.Should().Be("this is a note");
-        }
+        //     var sam = studentRepository.Get(studentId);
+        //     sam.Notes.First().Content.Should().Be("this is a note");
+        // }
 
         // [Test]
         // public async Task ChangesPersistAfterReloadingDatabase()

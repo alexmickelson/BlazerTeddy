@@ -1,7 +1,7 @@
 -- SQLite
 
 --first tier
-CREATE TABLE TeddyBlazor (
+CREATE TABLE Student (
     Id integer PRIMARY KEY autoincrement,
     Name text
 );
@@ -13,8 +13,8 @@ CREATE TABLE Teacher(
 CREATE TABLE Note(
     Id integer PRIMARY KEY autoincrement,
     Content text,
-    TeddyBlazorId,
-    FOREIGN KEY (TeddyBlazorId) REFERENCES TeddyBlazor(Id)
+    StudentId,
+    FOREIGN KEY (StudentId) REFERENCES Student(Id)
 );
 CREATE TABLE Course (
     Id integer PRIMARY KEY autoincrement,
@@ -22,18 +22,18 @@ CREATE TABLE Course (
     TeacherId integer,
     FOREIGN KEY (TeacherId) REFERENCES Teacher(Id)
 );
-CREATE TABLE TeddyBlazorRestriction (
-    TeddyBlazor1 integer,
-    TeddyBlazor2 integer,
-    FOREIGN KEY (TeddyBlazor1) REFERENCES TeddyBlazor(Id),
-    FOREIGN KEY (TeddyBlazor2) REFERENCES TeddyBlazor(Id)
+CREATE TABLE StudentRestriction (
+    Student1 integer,
+    Student2 integer,
+    FOREIGN KEY (Student1) REFERENCES Student(Id),
+    FOREIGN KEY (Student2) REFERENCES Student(Id)
 );
 
 --third tier
-CREATE TABLE TeddyBlazorCourse(
-    TeddyBlazorId integer,
+CREATE TABLE StudentCourse(
+    StudentId integer,
     CourseId integer,
-    FOREIGN KEY (TeddyBlazorId) REFERENCES TeddyBlazor(Id),
+    FOREIGN KEY (StudentId) REFERENCES Student(Id),
     FOREIGN KEY (CourseId) REFERENCES Course(Id)
 );
 CREATE TABLE Assignment(
