@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TeddyBlazor\TeddyBlazor.csproj" />
+    <ProjectReference Include="..\blazorTeddy\TeddyBlazor.csproj" />
   </ItemGroup>
 
 </Project>
