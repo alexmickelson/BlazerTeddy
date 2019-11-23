@@ -48,9 +48,9 @@ namespace TeddyBlazor.ViewModels
 
 
 
-        public IEnumerable<Student> GetRestrictions()
+        public IEnumerable<int> GetRestrictions()
         {
-            return Student.Restrictions ?? new List<Student>();
+            return Student.Restrictions ?? new int[0];
         }
 
         public void AddRestriction()

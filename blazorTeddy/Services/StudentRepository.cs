@@ -16,8 +16,8 @@ namespace TeddyBlazor.Services {
     public class StudentRepository : IStudentRepository
     {
 
-        public List<Student> students { get; set; }
-        public Func<IDbConnection> GetDbConnection { get; }
+        private List<Student> students { get; set; }
+        private Func<IDbConnection> GetDbConnection { get; }
 
         public StudentRepository(Func<IDbConnection> getDbConnection)
         {
@@ -30,15 +30,29 @@ namespace TeddyBlazor.Services {
             using (var dbConnection = GetDbConnection())
             {
                 students = (await dbConnection.QueryAsync<Student>(
-                    @"SELECT * FROM Student")).ToList();
+                    @"SELECT * FROM Student;")).ToList();
                 var notes = (await dbConnection.QueryAsync<Note>(
-                    @"SELECT * FROM Note"));
+                    @"SELECT * FROM Note;"));
+                var restrictions = (await dbConnection.QueryAsync<(int, int)>(
+                    @"SELECT * FROM StudentRestriction;"));
                 foreach (var student in students)
                 {
                     student.Notes = notes.Where(n => n.StudentId == student.StudentId);
+                    student.Restrictions = assignRestrictions(restrictions, student.StudentId);
                 }
 
             }
+        }
+
+        private static IEnumerable<int> assignRestrictions(IEnumerable<(int, int)> restrictions, int studentId)
+        {
+            var firstRestrictions = restrictions
+                .Where(r => r.Item1 == studentId)
+                .Select(r => r.Item2);
+            var secondRestrictions = restrictions
+                .Where(r => r.Item2 == studentId)
+                .Select(r => r.Item1);
+            return firstRestrictions.Concat(secondRestrictions);
         }
 
         public async Task SaveChangesAsync()
@@ -49,24 +63,24 @@ namespace TeddyBlazor.Services {
                 {
                     if (student.StoredInDatabase)
                     {
-                        await UpdateStudentToDb(dbConnection, student);
+                        await updateStudentToDb(dbConnection, student);
                     }
                     else
                     {
-                        student.StudentId = await AddStudentToDb(dbConnection, student);
+                        student.StudentId = await addStudentToDb(dbConnection, student);
                     }
                 }
             }
         }
 
-        private static async Task UpdateStudentToDb(IDbConnection dbConnection, Student student)
+        private static async Task updateStudentToDb(IDbConnection dbConnection, Student student)
         {
             await dbConnection.ExecuteAsync(
                 @"UPDATE Student SET StudentName='@studentName' WHERE StudentId=@id;",
                 new { studentName = student.StudentName, id = student.StudentId });
         }
 
-        private static async Task<int> AddStudentToDb(IDbConnection dbConnection, Student student)
+        private static async Task<int> addStudentToDb(IDbConnection dbConnection, Student student)
         {
             return await dbConnection.QueryFirstAsync<int>(
                 @"INSERT INTO Student (StudentName) Values (@studentName) RETURNING StudentId;",
@@ -85,7 +99,7 @@ namespace TeddyBlazor.Services {
             return students.FirstOrDefault(s => s.StudentId == id);
         }
 
-        public async Task AddAsync(Student Student)
+        public async Task AddStudentAsync(Student Student)
         {
             students.Add(Student);
             await SaveChangesAsync();
@@ -108,19 +122,14 @@ namespace TeddyBlazor.Services {
 
         public async Task AddRestrictionAsync(int StudentId1, int StudentId2)
         {
-            var Student1 = await GetStudentAsync(StudentId1);
-            var Student2 = await GetStudentAsync(StudentId2);
-            if (Student1.Restrictions == null)
+            await UpdateStudentsAsync();
+            using (var connection = GetDbConnection())
             {
-                Student1.Restrictions = new List<Student>();
+                await connection.ExecuteAsync(
+                    @"Insert into StudentRestriction values (@studentId1, @studentId2);",
+                    new { studentId1 = StudentId1, studentId2 = StudentId2 }
+                );
             }
-            if (Student2.Restrictions == null)
-            {
-                Student2.Restrictions = new List<Student>();
-            }
-            // Student1.Restrictions.Add(Student2);
-            // Student2.Restrictions.Add(Student1);
-            //TODO: Update database to include student restrictions
         }
 
     }

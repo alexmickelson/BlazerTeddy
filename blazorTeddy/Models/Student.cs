@@ -16,7 +16,7 @@ namespace TeddyBlazor.Models
         public IEnumerable<Note> Notes { get; set; } = new Note[0];
 
         [Write(false)]
-        public IEnumerable<Student> Restrictions { get; set; } = new Student[0];
+        public IEnumerable<int> Restrictions { get; set; } = new int[0];
 
         [Write(false)]
         public bool StoredInDatabase { get => StudentId != default(int);}
