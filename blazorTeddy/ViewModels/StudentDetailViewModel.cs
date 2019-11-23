@@ -23,8 +23,7 @@ namespace TeddyBlazor.ViewModels
 
         public async Task LoadStudentAsync(int studentId)
         {
-            await StudentRepository.InitializeStudentsAsync();
-            Student = StudentRepository.Get(studentId);
+            Student = await StudentRepository.GetStudentAsync(studentId);
         }
 
         public IEnumerable<Note> GetNotes()

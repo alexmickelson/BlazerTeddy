@@ -3,11 +3,11 @@
 --first tier
 CREATE TABLE Student (
     StudentId SERIAL PRIMARY KEY,
-    Name text
+    StudentName text
 );
 CREATE TABLE Teacher(
     TeacherId SERIAL PRIMARY KEY,
-    Name text
+    TeacherName text
 );
 CREATE TABLE ClassRoom(
     ClassRoomId SERIAL PRIMARY KEY,

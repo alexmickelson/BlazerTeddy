@@ -23,60 +23,74 @@ namespace TeddyBlazor.Services {
         {
             students = new List<Student>();
             GetDbConnection = getDbConnection;
+            
         }
-        public async Task InitializeStudentsAsync()
+        public async Task UpdateStudentsAsync()
         {
             using (var dbConnection = GetDbConnection())
             {
-                var multipleResults =  await dbConnection.QueryMultipleAsync(SqlStrings.GetStudents);
-                students = multipleResults.Read<Student>().ToList();
-                var courses  = multipleResults.Read<Course>().ToList();
+                students = (await dbConnection.QueryAsync<Student>(
+                    @"SELECT * FROM Student")).ToList();
+                var notes = (await dbConnection.QueryAsync<Note>(
+                    @"SELECT * FROM Note"));
+                foreach (var student in students)
+                {
+                    student.Notes = notes.Where(n => n.StudentId == student.StudentId);
+                }
+
             }
         }
-        public async Task UpdateDatabaseAsync()
+
+        public async Task SaveChangesAsync()
         {
-            //get latest student list
-            var dbStudents = new List<Student>();
             using (var dbConnection = GetDbConnection())
             {
-
-            }
-            foreach (var student in students)
-            {
-                //if student did not previously exist, add
-
-                //else if different update name
-
-                //update student notes
-                //update student restrictions
-                //update course relationship
-                
+                foreach (var student in students)
+                {
+                    if (student.StoredInDatabase)
+                    {
+                        await UpdateStudentToDb(dbConnection, student);
+                    }
+                    else
+                    {
+                        student.StudentId = await AddStudentToDb(dbConnection, student);
+                    }
+                }
             }
         }
 
-        public List<Student> GetList()
+        private static async Task UpdateStudentToDb(IDbConnection dbConnection, Student student)
         {
-            var t = InitializeStudentsAsync();
+            await dbConnection.ExecuteAsync(
+                @"UPDATE Student SET StudentName='@studentName' WHERE StudentId=@id;",
+                new { studentName = student.StudentName, id = student.StudentId });
+        }
+
+        private static async Task<int> AddStudentToDb(IDbConnection dbConnection, Student student)
+        {
+            return await dbConnection.QueryFirstAsync<int>(
+                @"INSERT INTO Student (StudentName) Values (@studentName) RETURNING StudentId;",
+                new { studentName = student.StudentName });
+        }
+
+        public async Task<List<Student>> GetListAsync()
+        {
+            await UpdateStudentsAsync();
             return students;
         }
 
         public async Task<Student> GetStudentAsync(int id)
         {
-            await InitializeStudentsAsync();
+            await UpdateStudentsAsync();
             return students.FirstOrDefault(s => s.StudentId == id);
         }
 
-        public Student Get(int StudentId)
-        {
-            var s = students.FirstOrDefault(s => s.StudentId == StudentId);
-            return s;
-        }
-
-        public void Add(Student Student)
+        public async Task AddAsync(Student Student)
         {
             students.Add(Student);
+            await SaveChangesAsync();
+            
         }
-
 
         public async Task AddNoteAsync(Student student, Note note)
         {
@@ -86,19 +100,16 @@ namespace TeddyBlazor.Services {
             }
             using(var dbConnection = GetDbConnection())
             {
-                dbConnection.Execute(
-                    "insert into Note(Content, StudentId) values (@content, @studentId)",
+                note.NoteId = await dbConnection.QueryFirstAsync<int>(
+                    "insert into Note (Content, StudentId) values (@content, @studentId) RETURNING NoteId;",
                     new { content = note.Content, studentId = student.StudentId });
             }
-            student.Notes.Add(note);
-            await UpdateDatabaseAsync();
-            
         }
 
         public async Task AddRestrictionAsync(int StudentId1, int StudentId2)
         {
-            var Student1 = Get(StudentId1);
-            var Student2 = Get(StudentId2);
+            var Student1 = await GetStudentAsync(StudentId1);
+            var Student2 = await GetStudentAsync(StudentId2);
             if (Student1.Restrictions == null)
             {
                 Student1.Restrictions = new List<Student>();
@@ -107,8 +118,8 @@ namespace TeddyBlazor.Services {
             {
                 Student2.Restrictions = new List<Student>();
             }
-            Student1.Restrictions.Add(Student2);
-            Student2.Restrictions.Add(Student1);
+            // Student1.Restrictions.Add(Student2);
+            // Student2.Restrictions.Add(Student1);
             //TODO: Update database to include student restrictions
         }
 

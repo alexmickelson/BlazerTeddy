@@ -13,13 +13,13 @@ namespace TeddyBlazor.Models
         public string StudentName { get; set; }
 
         [Write(false)]
-        public List<Note> Notes { get; set; } = new List<Note>();
+        public IEnumerable<Note> Notes { get; set; } = new Note[0];
 
         [Write(false)]
-        public List<Student> Restrictions { get; set; } = new List<Student>();
+        public IEnumerable<Student> Restrictions { get; set; } = new Student[0];
 
         [Write(false)]
-        public IEnumerable<Course> Courses {get; set;} = new List<Course>();
+        public bool StoredInDatabase { get => StudentId != default(int);}
         
         internal void Update(Student updated)
         {

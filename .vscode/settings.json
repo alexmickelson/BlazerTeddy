@@ -1,11 +1,6 @@
 {
     "sqltools.connections": [
         {
-            "database": "${workspaceFolder}/TeddyBlazor/ourDB.sqlite",
-            "dialect": "SQLite",
-            "name": "TeddyBlazorTeddy"
-        },
-        {
             "database": "teddy",
             "dialect": "PostgreSQL",
             "isActive": true,
@@ -13,6 +8,15 @@
             "name": "teddypostgres",
             "password": "teddy",
             "port": 5432,
+            "server": "localhost",
+            "username": "teddy"
+        },
+        {
+            "database": "teddy",
+            "dialect": "PostgreSQL",
+            "name": "teddyPostgresTests",
+            "password": "teddy",
+            "port": 5433,
             "server": "localhost",
             "username": "teddy"
         }
