@@ -6,6 +6,7 @@ using TeddyBlazor.Services;
 using TeddyBlazor.ViewModels;
 using System.Linq;
 using FluentAssertions;
+using System.Threading.Tasks;
 
 namespace Test.ViewModelTests
 {
@@ -30,7 +31,7 @@ namespace Test.ViewModelTests
                 new Student(){ StudentName="benny"},
                 new Student(){ StudentName="spencer"}
             };
-            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(TeddyBlazorlist);
+            TeddyBlazorRepoMoq.Setup(sr => sr.GetListAsync()).ReturnsAsync(TeddyBlazorlist);
 
             viewModel.NameFilter = "a";
 
@@ -40,40 +41,17 @@ namespace Test.ViewModelTests
         }
 
         [Test]
-        public void CanFilterstudentsByCourse()
-        {
-            var math = new Course(){ CourseId = 1, Name = "math"};
-            var science = new Course(){ CourseId = 2, Name = "science"};
-            var TeddyBlazorlist = new List<Student>()
-            {
-                new Student(){ StudentName="adam", Courses = new []{math}},
-                new Student(){ StudentName="benny", Courses = new []{math, science}},
-                new Student(){ StudentName="spencer", Courses = new []{science}}
-            };
-            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(TeddyBlazorlist);
-
-            viewModel.NameFilter = "";
-            viewModel.ClassIdFilter = math.CourseId;
-
-            var actual = viewModel.GetFilteredStudents();
-            actual.Count().Should().Be(2);
-            actual.First().StudentName.Should().Be("adam");
-            actual.Last().StudentName.Should().Be("benny");
-
-        }
-
-        [Test]
         public void NoFiltersSetReturnsAllstudents()
         {
             var math = new Course(){ CourseId = 1, Name = "math"};
             var science = new Course(){ CourseId = 2, Name = "science"};
-            var student1 = new Student(){ StudentName="adam", Courses = new []{math}};
-            var student2 = new Student(){ StudentName="benny", Courses = new []{math, science}};
-            var student3 = new Student(){ StudentName="spencer", Courses = new []{science}};
+            var student1 = new Student(){ StudentName="adam"};
+            var student2 = new Student(){ StudentName="benny"};
+            var student3 = new Student(){ StudentName="spencer"};
 
             var studentList = new List<Student>()
                 { student1, student2, student3 };
-            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(studentList);
+            TeddyBlazorRepoMoq.Setup(sr => sr.GetListAsync()).ReturnsAsync(studentList);
 
             var actual = viewModel.GetFilteredStudents();
             actual.Should().Contain(student1);

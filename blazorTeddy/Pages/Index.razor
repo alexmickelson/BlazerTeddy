@@ -12,7 +12,7 @@
 
     private DadJokeService dadJokeService;
     private string Joke {get;set;}
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         dadJokeService = new DadJokeService{};
         Joke = dadJokeService.GetDadJoke();

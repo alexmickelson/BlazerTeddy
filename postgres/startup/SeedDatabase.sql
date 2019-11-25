@@ -1,10 +1,10 @@
 -- SQLite
-INSERT INTO Student (Name) VALUES ('Sam');
-INSERT INTO Student (Name) VALUES ('Tim');
-INSERT INTO Student (Name) VALUES ('Spencer');
+INSERT INTO Student (StudentName) VALUES ('Sam');
+INSERT INTO Student (StudentName) VALUES ('Tim');
+INSERT INTO Student (StudentName) VALUES ('Spencer');
 
-INSERT INTO Teacher (Name) VALUES ('Bob');
-INSERT INTO Teacher (Name) VALUES ('Jim');
+INSERT INTO Teacher (TeacherName) VALUES ('Bob');
+INSERT INTO Teacher (TeacherName) VALUES ('Jim');
 
 INSERT INTO Note VALUES (1, 'A note about sam', 1);
 
