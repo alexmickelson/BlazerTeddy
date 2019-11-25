@@ -34,7 +34,7 @@ namespace TeddyBlazor
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddTransient<Func<IDbConnection>>(c => () => new NpgsqlConnection(Configuration["DBConnection"]));
-            services.AddTransient<IStudentRepository, FakeStudentRepository>();
+            services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
         }
