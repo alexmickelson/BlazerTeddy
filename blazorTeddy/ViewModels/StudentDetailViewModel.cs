@@ -57,5 +57,7 @@ namespace TeddyBlazor.ViewModels
         {
             StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
         }
+
+
     }
 }

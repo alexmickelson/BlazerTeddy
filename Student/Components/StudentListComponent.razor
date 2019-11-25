@@ -1,0 +1,27 @@
+@using Student.Models
+@using Student.Services
+@using Student.ViewModels
+
+@inject StudentListViewModel vm
+
+
+
+
+<h3>StudentList</h3>
+
+<input type="text"
+        @bind-value="vm.NameFilter" 
+        @bind-value:event="oninput"/>
+
+@foreach (var student in vm.GetFilteredStudents())
+{
+ <div class="mw-100"><a class="btn btn-secondary " href="/studentdetail/@student.StudentInfoId">@student.Name</a></div>
+}
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+    }
+}
