@@ -21,9 +21,9 @@ namespace TeddyBlazor.ViewModels
             Student = new Student();
         }
 
-        public async Task LoadStudentAsync(int studentId)
+        public void LoadStudent(int studentId)
         {
-            Student = await StudentRepository.GetStudentAsync(studentId);
+            Student = StudentRepository.GetStudent(studentId);
         }
 
         public IEnumerable<Note> GetNotes()
@@ -40,7 +40,7 @@ namespace TeddyBlazor.ViewModels
             else
             {
                 var note = new Note() { Content = NewNote };
-                StudentRepository.AddNoteAsync(Student, note);
+                StudentRepository.AddNote(Student, note);
                 errorAlert = "";
                 NewNote = "";
             }
@@ -55,7 +55,7 @@ namespace TeddyBlazor.ViewModels
 
         public void AddRestriction()
         {
-            StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
+            StudentRepository.AddRestriction(Student.StudentId, NewRestrictionId);
         }
 
 

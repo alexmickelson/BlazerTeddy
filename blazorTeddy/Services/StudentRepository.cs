@@ -25,7 +25,7 @@ namespace TeddyBlazor.Services {
             GetDbConnection = getDbConnection;
             
         }
-        public async Task UpdateStudentsAsync()
+        public void UpdateStudents()
         {
             using (var dbConnection = GetDbConnection())
             {
@@ -62,7 +62,7 @@ namespace TeddyBlazor.Services {
             return firstRestrictions.Concat(secondRestrictions);
         }
 
-        public async Task SaveChangesAsync()
+        public void SaveChanges()
         {
             using (var dbConnection = GetDbConnection())
             {
@@ -70,50 +70,50 @@ namespace TeddyBlazor.Services {
                 {
                     if (student.StoredInDatabase)
                     {
-                        await updateStudentToDb(dbConnection, student);
+                        updateStudentToDb(dbConnection, student);
                     }
                     else
                     {
-                        student.StudentId = await addStudentToDb(dbConnection, student);
+                        student.StudentId = addStudentToDb(dbConnection, student);
                     }
                 }
             }
         }
 
-        private static async Task updateStudentToDb(IDbConnection dbConnection, Student student)
+        private void updateStudentToDb(IDbConnection dbConnection, Student student)
         {
-            await dbConnection.ExecuteAsync(
+            dbConnection.Execute(
                 @"UPDATE Student SET StudentName='@studentName' WHERE StudentId=@id;",
                 new { studentName = student.StudentName, id = student.StudentId });
         }
 
-        private static async Task<int> addStudentToDb(IDbConnection dbConnection, Student student)
+        private int addStudentToDb(IDbConnection dbConnection, Student student)
         {
-            return await dbConnection.QueryFirstAsync<int>(
+            return dbConnection.QueryFirst<int>(
                 @"INSERT INTO Student (StudentName) Values (@studentName) RETURNING StudentId;",
                 new { studentName = student.StudentName });
         }
 
-        public async Task<List<Student>> GetListAsync()
+        public List<Student> GetList()
         {
-            await UpdateStudentsAsync();
+            UpdateStudents();
             return students;
         }
 
-        public async Task<Student> GetStudentAsync(int id)
+        public Student GetStudent(int id)
         {
-            await UpdateStudentsAsync();
+            UpdateStudents();
             return students.FirstOrDefault(s => s.StudentId == id);
         }
 
-        public async Task AddStudentAsync(Student Student)
+        public void AddStudent(Student Student)
         {
             students.Add(Student);
-            await SaveChangesAsync();
+            SaveChanges();
             
         }
 
-        public async Task AddNoteAsync(Student student, Note note)
+        public void AddNote(Student student, Note note)
         {
             if (student.Notes == null)
             {
@@ -121,18 +121,18 @@ namespace TeddyBlazor.Services {
             }
             using(var dbConnection = GetDbConnection())
             {
-                note.NoteId = await dbConnection.QueryFirstAsync<int>(
+                note.NoteId = dbConnection.QueryFirst<int>(
                     "insert into Note (Content, StudentId) values (@content, @studentId) RETURNING NoteId;",
                     new { content = note.Content, studentId = student.StudentId });
             }
         }
 
-        public async Task AddRestrictionAsync(int StudentId1, int StudentId2)
+        public void AddRestriction(int StudentId1, int StudentId2)
         {
-            await UpdateStudentsAsync();
+            UpdateStudents();
             using (var connection = GetDbConnection())
             {
-                await connection.ExecuteAsync(
+                connection.Execute(
                     @"Insert into StudentRestriction values (@studentId1, @studentId2);",
                     new { studentId1 = StudentId1, studentId2 = StudentId2 }
                 );

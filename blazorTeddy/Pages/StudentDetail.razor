@@ -18,7 +18,8 @@
 
 <input type="text"
        placeholder="New Note"
-       @bind="vm.NewNote" />
+       @bind-value="vm.NewNote"
+       @bind-value:event="oninput"/>
 <button class="btn btn-secondary"
         type="submit"
         @onclick="vm.AddNote">Add Note</button>
@@ -45,15 +46,14 @@
     [Parameter]
     public int id {get; set;}
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        await vm.LoadStudentAsync(id);
+        vm.LoadStudent(id);
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await OnParametersSetAsync();
+        OnParametersSet();
     }
-
 
 }

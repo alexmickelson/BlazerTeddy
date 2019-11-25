@@ -31,14 +31,10 @@ namespace TeddyBlazor
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<OurDbContext>((options) =>
-                options.UseSqlite(
-                    Configuration["DBConnection"]));
-            
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddTransient<Func<IDbConnection>>(c => () => new NpgsqlConnection(Configuration["DBConnection"]));
-            services.AddTransient<IStudentRepository, StudentRepository>();
+            services.AddTransient<IStudentRepository, FakeStudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
         }

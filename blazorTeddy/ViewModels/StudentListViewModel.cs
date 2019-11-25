@@ -24,17 +24,15 @@ namespace TeddyBlazor.ViewModels
         {
             if(ClassIdFilter > 0)
             {
-                var t = StudentRepository.GetListAsync();
-                t.Wait();
-                return t.Result
+                var students = StudentRepository.GetList();
+                return students
                     .Where(s => s.StudentName.ToLower().StartsWith(NameFilter.ToLower()));
                     //.Where(s => s.Courses.Where(c => c.CourseId == ClassIdFilter).Count() > 0);
             }
             else
             {
-                var t = StudentRepository.GetListAsync();
-                t.Wait();
-                return t.Result
+                var students = StudentRepository.GetList();
+                return students
                     .Where(s => s.StudentName.ToLower().StartsWith(NameFilter.ToLower()));
             }
         }
