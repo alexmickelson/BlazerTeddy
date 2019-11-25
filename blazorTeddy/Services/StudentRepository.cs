@@ -29,12 +29,11 @@ namespace TeddyBlazor.Services {
         {
             using (var dbConnection = GetDbConnection())
             {
-                students = (await dbConnection.QueryAsync<Student>(
-                    @"SELECT * FROM Student;")).ToList();
-                var notes = (await dbConnection.QueryAsync<Note>(
-                    @"SELECT * FROM Note;"));
-                var restrictions = (await dbConnection.QueryAsync<(int, int)>(
-                    @"SELECT * FROM StudentRestriction;"));
+                students = safeGetStudentsFromDb(dbConnection);
+                var notes = dbConnection.Query<Note>(
+                    @"SELECT * FROM Note;");
+                var restrictions = dbConnection.Query<(int, int)>(
+                    @"SELECT * FROM StudentRestriction;");
                 foreach (var student in students)
                 {
                     student.Notes = notes.Where(n => n.StudentId == student.StudentId);
@@ -42,6 +41,14 @@ namespace TeddyBlazor.Services {
                 }
 
             }
+        }
+
+        private List<Student> safeGetStudentsFromDb(IDbConnection dbConnection)
+        {
+            var studentList = dbConnection.Query<Student>(@"SELECT * FROM Student;");
+            return studentList == null
+                ? new List<Student>()
+                : studentList.ToList();
         }
 
         private static IEnumerable<int> assignRestrictions(IEnumerable<(int, int)> restrictions, int studentId)
