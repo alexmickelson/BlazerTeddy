@@ -6,11 +6,12 @@ namespace TeddyBlazor.Services
 {
     public interface IStudentRepository
     {
-        public void AddNote(Student student, Note note);
-        public List<Student> GetList();
-        public Student GetStudent(int id);
-        public void UpdateStudents();
-        public void SaveChanges();
-        public void AddRestriction(int studentId1, int studentId2);
+        public Task AddNoteAsync(Student student, Note note);
+        public Task<List<Student>> GetListAsync();
+        public Task<Student> GetStudentAsync(int id);
+        public Task UpdateStudentsAsync();
+        public Task SaveChangesAsync();
+        public Task AddRestrictionAsync(int studentId1, int studentId2);
+        public Task AddStudentAsync(Student sam);
     }
 }

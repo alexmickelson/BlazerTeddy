@@ -18,8 +18,8 @@
 
 @code {
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        vm.StudentRepository.UpdateStudents();
+        await vm.StudentRepository.UpdateStudentsAsync();
     }
 }

@@ -25,7 +25,7 @@ namespace TeddyBlazor.Services {
             GetDbConnection = getDbConnection;
             
         }
-        public void UpdateStudents()
+        public async Task UpdateStudentsAsync()
         {
             using (var dbConnection = GetDbConnection())
             {
@@ -51,7 +51,7 @@ namespace TeddyBlazor.Services {
                 : studentList.ToList();
         }
 
-        private static IEnumerable<int> assignRestrictions(IEnumerable<(int, int)> restrictions, int studentId)
+        private IEnumerable<int> assignRestrictions(IEnumerable<(int, int)> restrictions, int studentId)
         {
             var firstRestrictions = restrictions
                 .Where(r => r.Item1 == studentId)
@@ -62,7 +62,7 @@ namespace TeddyBlazor.Services {
             return firstRestrictions.Concat(secondRestrictions);
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
             using (var dbConnection = GetDbConnection())
             {
@@ -94,26 +94,19 @@ namespace TeddyBlazor.Services {
                 new { studentName = student.StudentName });
         }
 
-        public List<Student> GetList()
+        public async Task<List<Student>> GetListAsync()
         {
-            UpdateStudents();
+            await UpdateStudentsAsync();
             return students;
         }
 
-        public Student GetStudent(int id)
+        public async Task<Student> GetStudentAsync(int id)
         {
-            UpdateStudents();
+            await UpdateStudentsAsync();
             return students.FirstOrDefault(s => s.StudentId == id);
         }
 
-        public void AddStudent(Student Student)
-        {
-            students.Add(Student);
-            SaveChanges();
-            
-        }
-
-        public void AddNote(Student student, Note note)
+        public async Task AddNoteAsync(Student student, Note note)
         {
             if (student.Notes == null)
             {
@@ -127,9 +120,9 @@ namespace TeddyBlazor.Services {
             }
         }
 
-        public void AddRestriction(int StudentId1, int StudentId2)
+        public async Task AddRestrictionAsync(int StudentId1, int StudentId2)
         {
-            UpdateStudents();
+            await UpdateStudentsAsync();
             using (var connection = GetDbConnection())
             {
                 connection.Execute(
@@ -137,6 +130,12 @@ namespace TeddyBlazor.Services {
                     new { studentId1 = StudentId1, studentId2 = StudentId2 }
                 );
             }
+        }
+
+        public async Task AddStudentAsync(Student Student)
+        {
+            students.Add(Student);
+            await SaveChangesAsync();
         }
 
     }

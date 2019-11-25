@@ -13,7 +13,7 @@ namespace IntegrationTests.RepositoryTests
 {
     public class StudentRepositoryTest
     {
-        private StudentRepository studentRepository;
+        private IStudentRepository studentRepository;
 
         [SetUp]
         public void Setup()

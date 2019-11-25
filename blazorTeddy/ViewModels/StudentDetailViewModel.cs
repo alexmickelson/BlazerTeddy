@@ -21,9 +21,9 @@ namespace TeddyBlazor.ViewModels
             Student = new Student();
         }
 
-        public void LoadStudent(int studentId)
+        public async Task LoadStudentAsync(int studentId)
         {
-            Student = StudentRepository.GetStudent(studentId);
+            Student = await StudentRepository.GetStudentAsync(studentId);
         }
 
         public IEnumerable<Note> GetNotes()
@@ -31,7 +31,7 @@ namespace TeddyBlazor.ViewModels
             return Student.Notes ?? new List<Note>();
         }
 
-        public void AddNote()
+        public async Task AddNoteAsync()
         {
             if (String.IsNullOrEmpty(NewNote))
             {
@@ -40,11 +40,10 @@ namespace TeddyBlazor.ViewModels
             else
             {
                 var note = new Note() { Content = NewNote };
-                StudentRepository.AddNote(Student, note);
+                await StudentRepository.AddNoteAsync(Student, note);
                 errorAlert = "";
                 NewNote = "";
             }
-            LoadStudent(Student.StudentId);
         }
 
 
@@ -54,9 +53,9 @@ namespace TeddyBlazor.ViewModels
             return Student.Restrictions ?? new int[0];
         }
 
-        public void AddRestriction()
+        public async Task AddRestrictionAsync()
         {
-            StudentRepository.AddRestriction(Student.StudentId, NewRestrictionId);
+            await StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
         }
 
 

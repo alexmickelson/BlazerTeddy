@@ -22,7 +22,7 @@
        @bind-value:event="oninput"/>
 <button class="btn btn-secondary"
         type="submit"
-        @onclick="vm.AddNote">Add Note</button>
+        @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">Add Note</button>
 <div class="text-danger">@vm.errorAlert</div>
 
 
@@ -39,21 +39,26 @@
        @bind="vm.NewRestrictionId" />
 <button class="btn btn-secondary"
         type="submit"
-        @onclick="vm.AddRestriction">Add Note</button>
+        @onclick="(() => runAndReloadAsync(async () => await vm.AddRestrictionAsync()))">Add Note</button>
 
 
 @code {
     [Parameter]
     public int id {get; set;}
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        vm.LoadStudent(id);
+        await vm.LoadStudentAsync(id);
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        OnParametersSet();
+    }
+
+    private async Task runAndReloadAsync(Action action)
+    {
+        await Task.Run(action); 
+        await vm.LoadStudentAsync(id);
     }
 
 }

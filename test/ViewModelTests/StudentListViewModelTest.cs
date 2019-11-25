@@ -31,7 +31,7 @@ namespace Test.ViewModelTests
                 new Student(){ StudentName="benny"},
                 new Student(){ StudentName="spencer"}
             };
-            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(TeddyBlazorlist);
+            TeddyBlazorRepoMoq.Setup(sr => sr.GetListAsync()).ReturnsAsync(TeddyBlazorlist);
 
             viewModel.NameFilter = "a";
 
@@ -51,7 +51,7 @@ namespace Test.ViewModelTests
 
             var studentList = new List<Student>()
                 { student1, student2, student3 };
-            TeddyBlazorRepoMoq.Setup(sr => sr.GetList()).Returns(studentList);
+            TeddyBlazorRepoMoq.Setup(sr => sr.GetListAsync()).ReturnsAsync(studentList);
 
             var actual = viewModel.GetFilteredStudents();
             actual.Should().Contain(student1);
