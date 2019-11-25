@@ -44,6 +44,7 @@ namespace TeddyBlazor.ViewModels
                 errorAlert = "";
                 NewNote = "";
             }
+            LoadStudent(Student.StudentId);
         }
 
 
