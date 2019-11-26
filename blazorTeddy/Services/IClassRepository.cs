@@ -11,5 +11,8 @@ namespace TeddyBlazor.Services
         Task<ClassRoom> GetClassRoomAsync(int classRoomId);
         Task AddTeacherAsync(Teacher teacher);
         Task<Teacher> GetTeacherAsync(int teacherId);
+        Task UpdateClassRoomAsync(ClassRoom classRoom);
+        Task UpdateTeacherAsync(Teacher teacher);
+        Task UpdateClassAsync(ClassModel classModel);
     }
 }

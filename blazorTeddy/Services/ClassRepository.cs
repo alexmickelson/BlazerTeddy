@@ -19,32 +19,107 @@ namespace TeddyBlazor.Services
 
         public async Task AddClassAsync(ClassModel classModel)
         {
-            await validateStudentIds(classModel);
-            await validateClassRoomSize(classModel);
-            await storeClassInDb(classModel);
+            using (var dbConnection = getDbConnection())
+            {
+                await validateStudentIds(classModel, dbConnection);
+                await validateClassRoomSize(classModel, dbConnection);
+                await storeClassInDb(classModel, dbConnection);
+                await storeSeatingChartInDb(classModel, dbConnection);
+            }
         }
 
-        private async Task validateClassRoomSize(ClassModel classModel)
+        public async Task UpdateClassAsync(ClassModel classModel)
         {
-            using(var dbConnection = getDbConnection())
+            using (var dbConnection = getDbConnection())
             {
-                var classRoom = await dbConnection.QueryFirstAsync<ClassRoom>(
-                    @"select * from ClassRoom
-                    where ClassRoomId = @classRoomId",
-                    new { classRoomId = classModel.ClassRoomId }
-                );
-                if (!sameDimensions(classModel, classRoom))
-                {
-                    var exceptionString = String.Format(
-                        "cannot save seating chart {0},{1} in classroom with dimensions {2},{3}",
-                        classModel.SeatingChartByStudentID.GetLength(0),
-                        classModel.SeatingChartByStudentID.GetLength(1),
-                        classRoom.SeatsHorizontally,
-                        classRoom.SeatsVertically);
-                    throw new ArgumentException(exceptionString);
-                };
-
+                await validateStudentIds(classModel, dbConnection);
+                await validateClassRoomSize(classModel, dbConnection);
+                await UpdateClassInDb(classModel, dbConnection);
+                await storeSeatingChartInDb(classModel, dbConnection);
             }
+        }
+
+        private async Task UpdateClassInDb(ClassModel classModel, IDbConnection dbConnection)
+        {
+            await dbConnection.ExecuteAsync(
+                @"update ClassModel set 
+                    TeacherId   = @teacherId,
+                    ClassRoomId = @classRoomId,
+                    ClassName   = @className
+                where ClassId = @ClassId",
+                classModel
+            );
+        }
+
+        private async Task storeSeatingChartInDb(ClassModel classModel, IDbConnection dbConnection)
+        {
+            var seatingAssigments = exctractSeatingAssigments(classModel);
+            await deleteOldAssignmentsFromDb(classModel, dbConnection);
+            await insertNewAssigmentsFromDb(dbConnection, seatingAssigments);
+        }
+
+        private async Task insertNewAssigmentsFromDb(IDbConnection dbConnection, List<SeatingAssigment> seatingAssigments)
+        {
+            await dbConnection.ExecuteAsync(
+                @"insert into SeatingAssignment values 
+                (@ClassId, @StudentId, @HorizontalCoordinate, @VerticalCoordinate);",
+                seatingAssigments
+            );
+        }
+
+        private async Task deleteOldAssignmentsFromDb(ClassModel classModel, IDbConnection dbConnection)
+        {
+            await dbConnection.ExecuteAsync(
+                @"delete from SeatingAssignment
+                where ClassId = @ClassId",
+                classModel
+            );
+        }
+
+        private List<SeatingAssigment> exctractSeatingAssigments(ClassModel classModel)
+        {
+            var seatingAssigments = new List<SeatingAssigment>();
+            for (int i = 0; i < classModel.SeatingChartByStudentID.GetLength(0); i++)
+            {
+                for (int j = 0; j < classModel.SeatingChartByStudentID.GetLength(0); j++)
+                {
+                    makeAssignmentIfNotEmpty(classModel, seatingAssigments, i, j);
+                }
+            }
+            return seatingAssigments;
+        }
+
+        private void makeAssignmentIfNotEmpty(ClassModel classModel, List<SeatingAssigment> seatingAssigments, int i, int j)
+        {
+            if (classModel.SeatingChartByStudentID[i, j] != default(int))
+            {
+                seatingAssigments.Add(new SeatingAssigment()
+                {
+                    ClassId = classModel.ClassId,
+                    StudentId = classModel.SeatingChartByStudentID[i, j],
+                    HorizontalCoordinate = i,
+                    VerticalCoordinate = j
+                });
+            }
+        }
+
+        private async Task validateClassRoomSize(ClassModel classModel, IDbConnection dbConnection)
+        {
+            var classRoom = await dbConnection.QueryFirstAsync<ClassRoom>(
+                @"select * from ClassRoom
+                where ClassRoomId = @classRoomId",
+                new { classRoomId = classModel.ClassRoomId }
+            );
+            if (!sameDimensions(classModel, classRoom))
+            {
+                var exceptionString = String.Format(
+                    "cannot save seating chart {0},{1} in classroom with dimensions {2},{3}",
+                    classModel.SeatingChartByStudentID.GetLength(0),
+                    classModel.SeatingChartByStudentID.GetLength(1),
+                    classRoom.SeatsHorizontally,
+                    classRoom.SeatsVertically);
+                throw new ArgumentException(exceptionString);
+            };
         }
 
         private static bool sameDimensions(ClassModel classModel, ClassRoom classRoom)
@@ -53,37 +128,31 @@ namespace TeddyBlazor.Services
                 && classModel.SeatingChartByStudentID.GetLength(1) == classRoom.SeatsVertically;
         }
 
-        private async Task storeClassInDb(ClassModel classModel)
+        private async Task storeClassInDb(ClassModel classModel, IDbConnection dbConnection)
         {
-            using (var dbConnection = getDbConnection())
-            {
-                classModel.ClassId = await dbConnection.QueryFirstAsync<int>(
-                    @"insert into ClassModel (TeacherId, ClassRoomId, ClassName) 
-                    values (@teacherId, @classRoomId, @className)
-                    RETURNING ClassId;",
-                    new
-                    {
-                        teacherId = classModel.TeacherId,
-                        classRoomId = classModel.ClassRoomId,
-                        className = classModel.ClassName
-                    }
-                );
-            }
+            classModel.ClassId = await dbConnection.QueryFirstAsync<int>(
+                @"insert into ClassModel (TeacherId, ClassRoomId, ClassName) 
+                values (@teacherId, @classRoomId, @className)
+                RETURNING ClassId;",
+                new
+                {
+                    teacherId = classModel.TeacherId,
+                    classRoomId = classModel.ClassRoomId,
+                    className = classModel.ClassName
+                }
+            );
         }
 
-        private async Task validateStudentIds(ClassModel classModel)
+        private async Task validateStudentIds(ClassModel classModel, IDbConnection dbConnection)
         {
-            using (var dbConnection = getDbConnection())
+            var studentIds = await dbConnection.QueryAsync<int>(
+                @"select StudentId from Student;"
+            );
+            foreach (var studentId in classModel.SeatingChartByStudentID)
             {
-                var studentIds = await dbConnection.QueryAsync<int>(
-                    @"select StudentId from Student;"
-                );
-                foreach (var studentId in classModel.SeatingChartByStudentID)
+                if (!studentIdIsValid(studentIds, studentId))
                 {
-                    if (!studentIdIsValid(studentIds, studentId))
-                    {
-                        throw new ArgumentException($"cannot assign seat, no student with id {studentId}");
-                    }
+                    throw new ArgumentException($"cannot assign seat, no student with id {studentId}");
                 }
             }
         }
@@ -101,11 +170,12 @@ namespace TeddyBlazor.Services
                     @"insert into ClassRoom (ClassRoomName, SeatsHorizontally, SeatsVertically)
                     values (@classRoomName, @seatsHorizontally, @seatsVertically) 
                     returning ClassRoomId;",
-                    new { 
-                        classRoomName = classRoom.ClassRoomName,
-                        seatsHorizontally = classRoom.SeatsHorizontally,
-                        seatsVertically = classRoom.SeatsVertically
-                    }
+                    classRoom
+                    // new { 
+                    //     classRoomName = classRoom.ClassRoomName,
+                    //     seatsHorizontally = classRoom.SeatsHorizontally,
+                    //     seatsVertically = classRoom.SeatsVertically
+                    // }
                 );
             }
         }
@@ -118,7 +188,7 @@ namespace TeddyBlazor.Services
                     @"insert into Teacher (TeacherName)
                     values (@teacherName) 
                     returning TeacherId;",
-                    new { teacherName = teacher.TeacherName }
+                    teacher
                 );
             }
         }
@@ -127,12 +197,42 @@ namespace TeddyBlazor.Services
         {
             using (var dbConnection = getDbConnection())
             {
-                return await dbConnection.QueryFirstAsync<ClassModel>(
-                    @"select * from ClassModel
-                    where ClassId = @classId",
-                    new { classId = classId}
-                );
+                var classModel = await getClassFromDbAsync(classId, dbConnection);
+                classModel.SeatingChartByStudentID = await getSeatingChartFromDbAsync(classModel.ClassId, dbConnection);
+                return classModel;
             }
+        }
+
+        private async Task<int[,]> getSeatingChartFromDbAsync(int classId, IDbConnection dbConnection)
+        {
+            var seatingAssigments = await dbConnection.QueryAsync<SeatingAssigment>(
+                @"select * from SeatingAssignment
+                where ClassId = @classid",
+                new {classId}
+            );
+            if(seatingAssigments.Count() == 0)
+            {
+                return new int[0,0];
+            }
+            var horizontalSize = seatingAssigments.Max(sa => sa.HorizontalCoordinate) + 1;
+            var verticalSize = seatingAssigments.Max(sa => sa.VerticalCoordinate) + 1;
+            var seatingChart = new int[horizontalSize, verticalSize];
+
+            foreach (var assignment in seatingAssigments)
+            {
+                seatingChart[assignment.HorizontalCoordinate, assignment.VerticalCoordinate] = assignment.StudentId;
+            }
+            
+            return seatingChart;
+        }
+
+        private static async Task<ClassModel> getClassFromDbAsync(int classId, IDbConnection dbConnection)
+        {
+            return await dbConnection.QueryFirstAsync<ClassModel>(
+                @"select * from ClassModel
+                    where ClassId = @classId",
+                new { classId }
+            );
         }
 
         public async Task<ClassRoom> GetClassRoomAsync(int classRoomId)
@@ -142,7 +242,7 @@ namespace TeddyBlazor.Services
                 return await dbConnection.QueryFirstAsync<ClassRoom>(
                     @"select * from ClassRoom
                     where ClassRoomId = @classRoomId",
-                    new { classRoomId = classRoomId }
+                    new { classRoomId }
                 );
             }
         }
@@ -154,7 +254,34 @@ namespace TeddyBlazor.Services
                 return await dbConnection.QueryFirstAsync<Teacher>(
                     @"select * from Teacher
                     where TeacherId = @teacherId",
-                    new { teacherId = teacherId}
+                    new { teacherId }
+                );
+            }
+        }
+
+        public async Task UpdateClassRoomAsync(ClassRoom classRoom)
+        {
+            using(var dbConnection = getDbConnection())
+            {
+                await dbConnection.ExecuteAsync(
+                    @"update Classroom set 
+                        ClassRoomName     = @ClassRoomName,
+                        SeatsHorizontally = @SeatsHorizontally,
+                        SeatsVertically   = @SeatsVertically
+                    where ClassRoomId = @ClassRoomId",
+                    classRoom
+                );
+            }
+        }
+
+        public async Task UpdateTeacherAsync(Teacher teacher)
+        {
+            using(var dbConnection = getDbConnection())
+            {
+                await dbConnection.ExecuteAsync(
+                    @"update Teacher set TeacherName = @TeacherName
+                    where TeacherId = @TeacherId;",
+                    teacher
                 );
             }
         }

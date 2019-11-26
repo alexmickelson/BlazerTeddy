@@ -41,8 +41,8 @@ CREATE TABLE StudentRestriction (
 CREATE TABLE SeatingAssignment(
     ClassId integer REFERENCES ClassModel(ClassId),
     StudentId integer REFERENCES Student(StudentId),
-    xSeatCoordinate integer,
-    ySeatCoordinate integer
+    HorizontalCoordinate integer,
+    VerticalCoordinate integer
 );
 CREATE TABLE StudentCourse(
     StudentId integer REFERENCES Student(StudentId),

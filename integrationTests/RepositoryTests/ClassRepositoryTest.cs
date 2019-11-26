@@ -50,7 +50,7 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_add_teacher()
         {
-            var teacher = new Teacher(){ TeacherName = "Science Room" };
+            var teacher = new Teacher(){ TeacherName = "jonathan" };
 
             await classRepository.AddTeacherAsync(teacher);
 
@@ -122,10 +122,14 @@ namespace IntegrationTests.RepositoryTests
                 SeatsVertically = 3
             };
             var teacher = new Teacher(){ TeacherName = "jonathan" };
-            var student = new Student(){ StudentName = "sam"};
+            var student1 = new Student(){ StudentName = "sam"};
+            var student2 = new Student(){ StudentName = "ben"};
+            var student3 = new Student(){ StudentName = "tim"};
             await classRepository.AddClassRoomAsync(classRoom);
             await classRepository.AddTeacherAsync(teacher);
-            await studentRepository.AddStudentAsync(student);
+            await studentRepository.AddStudentAsync(student1);
+            await studentRepository.AddStudentAsync(student2);
+            await studentRepository.AddStudentAsync(student3);
             var classModel = new ClassModel()
             {
                 ClassName = "math",
@@ -134,14 +138,18 @@ namespace IntegrationTests.RepositoryTests
             };
 
             classModel.SeatingChartByStudentID = new int[3,3];
-            classModel.SeatingChartByStudentID[1,1] = student.StudentId;
+            classModel.SeatingChartByStudentID[1,1] = student1.StudentId;
+            classModel.SeatingChartByStudentID[2,2] = student2.StudentId;
+            classModel.SeatingChartByStudentID[2,0] = student3.StudentId;
 
             await classRepository.AddClassAsync(classModel);
 
-            var newClass = classRepository.GetClassAsync(classModel.ClassId);
+            var newClass = await classRepository.GetClassAsync(classModel.ClassId);
 
-            classModel.SeatingChartByStudentID[1,1].Should().Be(student.StudentId);
-            classModel.SeatingChartByStudentID[0,0].Should().Be(default(int));
+            newClass.SeatingChartByStudentID[1,1].Should().Be(student1.StudentId);
+            newClass.SeatingChartByStudentID[2,2].Should().Be(student2.StudentId);
+            newClass.SeatingChartByStudentID[2,0].Should().Be(student3.StudentId);
+            newClass.SeatingChartByStudentID[0,0].Should().Be(default(int));
         }
 
         [Test]
@@ -175,5 +183,78 @@ namespace IntegrationTests.RepositoryTests
                 .ThrowAsync<ArgumentException>()
                 .WithMessage("cannot save seating chart 3,3 in classroom with dimensions 2,1");
         }
+
+        [Test]
+        public async Task can_update_classroom()
+        {
+            var classRoom = new ClassRoom()
+            { 
+                ClassRoomName = "Science Room",
+                SeatsHorizontally = 4,
+                SeatsVertically = 5
+            };
+            await classRepository.AddClassRoomAsync(classRoom);
+
+            classRoom.ClassRoomName = "not the science room";
+
+            await classRepository.UpdateClassRoomAsync(classRoom);
+
+            classRoom.ClassRoomId.Should().NotBe(default(int));
+            var newClassRoom = await classRepository.GetClassRoomAsync(classRoom.ClassRoomId);
+            newClassRoom.ClassRoomName.Should().Be(classRoom.ClassRoomName);
+            newClassRoom.SeatsHorizontally.Should().Be(classRoom.SeatsHorizontally);
+            newClassRoom.SeatsVertically.Should().Be(classRoom.SeatsVertically);
+            
+        }
+        
+        [Test]
+        public async Task can_update_teacher()
+        {
+            var teacher = new Teacher(){ TeacherName = "jonathan" };
+            await classRepository.AddTeacherAsync(teacher);
+            teacher.TeacherName = "heber";
+            
+            await classRepository.UpdateTeacherAsync(teacher);
+            var newTeacher = await classRepository.GetTeacherAsync(teacher.TeacherId);
+
+            newTeacher.TeacherName.Should().Be(teacher.TeacherName);
+        }
+
+        [Test]
+        public async Task can_update_class()
+        {
+            var studentRepository = new StudentRepository(getDbConnection);
+            var classRoom = new ClassRoom()
+            { 
+                ClassRoomName = "Science Room",
+                SeatsHorizontally = 3,
+                SeatsVertically = 3
+            };
+            var teacher = new Teacher(){ TeacherName = "jonathan" };
+            var student = new Student(){ StudentName = "sam"};
+            await classRepository.AddClassRoomAsync(classRoom);
+            await classRepository.AddTeacherAsync(teacher);
+            await studentRepository.AddStudentAsync(student);
+            var classModel = new ClassModel()
+            {
+                ClassName = "math",
+                TeacherId = teacher.TeacherId,
+                ClassRoomId = classRoom.ClassRoomId
+            };
+            classModel.SeatingChartByStudentID = new int[3,3];
+            classModel.SeatingChartByStudentID[1,1] = student.StudentId;
+            await classRepository.AddClassAsync(classModel);
+
+            classModel.SeatingChartByStudentID[0,0] = student.StudentId;
+            classModel.SeatingChartByStudentID[1,1] = default(int);
+
+            await classRepository.UpdateClassAsync(classModel);
+
+            var newClass = classRepository.GetClassAsync(classModel.ClassId);
+
+            classModel.SeatingChartByStudentID[0,0].Should().Be(student.StudentId);
+            classModel.SeatingChartByStudentID[1,1].Should().Be(default(int));
+        }
+
     }
 }
