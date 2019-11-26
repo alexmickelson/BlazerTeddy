@@ -11,11 +11,14 @@ CREATE TABLE Teacher(
 );
 CREATE TABLE ClassRoom(
     ClassRoomId SERIAL PRIMARY KEY,
-    ClassRoomName text
+    ClassRoomName text,
+    SeatsHorizontally integer,
+    SeatsVertically integer
 );
 --second tier
-CREATE TABLE Class(
+CREATE TABLE ClassModel(
     ClassId SERIAL PRIMARY KEY,
+    ClassName text,
     TeacherId integer REFERENCES Teacher(TeacherId),
     ClassRoomId integer REFERENCES ClassRoom(ClassRoomId)
 );
@@ -36,7 +39,7 @@ CREATE TABLE StudentRestriction (
 
 --third tier
 CREATE TABLE SeatingAssignment(
-    ClassId integer REFERENCES Class(ClassId),
+    ClassId integer REFERENCES ClassModel(ClassId),
     StudentId integer REFERENCES Student(StudentId),
     xSeatCoordinate integer,
     ySeatCoordinate integer

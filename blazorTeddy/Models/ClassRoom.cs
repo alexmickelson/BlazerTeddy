@@ -10,7 +10,8 @@ namespace TeddyBlazor.Models
     {
 
         public int ClassRoomId{ get; set; }
-        public int[,] SeatingChartByStudentID { get; set; }
         public string ClassRoomName { get; set; }
+        public int SeatsHorizontally { get; set; }
+        public int SeatsVertically { get; set; }
     }
 }
