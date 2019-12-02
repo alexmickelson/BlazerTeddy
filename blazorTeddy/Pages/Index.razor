@@ -1,0 +1,20 @@
+﻿@page "/"
+@using TeddyBlazor.Services
+@using TeddyBlazor.Components
+
+<h1>Welcome to the Teacher's Lounge</h1>
+
+<h3 class="jumbotron centered" >@Joke</h3>
+
+
+
+@code {
+
+    private DadJokeService dadJokeService;
+    private string Joke {get;set;}
+    protected override void OnInitialized()
+    {
+        dadJokeService = new DadJokeService{};
+        Joke = dadJokeService.GetDadJoke();
+    }
+}

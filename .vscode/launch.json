@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Student/bin/Debug/netcoreapp3.0/Student.dll",
+            "program": "${workspaceFolder}/blazorTeddy/bin/Debug/netcoreapp3.0/TeddyBlazor.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Student",
+            "cwd": "${workspaceFolder}/blazorTeddy",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",

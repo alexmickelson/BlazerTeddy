@@ -1,0 +1,64 @@
+@page "/StudentDetail/{id:int}"
+
+@using TeddyBlazor.Services
+@using TeddyBlazor.Models
+@using TeddyBlazor.Components
+@using TeddyBlazor.ViewModels
+
+@inject StudentDetailViewModel vm
+
+<h1>@vm.Student.StudentName</h1>
+<br/>
+<h3>Notes:</h3>
+
+@foreach (var note in vm.GetNotes())
+{
+    <p>@note.Content</p>
+}
+
+<input type="text"
+       placeholder="New Note"
+       @bind-value="vm.NewNote"
+       @bind-value:event="oninput"/>
+<button class="btn btn-secondary"
+        type="submit"
+        @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">Add Note</button>
+<div class="text-danger">@vm.errorAlert</div>
+
+
+<br/>
+<h3>Restrictions:</h3>
+<ul>
+    @foreach(var restriction in vm.GetRestrictions())
+    {
+        <li>@restriction</li>
+    }
+</ul>
+
+<input type="number"
+       @bind="vm.NewRestrictionId" />
+<button class="btn btn-secondary"
+        type="submit"
+        @onclick="(() => runAndReloadAsync(async () => await vm.AddRestrictionAsync()))">Add Note</button>
+
+
+@code {
+    [Parameter]
+    public int id {get; set;}
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await vm.LoadStudentAsync(id);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task runAndReloadAsync(Action action)
+    {
+        await Task.Run(action); 
+        await vm.LoadStudentAsync(id);
+    }
+
+}
