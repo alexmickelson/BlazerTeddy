@@ -6,45 +6,74 @@
 @using TeddyBlazor.ViewModels
 
 @inject StudentDetailViewModel vm
+<div class="maincanvas">
+    <h1>@vm.Student.Name</h1>
+    <br />
+    <h3>Notes:</h3>
+    <div class="notes">
 
-<h1>@vm.Student.StudentName</h1>
-<br/>
-<h3>Notes:</h3>
+        <div class="notes-item1">
+            <h1>Positives</h1>
+            <div class="jumbotron centered">
+                @foreach (var note in vm.GetNotes())
+                {
+                    <p>@note.Content</p>
+                }
+            </div>
 
-@foreach (var note in vm.GetNotes())
-{
-    <p>@note.Content</p>
-}
+            <input type="text"
+                   placeholder="New Note"
+                   @bind="vm.NewNote" />
+            <button class="btn btn-secondary"
+                    type="submit"
+                    @onclick="vm.AddNote">
+                Add Note
+            </button>
+            <br />
+            <input type="radio" name="SignIt" value="Sign it?" checked />Sign it
+            <input type="radio" name="SignIt" value="Dont sign it?" />Dont sign it
+            <div class="text-danger">@vm.errorAlert</div>
+        </div>
+        <div class="note-item2">
+            <h1>Negatives</h1>
+            <div class="jumbotron centered">
+                @foreach (var note in vm.GetNotes())
+                {
+                    <p>@note.Content</p>
+                }
+            </div>
+            <input type="text"
+                   placeholder="New Note"
+                   @bind="vm.NewNote" />
+            <button class="btn btn-secondary"
+                    type="submit"
+                    @onclick="vm.AddNote">
+                Add Note
+            </button>
+            <br />
+        </div>
+    </div>
+    <br />
+    <h3>Restrictions:</h3>
+    <ul class="jumbotron centered">
+        @foreach (var restriction in vm.GetRestrictions())
+        {
+            <li>@restriction.Name</li>
+        }
+    </ul>
 
-<input type="text"
-       placeholder="New Note"
-       @bind-value="vm.NewNote"
-       @bind-value:event="oninput"/>
-<button class="btn btn-secondary"
-        type="submit"
-        @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">Add Note</button>
-<div class="text-danger">@vm.errorAlert</div>
-
-
-<br/>
-<h3>Restrictions:</h3>
-<ul>
-    @foreach(var restriction in vm.GetRestrictions())
-    {
-        <li>@restriction</li>
-    }
-</ul>
-
-<input type="number"
-       @bind="vm.NewRestrictionId" />
-<button class="btn btn-secondary"
-        type="submit"
-        @onclick="(() => runAndReloadAsync(async () => await vm.AddRestrictionAsync()))">Add Note</button>
-
+    <input type="number"
+           @bind="vm.NewRestrictionId" />
+    <button class="btn btn-secondary"
+            type="submit"
+            @onclick="vm.AddRestriction">
+        Add Restriction
+    </button>
+</div>
 
 @code {
     [Parameter]
-    public int id {get; set;}
+    public int id { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -57,7 +86,7 @@
 
     private async Task runAndReloadAsync(Action action)
     {
-        await Task.Run(action); 
+        await Task.Run(action);
         await vm.LoadStudentAsync(id);
     }
 
