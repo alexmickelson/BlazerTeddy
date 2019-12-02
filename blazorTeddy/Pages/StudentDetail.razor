@@ -7,7 +7,7 @@
 
 @inject StudentDetailViewModel vm
 <div class="maincanvas">
-    <h1>@vm.Student.Name</h1>
+    <h1>@vm.Student.StudentName</h1>
     <br />
     <h3>Notes:</h3>
     <div class="notes">
@@ -26,7 +26,7 @@
                    @bind="vm.NewNote" />
             <button class="btn btn-secondary"
                     type="submit"
-                    @onclick="vm.AddNote">
+                    @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
                 Add Note
             </button>
             <br />
@@ -47,7 +47,7 @@
                    @bind="vm.NewNote" />
             <button class="btn btn-secondary"
                     type="submit"
-                    @onclick="vm.AddNote">
+                    @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
                 Add Note
             </button>
             <br />
@@ -58,7 +58,7 @@
     <ul class="jumbotron centered">
         @foreach (var restriction in vm.GetRestrictions())
         {
-            <li>@restriction.Name</li>
+            <li>@restriction</li>
         }
     </ul>
 
@@ -66,7 +66,7 @@
            @bind="vm.NewRestrictionId" />
     <button class="btn btn-secondary"
             type="submit"
-            @onclick="vm.AddRestriction">
+            @onclick="(() => runAndReloadAsync(async () => await vm.AddRestrictionAsync()))">
         Add Restriction
     </button>
 </div>
