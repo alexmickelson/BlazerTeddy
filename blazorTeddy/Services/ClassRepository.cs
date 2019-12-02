@@ -87,8 +87,8 @@ namespace TeddyBlazor.Services
         private async Task storeSeatingChartInDb(ClassModel classModel, IDbConnection dbConnection)
         {
             var seatingAssigments = exctractSeatingAssigments(classModel);
-            await deleteOldAssignmentsFromDb(classModel, dbConnection);
-            await insertNewAssigmentsFromDb(dbConnection, seatingAssigments);
+            await deleteOldSeatingAssignmentsFromDb(classModel, dbConnection);
+            await insertNewSeatingAssigmentsFromDb(dbConnection, seatingAssigments);
         }
 
         private List<SeatingAssigment> exctractSeatingAssigments(ClassModel classModel)
@@ -103,7 +103,7 @@ namespace TeddyBlazor.Services
             }
             return seatingAssigments;
         }
-        private async Task deleteOldAssignmentsFromDb(ClassModel classModel, IDbConnection dbConnection)
+        private async Task deleteOldSeatingAssignmentsFromDb(ClassModel classModel, IDbConnection dbConnection)
         {
             await dbConnection.ExecuteAsync(
                 @"delete from SeatingAssignment
@@ -112,8 +112,8 @@ namespace TeddyBlazor.Services
             );
         }
 
-        private async Task insertNewAssigmentsFromDb(IDbConnection dbConnection, List<SeatingAssigment> seatingAssigments)
-        {
+        private async Task insertNewSeatingAssigmentsFromDb(IDbConnection dbConnection, List<SeatingAssigment> seatingAssigments)
+        { 
             await dbConnection.ExecuteAsync(
                 @"insert into SeatingAssignment values 
                 (@ClassId, @StudentId, @HorizontalCoordinate, @VerticalCoordinate);",
