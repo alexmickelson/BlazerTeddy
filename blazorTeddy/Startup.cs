@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -21,6 +22,9 @@ namespace TeddyBlazor
     public class Startup
     {
         public IConfiguration Configuration { get; }
+
+        private string connectionString;
+        Func<IDbConnection> getDbConnection;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,10 +35,11 @@ namespace TeddyBlazor
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = PostgresUrlParser.ParseConnectionString(Configuration["DATABASE_URL"]);
+            connectionString = PostgresUrlParser.ParseConnectionString(Configuration["DATABASE_URL"]);
+            getDbConnection = () => new NpgsqlConnection(connectionString);
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddTransient<Func<IDbConnection>>(c => () => new NpgsqlConnection(connectionString));
+            services.AddTransient<Func<IDbConnection>>(c => getDbConnection);
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
@@ -44,6 +49,7 @@ namespace TeddyBlazor
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            validateDbConnection();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,6 +68,21 @@ namespace TeddyBlazor
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+        }
+
+        private void validateDbConnection()
+        {
+            try
+            {
+                using(var dbConnection = getDbConnection())
+                {
+                    dbConnection.Execute("select * from students limit 1;");
+                }
+            }
+            catch (Npgsql.NpgsqlException)
+            {
+                throw new Npgsql.NpgsqlException($"Cannot Connect to database at connection string: '{connectionString}'");
+            }
         }
     }
 }
