@@ -279,5 +279,10 @@ namespace TeddyBlazor.Services
                 );
             }
         }
+
+        public Task<IEnumerable<ClassModel>> GetClassesByTeacherId(int teacherId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

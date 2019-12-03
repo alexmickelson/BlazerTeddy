@@ -8,17 +8,22 @@ using TeddyBlazor.Models;
 using System.Threading.Tasks;
 using FluentAssertions;
 using System.Linq;
+using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace IntegrationTests.RepositoryTests
 {
     public class StudentRepositoryTest
     {
+        private Mock<ILogger<StudentRepository>> studentLoggingMoq;
         private IStudentRepository studentRepository;
 
         [SetUp]
         public void Setup()
         {
-            studentRepository = new StudentRepository(() => new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;"));
+            studentLoggingMoq = new Mock<ILogger<StudentRepository>>();
+            studentRepository = new StudentRepository(() => new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;"),
+                                                      studentLoggingMoq.Object);
         }
 
         [TearDown]

@@ -46,6 +46,7 @@ CREATE TABLE SeatingAssignment(
 );
 CREATE TABLE StudentCourse(
     StudentId integer REFERENCES Student(StudentId),
+    ClassId integer REFERENCES ClassModel(ClassId),
     CourseId integer REFERENCES Course(CourseId)
 );
 CREATE TABLE Assignment(
