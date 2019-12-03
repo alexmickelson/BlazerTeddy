@@ -76,7 +76,7 @@ namespace TeddyBlazor
             {
                 using(var dbConnection = getDbConnection())
                 {
-                    dbConnection.Execute("select * from students limit 1;");
+                    dbConnection.Execute("select * from student limit 1;");
                 }
             }
             catch (Npgsql.NpgsqlException)
