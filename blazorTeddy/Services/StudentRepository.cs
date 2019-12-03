@@ -10,23 +10,27 @@ using TeddyBlazor.Models;
 using System.Data.SqlClient;
 using System.Data;
 using System.IO;
+using Microsoft.Extensions.Logging;
 
 namespace TeddyBlazor.Services {
 
     public class StudentRepository : IStudentRepository
     {
+        private readonly ILogger<StudentRepository> logger;
 
         private List<Student> students { get; set; }
         private Func<IDbConnection> GetDbConnection { get; }
 
-        public StudentRepository(Func<IDbConnection> getDbConnection)
+        public StudentRepository(Func<IDbConnection> getDbConnection,
+                                 ILogger<StudentRepository> logger)
         {
             students = new List<Student>();
             GetDbConnection = getDbConnection;
-            
+            this.logger = logger;
         }
         public async Task UpdateStudentsAsync()
         {
+            logger.LogInformation("Updating student list");
             using (var dbConnection = GetDbConnection())
             {
                 students = safeGetStudentsFromDb(dbConnection);
@@ -64,6 +68,7 @@ namespace TeddyBlazor.Services {
 
         public async Task SaveChangesAsync()
         {
+            logger.LogInformation("saving student list to database");
             using (var dbConnection = GetDbConnection())
             {
                 foreach (var student in students)
@@ -114,6 +119,7 @@ namespace TeddyBlazor.Services {
             }
             using(var dbConnection = GetDbConnection())
             {
+                logger.LogInformation($"adding note to database");
                 note.NoteId = dbConnection.QueryFirst<int>(
                     "insert into Note (Content, StudentId) values (@content, @studentId) RETURNING NoteId;",
                     new { content = note.Content, studentId = student.StudentId });
@@ -125,6 +131,7 @@ namespace TeddyBlazor.Services {
             await UpdateStudentsAsync();
             using (var connection = GetDbConnection())
             {
+                logger.LogInformation($"adding restriction to database");
                 connection.Execute(
                     @"Insert into StudentRestriction values (@studentId1, @studentId2);",
                     new { studentId1 = StudentId1, studentId2 = StudentId2 }
