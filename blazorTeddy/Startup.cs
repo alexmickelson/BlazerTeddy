@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Dapper;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +37,10 @@ namespace TeddyBlazor
 
              services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            // services.AddIdentity<User, IdentityRole<long>>()
+            //     .AddEntityFrameworkStores<ApplicationDbContext,long>()
+            //     .AddDefaultTokenProviders();
+            services.AddIdentityCore<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddRazorPages();
