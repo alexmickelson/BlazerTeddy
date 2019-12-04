@@ -8,18 +8,22 @@ using TeddyBlazor.Models;
 using System.Threading.Tasks;
 using FluentAssertions;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace IntegrationTests.RepositoryTests
 {
     public class ClassRepositoryTest
     {
         private Func<NpgsqlConnection> getDbConnection;
+        private Mock<ILogger<StudentRepository>> studentLoggerMoq;
         private IClassRepository classRepository;
 
         [SetUp]
         public void Setup()
         {
             getDbConnection = () => new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;");
+            studentLoggerMoq = new Mock<ILogger<StudentRepository>>();
             classRepository = new ClassRepository(getDbConnection);
         }
 
@@ -114,7 +118,7 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_save_seating_chart()
         {
-            var studentRepository = new StudentRepository(getDbConnection);
+            var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
             var classRoom = new ClassRoom()
             { 
                 ClassRoomName = "Science Room",
@@ -155,7 +159,7 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task seating_chart_must_be_valid_dimensions()
         {
-            var studentRepository = new StudentRepository(getDbConnection);
+            var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
             var classRoom = new ClassRoom()
             { 
                 ClassRoomName = "Science Room",
@@ -223,7 +227,7 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_update_class()
         {
-            var studentRepository = new StudentRepository(getDbConnection);
+            var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
             var classRoom = new ClassRoom()
             { 
                 ClassRoomName = "Science Room",
@@ -255,6 +259,67 @@ namespace IntegrationTests.RepositoryTests
             classModel.SeatingChartByStudentID[0,0].Should().Be(student.StudentId);
             classModel.SeatingChartByStudentID[1,1].Should().Be(default(int));
         }
+
+        // [Test]
+        // public async Task can_get_classes_by_teacher_id()
+        // {
+        //     var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
+        //     var classRoom = new ClassRoom()
+        //     { 
+        //         ClassRoomName = "Science Room",
+        //         SeatsHorizontally = 3,
+        //         SeatsVertically = 3
+        //     };
+        //     var jonathan = new Teacher(){ TeacherName = "jonathan" };
+        //     var heber = new Teacher(){ TeacherName = "not jonathan" };
+        //     var sam = new Student(){ StudentName = "sam"};
+        //     await classRepository.AddClassRoomAsync(classRoom);
+        //     await classRepository.AddTeacherAsync(jonathan);
+        //     await classRepository.AddTeacherAsync(heber);
+        //     await studentRepository.AddStudentAsync(sam);
+        //     var classModel = new ClassModel()
+        //     {
+        //         ClassName = "math",
+        //         TeacherId = jonathan.TeacherId,
+        //         ClassRoomId = classRoom.ClassRoomId,
+        //         StudentIds = new int[]{ sam.StudentId }
+        //     };
+        //     var classModel2 = new ClassModel()
+        //     {
+        //         ClassName = "science",
+        //         TeacherId = jonathan.TeacherId,
+        //         ClassRoomId = classRoom.ClassRoomId,
+        //         StudentIds = new int[]{ sam.StudentId }
+        //     };
+        //     var classModel3 = new ClassModel()
+        //     {
+        //         ClassName = "not science",
+        //         TeacherId = jonathan.TeacherId,
+        //         ClassRoomId = classRoom.ClassRoomId,
+        //         StudentIds = new int[]{ sam.StudentId }
+        //     };
+        //     await classRepository.AddClassAsync(classModel);
+        //     await classRepository.AddClassAsync(classModel2);
+        //     await classRepository.AddClassAsync(classModel3);
+
+
+        //     var classList = await classRepository.GetClassesByTeacherId(jonathan.TeacherId);
+
+        //     classList.Count().Should().Be(2);
+
+        //     classList.Where(c => c.ClassId == classModel.ClassId).Count().Should().Be(1);
+        //     classList.Where(c => c.ClassId == classModel2.ClassId).Count().Should().Be(1);
+        //     classList.Where(c => c.ClassId == classModel3.ClassId).Count().Should().Be(0);
+
+        //     classList.Where(c => c.ClassId == classModel.ClassId)
+        //              .First()
+        //              .StudentIds
+        //              .Should().Contain(sam.StudentId);
+        //     classList.Where(c => c.ClassId == classModel2.ClassId)
+        //              .First()
+        //              .StudentIds
+        //              .Should().Contain(sam.StudentId);
+        // }
 
     }
 }

@@ -28,7 +28,7 @@ namespace TeddyBlazor.ViewModels
 
         public IEnumerable<Note> GetNotes()
         {
-            return Student.Notes ?? new List<Note>();
+            return Student.Notes ?? new Note[]{};
         }
 
         public async Task AddNoteAsync()
@@ -40,7 +40,7 @@ namespace TeddyBlazor.ViewModels
             else
             {
                 var note = new Note() { Content = NewNote };
-                await StudentRepository.AddNoteAsync(Student, note);
+                await StudentRepository.AddUnsignedNoteAsync(Student, note);
                 errorAlert = "";
                 NewNote = "";
             }

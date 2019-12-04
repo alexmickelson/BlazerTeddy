@@ -49,7 +49,9 @@ namespace TeddyBlazor
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            validateDbConnection();
+            var dbConnectionValidator = new DbConnectionValidator(getDbConnection);
+            dbConnectionValidator.validateConnection();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -68,21 +70,6 @@ namespace TeddyBlazor
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-        }
-
-        private void validateDbConnection()
-        {
-            try
-            {
-                using(var dbConnection = getDbConnection())
-                {
-                    dbConnection.Execute("select * from student limit 1;");
-                }
-            }
-            catch (Npgsql.NpgsqlException)
-            {
-                throw new Npgsql.NpgsqlException($"Cannot Connect to database at connection string: '{connectionString}'");
-            }
         }
     }
 }

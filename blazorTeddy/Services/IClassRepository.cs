@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TeddyBlazor.Models;
 
@@ -14,5 +15,6 @@ namespace TeddyBlazor.Services
         Task UpdateClassRoomAsync(ClassRoom classRoom);
         Task UpdateTeacherAsync(Teacher teacher);
         Task UpdateClassAsync(ClassModel classModel);
+        Task<IEnumerable<ClassModel>> GetClassesByTeacherId(int teacherId);
     }
 }

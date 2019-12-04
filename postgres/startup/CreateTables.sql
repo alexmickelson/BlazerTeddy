@@ -1,5 +1,3 @@
--- SQLite
-
 --first tier
 CREATE TABLE Student (
     StudentId SERIAL PRIMARY KEY,
@@ -25,7 +23,10 @@ CREATE TABLE ClassModel(
 CREATE TABLE Note(
     NoteId SERIAL PRIMARY KEY,
     Content text,
-    StudentId integer REFERENCES Student(StudentId)
+    NoteType integer,
+    StudentId integer REFERENCES Student(StudentId),
+    TeacherId integer REFERENCES Teacher(TeacherId),
+    DateCreated timestamp
 );
 CREATE TABLE Course (
     CourseId SERIAL PRIMARY KEY,
@@ -46,6 +47,7 @@ CREATE TABLE SeatingAssignment(
 );
 CREATE TABLE StudentCourse(
     StudentId integer REFERENCES Student(StudentId),
+    ClassId integer REFERENCES ClassModel(ClassId),
     CourseId integer REFERENCES Course(CourseId)
 );
 CREATE TABLE Assignment(
