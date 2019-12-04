@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
+using TeddyBlazor.Areas.Identity;
 using TeddyBlazor.Data;
 using TeddyBlazor.Services;
 using TeddyBlazor.ViewModels;
@@ -45,6 +47,7 @@ namespace TeddyBlazor
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddTransient<Func<IDbConnection>>(c => getDbConnection);
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
