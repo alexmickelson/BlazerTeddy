@@ -40,7 +40,7 @@ namespace TeddyBlazor.ViewModels
             else
             {
                 var note = new Note() { Content = NewNote };
-                await StudentRepository.AddNoteAsync(Student, note);
+                await StudentRepository.AddUnsignedNoteAsync(Student, note);
                 errorAlert = "";
                 NewNote = "";
             }

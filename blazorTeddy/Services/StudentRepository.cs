@@ -12,7 +12,8 @@ using System.Data;
 using System.IO;
 using Microsoft.Extensions.Logging;
 
-namespace TeddyBlazor.Services {
+namespace TeddyBlazor.Services
+{
 
     public class StudentRepository : IStudentRepository
     {
@@ -111,20 +112,47 @@ namespace TeddyBlazor.Services {
             return students.FirstOrDefault(s => s.StudentId == id);
         }
 
-        public async Task AddNoteAsync(Student student, Note note)
+        public async Task AddUnsignedNoteAsync(Student student, Note note)
+        {
+            note.StudentId = student.StudentId;
+            initializeEmptyNoteList(student);
+            using (var dbConnection = GetDbConnection())
+            {
+                logger.LogInformation($"adding note to database");
+                note.NoteId = await dbConnection.QueryFirstAsync<int>(
+                    @"insert into Note (Content, StudentId, NoteType, DateCreated)
+                      values (@content, @studentId, @noteType, @dateCreated)
+                      RETURNING NoteId;",
+                    note);
+            }
+            student.Notes = student.Notes.Append(note);
+        }
+
+        public async Task AddSignedNoteAsync(Student student, Note note, int teacherId)
+        {
+            note.StudentId = student.StudentId;
+            note.TeacherId = teacherId;
+            using (var dbConnection = GetDbConnection())
+            {
+                logger.LogInformation($"adding note to database");
+                note.NoteId = await dbConnection.QueryFirstAsync<int>(
+                    @"insert into Note (Content, StudentId, TeacherId, NoteType, DateCreated)
+                      values (@content, @studentId, @teacherId, @noteType, @dateCreated)
+                      RETURNING NoteId;",
+                    note);
+            }
+            initializeEmptyNoteList(student);
+            student.Notes = student.Notes.Append(note);
+        }
+
+        private static void initializeEmptyNoteList(Student student)
         {
             if (student.Notes == null)
             {
                 student.Notes = new List<Note>();
             }
-            using(var dbConnection = GetDbConnection())
-            {
-                logger.LogInformation($"adding note to database");
-                note.NoteId = dbConnection.QueryFirst<int>(
-                    "insert into Note (Content, StudentId) values (@content, @studentId) RETURNING NoteId;",
-                    new { content = note.Content, studentId = student.StudentId });
-            }
         }
+
 
         public async Task AddRestrictionAsync(int StudentId1, int StudentId2)
         {
