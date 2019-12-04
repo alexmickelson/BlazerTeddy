@@ -35,7 +35,7 @@ namespace Test.ViewModelTests
                 .ReturnsAsync(studentList);
             StudentRepoMoq.Setup(sr => sr.GetStudentAsync(student1.StudentId))
                 .ReturnsAsync(studentList.Find(s => s.StudentId == student1.StudentId));
-            StudentRepoMoq.Setup(sr => sr.AddNoteAsync(student1, It.IsAny<Note>()))
+            StudentRepoMoq.Setup(sr => sr.AddUnsignedNoteAsync(student1, It.IsAny<Note>()))
                 .Callback(() => student1.Notes = student1.Notes.Append(new Note(){Content = studentNote}));
                 
             viewModel.NewNote = studentNote;
@@ -67,6 +67,12 @@ namespace Test.ViewModelTests
             await viewModel.AddRestrictionAsync();
 
             viewModel.Student.Restrictions.Should().Contain(student2.StudentId);
+        }
+
+        [Test]
+        public void add_signed_note_if_box_checked()
+        {
+
         }
     }
 }

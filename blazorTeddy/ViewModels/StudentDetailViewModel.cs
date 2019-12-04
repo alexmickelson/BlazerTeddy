@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static TeddyBlazor.Models.Note;
 
 namespace TeddyBlazor.ViewModels
 {
@@ -12,6 +13,7 @@ namespace TeddyBlazor.ViewModels
         public readonly IStudentRepository StudentRepository;
         public Student Student;
         public string NewNote;
+        public bool AnonymousNote { get; set; }
         public string errorAlert;
         public int NewRestrictionId { get; set; }
 
@@ -58,6 +60,16 @@ namespace TeddyBlazor.ViewModels
             await StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
         }
 
+        public IEnumerable<(int, string)> GetNoteTypeOptions()
+        {
+            IEnumerable<(int, string)> options = new (int, string)[]{};
+            foreach(var type in (NoteTypes[])Enum.GetValues(typeof(NoteTypes)))
+            {
+                var option = ((int)type, Note.TypeToString(type));
+                options = options.Append(option);
+            }
+            return options;
+        }
 
     }
 }
