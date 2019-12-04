@@ -25,5 +25,17 @@ namespace TeddyBlazor.Models
             Positive=1,
             Negative=2
         }
+        public static string TypeToString(NoteTypes noteType)
+        {
+            switch(noteType)
+            {
+                case NoteTypes.Positive:
+                    return "Positive";
+                case NoteTypes.Negative:
+                    return "Negative";
+                default:
+                    return "None";
+            }
+        }
     }
 }
