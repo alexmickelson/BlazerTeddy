@@ -10,6 +10,8 @@ using FluentAssertions;
 using System.Linq;
 using Moq;
 using Microsoft.Extensions.Logging;
+using System.Data;
+using System.Threading;
 
 namespace IntegrationTests.RepositoryTests
 {
@@ -17,13 +19,17 @@ namespace IntegrationTests.RepositoryTests
     {
         private Mock<ILogger<StudentRepository>> studentLoggingMoq;
         private IStudentRepository studentRepository;
+        private ClassRepository classRepository;
 
         [SetUp]
         public void Setup()
         {
             studentLoggingMoq = new Mock<ILogger<StudentRepository>>();
-            studentRepository = new StudentRepository(() => new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;"),
+            Func<IDbConnection> getDbConnection = () =>
+                new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;");
+            studentRepository = new StudentRepository(getDbConnection,
                                                       studentLoggingMoq.Object);
+            classRepository = new ClassRepository(getDbConnection);
         }
 
         [TearDown]
@@ -48,11 +54,93 @@ namespace IntegrationTests.RepositoryTests
             var sam = new Student(){ StudentName = "sam" };
             await studentRepository.AddStudentAsync(sam);
             var note = new Note(){ Content = "sam's note" };
-            await studentRepository.AddNoteAsync(sam, note);
+            await studentRepository.AddUnsignedNoteAsync(sam, note);
 
             var newSam = await studentRepository.GetStudentAsync(sam.StudentId);
             newSam.Notes.Where(n => n.Content == note.Content)
                 .Should().NotBeNullOrEmpty();
+        }
+
+        [Test]
+        public async Task can_add_signed_note_to_database()
+        {
+            var jonathan = new Teacher()
+            {
+                TeacherName = "jonathan"
+            };
+            await classRepository.AddTeacherAsync(jonathan);
+            var sam = new Student()
+            {
+                StudentName = "sam"
+            };
+            await studentRepository.AddStudentAsync(sam);
+            var note = new Note()
+            {
+                Content = "A positive note about sam",
+                StudentId = sam.StudentId,
+                TeacherId = jonathan.TeacherId,
+                NoteType = Note.NoteTypes.Positive,
+                DateCreated = DateTime.Now
+            };
+
+            await studentRepository.AddSignedNoteAsync(sam, note, jonathan.TeacherId);
+
+            var samWithNote = await studentRepository.GetStudentAsync(sam.StudentId);
+
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).Count()
+                       .Should().Be(1);
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .Content.Should().Be(note.Content);
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .StudentId.Should().Be(note.StudentId);
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .TeacherId.Should().Be(note.TeacherId);
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .NoteType.Should().Be(note.NoteType);
+            var timedifference = samWithNote.Notes
+                                .Where(n => n.NoteId == note.NoteId)
+                                .First().DateCreated
+                                - note.DateCreated;
+            timedifference.Should().BeLessThan(new TimeSpan(2 * TimeSpan.TicksPerSecond));
+        }
+
+        [Test]
+        public async Task can_add_unsigned_note_to_database()
+        {
+            var sam = new Student()
+            {
+                StudentName = "sam"
+            };
+            await studentRepository.AddStudentAsync(sam);
+            var note = new Note()
+            {
+                Content = "A positive note about sam",
+                StudentId = sam.StudentId,
+                NoteType = Note.NoteTypes.Positive,
+                DateCreated = DateTime.Now
+            };
+
+            Thread.Sleep(2000);
+            await studentRepository.AddUnsignedNoteAsync(sam, note);
+
+            var samWithNote = await studentRepository.GetStudentAsync(sam.StudentId);
+
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).Count()
+                       .Should().Be(1);
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .Content.Should().Be(note.Content);
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .StudentId.Should().Be(note.StudentId);
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .NoteType.Should().Be(note.NoteType);
+
+            samWithNote.Notes.Where(n => n.NoteId == note.NoteId).First()
+                       .TeacherId.Should().Be(default(int));
+            var timedifference = samWithNote.Notes
+                                .Where(n => n.NoteId == note.NoteId)
+                                .First().DateCreated
+                                - note.DateCreated;
+            timedifference.Should().BeLessThan(new TimeSpan(2 * TimeSpan.TicksPerSecond));
         }
 
         [Test]

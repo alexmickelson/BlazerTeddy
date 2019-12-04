@@ -28,7 +28,7 @@ namespace TeddyBlazor.ViewModels
 
         public IEnumerable<Note> GetNotes()
         {
-            return Student.Notes ?? new List<Note>();
+            return Student.Notes ?? new Note[]{};
         }
 
         public async Task AddNoteAsync()
