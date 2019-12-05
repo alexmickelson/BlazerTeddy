@@ -49,9 +49,11 @@ namespace TeddyBlazor
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddTransient<Func<IDbConnection>>(c => getDbConnection);
+            services.AddSingleton<IRefreshService, RefreshService>();
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
+            services.AddTransient<NewNoteViewModel>();
         }
 
 

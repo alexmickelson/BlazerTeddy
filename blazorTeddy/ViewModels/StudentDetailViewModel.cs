@@ -12,9 +12,6 @@ namespace TeddyBlazor.ViewModels
     {
         public readonly IStudentRepository StudentRepository;
         public Student Student;
-        public string NewNote;
-        public bool AnonymousNote { get; set; }
-        public string errorAlert;
         public int NewRestrictionId { get; set; }
 
         public StudentDetailViewModel(IStudentRepository StudentRepository)
@@ -33,21 +30,6 @@ namespace TeddyBlazor.ViewModels
             return Student.Notes ?? new Note[]{};
         }
 
-        public async Task AddNoteAsync()
-        {
-            if (String.IsNullOrEmpty(NewNote))
-            {
-                errorAlert = "Note cannot be Empty";
-            }
-            else
-            {
-                var note = new Note() { Content = NewNote };
-                await StudentRepository.AddUnsignedNoteAsync(Student, note);
-                errorAlert = "";
-                NewNote = "";
-            }
-        }
-
 
 
         public IEnumerable<int> GetRestrictions()
@@ -58,17 +40,6 @@ namespace TeddyBlazor.ViewModels
         public async Task AddRestrictionAsync()
         {
             await StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
-        }
-
-        public IEnumerable<(int, string)> GetNoteTypeOptions()
-        {
-            IEnumerable<(int, string)> options = new (int, string)[]{};
-            foreach(var type in (NoteTypes[])Enum.GetValues(typeof(NoteTypes)))
-            {
-                var option = ((int)type, Note.TypeToString(type));
-                options = options.Append(option);
-            }
-            return options;
         }
 
     }

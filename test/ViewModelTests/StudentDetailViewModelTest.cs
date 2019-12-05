@@ -23,30 +23,6 @@ namespace Test.ViewModelTests
             viewModel = new StudentDetailViewModel(StudentRepoMoq.Object);
         }
 
-
-        [Test]
-        public async Task student_refreshes_after_adding_note()
-        {
-            var student1 = new Student(){ StudentName="adam", StudentId = 1 };
-            var studentList = new List<Student>() { student1 };
-            var studentNote = "a note about adam";
-
-            StudentRepoMoq.Setup(sr => sr.GetListAsync())
-                .ReturnsAsync(studentList);
-            StudentRepoMoq.Setup(sr => sr.GetStudentAsync(student1.StudentId))
-                .ReturnsAsync(studentList.Find(s => s.StudentId == student1.StudentId));
-            StudentRepoMoq.Setup(sr => sr.AddUnsignedNoteAsync(student1, It.IsAny<Note>()))
-                .Callback(() => student1.Notes = student1.Notes.Append(new Note(){Content = studentNote}));
-                
-            viewModel.NewNote = studentNote;
-            await viewModel.LoadStudentAsync(1);
-
-            await viewModel.AddNoteAsync();
-
-            viewModel.Student.Notes.Where(n => n.Content == studentNote).Should().NotBeNullOrEmpty();
-        }
-
-
         [Test]
         public async Task student_refreshes_after_adding_restriction()
         {
@@ -69,10 +45,5 @@ namespace Test.ViewModelTests
             viewModel.Student.Restrictions.Should().Contain(student2.StudentId);
         }
 
-        [Test]
-        public void add_signed_note_if_box_checked()
-        {
-
-        }
     }
 }

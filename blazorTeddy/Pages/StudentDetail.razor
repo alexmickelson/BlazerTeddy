@@ -5,7 +5,9 @@
 @using TeddyBlazor.Components
 @using TeddyBlazor.ViewModels
 
+@inject IRefreshService refreshService
 @inject StudentDetailViewModel vm
+
 <div class="maincanvas">
     <h1>@vm.Student.StudentName</h1>
     <br />
@@ -33,44 +35,9 @@
                 }
                 </table>
             </div>
-
-            <input type="text"
-                   placeholder="New Note"
-                   @bind="vm.NewNote" />
-            <button class="btn btn-secondary"
-                    type="submit"
-                    @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
-                Add Note
-            </button>
-            <br />
-            <input type="checkbox" bind="@vm.AnonymousNote"/>Dont sign it
-            <select>
-                <option value="0" selected disabled hidden>Note Type</option>
-                @foreach (var option in vm.GetNoteTypeOptions())
-                {
-                    <option value="@option.Item1">@option.Item2</option>
-                }
-            </select> 
-            <div class="text-danger">@vm.errorAlert</div>
+            <NewNoteComponent student="@vm.Student"></NewNoteComponent>
         </div>
-        <!-- <div class="note-item2">
-            <h1>Negatives</h1>
-            <div class="jumbotron centered">
-                @foreach (var note in vm.GetNotes())
-                {
-                    <p>@note.Content</p>
-                }
-            </div>
-            <input type="text"
-                   placeholder="New Note"
-                   @bind="vm.NewNote" />
-            <button class="btn btn-secondary"
-                    type="submit"
-                    @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
-                Add Note
-            </button>
-            <br />
-        </div> -->
+       
     </div>
     <br />
     <h3>Restrictions:</h3>
@@ -98,15 +65,12 @@
     {
         await vm.LoadStudentAsync(id);
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-    }
-
     private async Task runAndReloadAsync(Action action)
     {
         await Task.Run(action);
         await vm.LoadStudentAsync(id);
     }
+
+
 
 }

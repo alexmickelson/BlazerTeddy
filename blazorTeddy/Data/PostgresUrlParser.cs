@@ -14,9 +14,12 @@ namespace TeddyBlazor.Data
             var host = words[5];
             var port = words[6];
             var database = words[7];
+            var requireSsl = host == "localhost"
+                ? ""
+                : "SSL Mode=Require;";
             HerokuDatabaseUrl = database_url;
-            DotNetConnectionString = $"Server={host}; Port={port}; Database={database}; User ID={user}; Password={password}; Trust Server Certificate = True; SSL Mode=Require;"; // 
-            PsqlConnectionCommand = $"docker run -e PGPASSWORD={password} --rm -it postgres psql -h {host} -U {user} {database}"; // --set = sslmode = require
+            DotNetConnectionString = $"Server={host}; Port={port}; Database={database}; User ID={user}; Password={password}; Trust Server Certificate = True; {requireSsl}"; // 
+            PsqlConnectionCommand = $"docker run -e PGPASSWORD={password} --rm -it postgres psql -h {host} -U {user} {database} --set = sslmode = require"; 
         }
         public string HerokuDatabaseUrl { get; }
         public string DotNetConnectionString { get; }
