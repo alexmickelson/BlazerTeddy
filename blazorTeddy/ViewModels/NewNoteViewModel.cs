@@ -16,6 +16,7 @@ namespace TeddyBlazor.ViewModels
         public Note Note { get; set; }
         public int TeacherId { get; set; }
         public bool IsAnonymousNote { get; set; }
+        public int NoteType { get; set; }
         public string errorAlert { get; set; }
         private readonly IStudentRepository studentRepository;
         private readonly ILogger<NewNoteViewModel> logger;
@@ -36,6 +37,7 @@ namespace TeddyBlazor.ViewModels
             }
 
             Note.DateCreated = DateTime.Now;
+            Note.NoteType = (NoteTypes)NoteType;
             if (IsAnonymousNote)
             {
                 await studentRepository.AddUnsignedNoteAsync(Student, Note);

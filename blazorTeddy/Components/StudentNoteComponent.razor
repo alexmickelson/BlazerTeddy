@@ -42,7 +42,8 @@
                @bind-value="vm.NewNoteVM.IsAnonymousNote" 
                @bind-value:event="oninput"/>
                Dont sign it
-        <select>
+        <select @bind-value="vm.NewNoteVM.NoteType" 
+                @bind-value:event="oninput">
             <option value="0" selected disabled hidden>Note Type</option>
             @foreach (var option in vm.NewNoteVM.GetNoteTypeOptions())
             {

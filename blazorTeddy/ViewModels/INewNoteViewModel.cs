@@ -11,6 +11,7 @@ namespace TeddyBlazor.ViewModels
         int TeacherId { get; set; }
         bool IsAnonymousNote { get; set; }
         string errorAlert { get; set; }
+        int NoteType { get; set; }
 
         Task AddNoteAsync();
         IEnumerable<(int, string)> GetNoteTypeOptions();
