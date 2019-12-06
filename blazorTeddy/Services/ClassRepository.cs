@@ -308,9 +308,21 @@ namespace TeddyBlazor.Services
             }
         }
 
-        public Task<IEnumerable<ClassModel>> GetClassesByTeacherId(int teacherId)
+        public async Task<IEnumerable<ClassModel>> GetClassesByTeacherId(int teacherId)
         {
-            throw new NotImplementedException();
+            using(var dbConnection = getDbConnection())
+            {
+                var classes =  await dbConnection.QueryAsync<ClassModel>(
+                    @"select * from ClassModel
+                      where TeacherId = @teacherId",
+                    new { teacherId }
+                );
+                foreach(var classModel in classes)
+                {
+                    classModel.StudentIds = await getEnroledStudents(classModel.ClassId, dbConnection);
+                }
+                return classes;
+            }
         }
 
         public async Task<IEnumerable<ClassModel>> GetAllClassesAsync()

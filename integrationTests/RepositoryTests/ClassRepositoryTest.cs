@@ -260,66 +260,66 @@ namespace IntegrationTests.RepositoryTests
             classModel.SeatingChartByStudentID[1,1].Should().Be(default(int));
         }
 
-        // [Test]
-        // public async Task can_get_classes_by_teacher_id()
-        // {
-        //     var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
-        //     var classRoom = new ClassRoom()
-        //     { 
-        //         ClassRoomName = "Science Room",
-        //         SeatsHorizontally = 3,
-        //         SeatsVertically = 3
-        //     };
-        //     var jonathan = new Teacher(){ TeacherName = "jonathan" };
-        //     var heber = new Teacher(){ TeacherName = "not jonathan" };
-        //     var sam = new Student(){ StudentName = "sam"};
-        //     await classRepository.AddClassRoomAsync(classRoom);
-        //     await classRepository.AddTeacherAsync(jonathan);
-        //     await classRepository.AddTeacherAsync(heber);
-        //     await studentRepository.AddStudentAsync(sam);
-        //     var classModel = new ClassModel()
-        //     {
-        //         ClassName = "math",
-        //         TeacherId = jonathan.TeacherId,
-        //         ClassRoomId = classRoom.ClassRoomId,
-        //         StudentIds = new int[]{ sam.StudentId }
-        //     };
-        //     var classModel2 = new ClassModel()
-        //     {
-        //         ClassName = "science",
-        //         TeacherId = jonathan.TeacherId,
-        //         ClassRoomId = classRoom.ClassRoomId,
-        //         StudentIds = new int[]{ sam.StudentId }
-        //     };
-        //     var classModel3 = new ClassModel()
-        //     {
-        //         ClassName = "not science",
-        //         TeacherId = jonathan.TeacherId,
-        //         ClassRoomId = classRoom.ClassRoomId,
-        //         StudentIds = new int[]{ sam.StudentId }
-        //     };
-        //     await classRepository.AddClassAsync(classModel);
-        //     await classRepository.AddClassAsync(classModel2);
-        //     await classRepository.AddClassAsync(classModel3);
+        [Test]
+        public async Task can_get_classes_by_teacher_id()
+        {
+            var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
+            var classRoom = new ClassRoom()
+            { 
+                ClassRoomName = "Science Room",
+                SeatsHorizontally = 3,
+                SeatsVertically = 3
+            };
+            var jonathan = new Teacher(){ TeacherName = "jonathan" };
+            var heber = new Teacher(){ TeacherName = "not jonathan" };
+            var sam = new Student(){ StudentName = "sam"};
+            await classRepository.AddClassRoomAsync(classRoom);
+            await classRepository.AddTeacherAsync(jonathan);
+            await classRepository.AddTeacherAsync(heber);
+            await studentRepository.AddStudentAsync(sam);
+            var classModel = new ClassModel()
+            {
+                ClassName = "math",
+                TeacherId = jonathan.TeacherId,
+                ClassRoomId = classRoom.ClassRoomId,
+                StudentIds = new int[]{ sam.StudentId }
+            };
+            var classModel2 = new ClassModel()
+            {
+                ClassName = "science",
+                TeacherId = jonathan.TeacherId,
+                ClassRoomId = classRoom.ClassRoomId,
+                StudentIds = new int[]{ sam.StudentId }
+            };
+            var classModel3 = new ClassModel()
+            {
+                ClassName = "not science",
+                TeacherId = heber.TeacherId,
+                ClassRoomId = classRoom.ClassRoomId,
+                StudentIds = new int[]{ sam.StudentId }
+            };
+            await classRepository.AddClassAsync(classModel);
+            await classRepository.AddClassAsync(classModel2);
+            await classRepository.AddClassAsync(classModel3);
 
 
-        //     var classList = await classRepository.GetClassesByTeacherId(jonathan.TeacherId);
+            var classList = await classRepository.GetClassesByTeacherId(jonathan.TeacherId);
 
-        //     classList.Count().Should().Be(2);
+            classList.Count().Should().Be(2);
 
-        //     classList.Where(c => c.ClassId == classModel.ClassId).Count().Should().Be(1);
-        //     classList.Where(c => c.ClassId == classModel2.ClassId).Count().Should().Be(1);
-        //     classList.Where(c => c.ClassId == classModel3.ClassId).Count().Should().Be(0);
+            classList.Where(c => c.ClassId == classModel.ClassId).Count().Should().Be(1);
+            classList.Where(c => c.ClassId == classModel2.ClassId).Count().Should().Be(1);
+            classList.Where(c => c.ClassId == classModel3.ClassId).Count().Should().Be(0);
 
-        //     classList.Where(c => c.ClassId == classModel.ClassId)
-        //              .First()
-        //              .StudentIds
-        //              .Should().Contain(sam.StudentId);
-        //     classList.Where(c => c.ClassId == classModel2.ClassId)
-        //              .First()
-        //              .StudentIds
-        //              .Should().Contain(sam.StudentId);
-        // }
+            classList.Where(c => c.ClassId == classModel.ClassId)
+                     .First()
+                     .StudentIds
+                     .Should().Contain(sam.StudentId);
+            classList.Where(c => c.ClassId == classModel2.ClassId)
+                     .First()
+                     .StudentIds
+                     .Should().Contain(sam.StudentId);
+        }
 
         [Test]
         public async Task add_students_in_class_on_insert()
