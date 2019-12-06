@@ -9,7 +9,8 @@ INSERT INTO ClassRoom VALUES (1, 'Science Room', 5, 6);
 
 INSERT INTO ClassModel VALUES (1, 'A Class', 1, 1);
 
-INSERT INTO Note VALUES (1, 'A note about sam', 0, 1, 1, NOW());
+INSERT INTO Note (Content, StudentId, NoteType, DateCreated)
+VALUES ( 'A note about sam', 1, 1, NOW());
 
 INSERT INTO Course (Name, TeacherId) VALUES ('Math', 1);
 
