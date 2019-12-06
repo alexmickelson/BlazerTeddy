@@ -1,7 +1,61 @@
-﻿<h3>SeatingChart</h3>
+﻿@using TeddyBlazor.Models
+@using TeddyBlazor.Services
+@using TeddyBlazor.Components
+@using TeddyBlazor.ViewModels
+
+@inject SeatingChartViewModel vm
+
+<h3>SeatingChart</h3>
+<div class="row">
+@for(int i = 0; i < vm.ClassRoom.SeatsHorizontally; i++)
+{
+    <div class="seatingAssignments"
+         style="width: @vm.HorizontalFraction%;">
+    <hr/>
+    @for(int j = 0; j < vm.ClassRoom.SeatsVertically; j++)
+    {
+        <a class="nav-link" 
+           href="/ClassDetail/@vm.GetStudentIdOrDefault(i,j)">
+            <div class="card"
+                style="width: 100%;">
+                <div class="card-header">
+                    @vm.GetStudentOrDefault(i,j)
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        @vm.GetCourseOrDefault(i,j)
+                    </li>
+                </ul>
+            </div>
+        </a>
+    }
+    </div>
+}
+</div>
 
 @code {
     [Parameter]
     public ClassModel SelectedClass { get; set; }
+
+    protected override void OnInitialized()
+    {
+        vm.OnInitialized();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        vm.SelectedClass = SelectedClass;
+        await vm.OnParametersSetAsync();
+    }
 
 }

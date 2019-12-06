@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.Extensions.Logging;
 using TeddyBlazor.Models;
 
 namespace TeddyBlazor.Services
@@ -11,10 +12,13 @@ namespace TeddyBlazor.Services
     public class ClassRepository : IClassRepository
     {
         private readonly Func<IDbConnection> getDbConnection;
+        private readonly ILogger<ClassRepository> logger;
 
-        public ClassRepository(Func<IDbConnection> getDbConnection)
+        public ClassRepository(Func<IDbConnection> getDbConnection,
+                               ILogger<ClassRepository> logger)
         {
             this.getDbConnection = getDbConnection;
+            this.logger = logger;
         }
 
         public async Task AddClassAsync(ClassModel classModel)
@@ -259,6 +263,7 @@ namespace TeddyBlazor.Services
 
         public async Task<ClassRoom> GetClassRoomAsync(int classRoomId)
         {
+            logger.LogInformation($"Getting classRoom id: {classRoomId} from database");
             using (var dbConnection = getDbConnection())
             {
                 return await dbConnection.QueryFirstAsync<ClassRoom>(
