@@ -34,7 +34,7 @@
                 @bind="vm.NewNoteVM.Note.Content" />
         <button class="btn btn-secondary"
                 type="submit"
-                @onclick="(() => runAndReload(async () => await vm.NewNoteVM.AddNoteAsync()))">
+                @onclick="vm.NewNoteVM.AddNote">
             Add Note
         </button>
         <br />
@@ -61,13 +61,6 @@
     [Parameter]
     public Action ReloadParent { get; set; }
 
-    protected override async Task OnParametersSetAsync()
-    {
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-    }
 
     private void runAndReload(Func<Task> action)
     {
@@ -79,6 +72,23 @@
         
         this.StateHasChanged();
         ReloadParent();
+    }
+    
+    protected override void OnInitialized()
+    {
+        vm.OnInitialized();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.OnInitializedAsync();
+    }
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await vm.OnParametersSetAsync();
     }
 
 }

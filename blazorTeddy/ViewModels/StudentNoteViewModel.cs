@@ -10,7 +10,7 @@ using static TeddyBlazor.Models.Note;
 namespace TeddyBlazor.ViewModels
 {
 
-    public class NewNoteViewModel : INewNoteViewModel, IBaseViewModel
+    public class StudentNoteViewModel : INewNoteViewModel, IBaseViewModel
     {
         public Student Student { get; set; }
         public Note Note { get; set; }
@@ -19,15 +19,16 @@ namespace TeddyBlazor.ViewModels
         public int NoteType { get; set; }
         public string errorAlert { get; set; }
         private readonly IStudentRepository studentRepository;
-        private readonly ILogger<NewNoteViewModel> logger;
+        private readonly ILogger<StudentNoteViewModel> logger;
 
-        public NewNoteViewModel(IStudentRepository studentRepository, ILogger<NewNoteViewModel> logger)
+        public StudentNoteViewModel(IStudentRepository studentRepository, ILogger<StudentNoteViewModel> logger)
         {
             this.studentRepository = studentRepository;
             this.logger = logger;
             Note = new Note();
         }
-        public async Task AddNoteAsync()
+        
+        public void AddNote()
         {
             logger.LogInformation($"Adding new note");
             if (String.IsNullOrEmpty(Note.Content))
@@ -38,14 +39,18 @@ namespace TeddyBlazor.ViewModels
 
             Note.DateCreated = DateTime.Now;
             Note.NoteType = (NoteTypes)NoteType;
-            if (IsAnonymousNote)
+            var t = Task.Run(async () =>
             {
-                await studentRepository.AddUnsignedNoteAsync(Student, Note);
-            }
-            else
-            {
-                await studentRepository.AddSignedNoteAsync(Student, Note, TeacherId);
-            }
+                if (IsAnonymousNote)
+                {
+                    await studentRepository.AddUnsignedNoteAsync(Student, Note);
+                }
+                else
+                {
+                    await studentRepository.AddSignedNoteAsync(Student, Note, TeacherId);
+                }
+            });
+            t.Wait();
             errorAlert = "";
             Note = new Note()
             {
@@ -71,32 +76,22 @@ namespace TeddyBlazor.ViewModels
 
         public void OnInitialized()
         {
-            throw new NotImplementedException();
+
         }
 
-        public void OnInitializedAsync()
+        public Task OnInitializedAsync()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public void OnParametersSet()
         {
-            throw new NotImplementedException();
+
         }
 
-        public void OnParametersSetAsync()
+        public Task OnParametersSetAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public void OnAfterRender()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnAfterRenderAsync()
-        {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 

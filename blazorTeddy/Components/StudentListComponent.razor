@@ -25,9 +25,21 @@
 
 
 @code {
-
+    
+    protected override void OnInitialized()
+    {
+        vm.OnInitialized();
+    }
     protected override async Task OnInitializedAsync()
     {
-        await vm.StudentRepository.UpdateStudentsAsync();
+        await vm.OnInitializedAsync();
+    }
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await vm.OnParametersSetAsync();
     }
 }

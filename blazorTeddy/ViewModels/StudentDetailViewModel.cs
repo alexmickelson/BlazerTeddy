@@ -14,6 +14,8 @@ namespace TeddyBlazor.ViewModels
         public readonly INewNoteViewModel NewNoteVM;
         public Student Student;
         public int NewRestrictionId { get; set; }
+        public int StudentId { get; set; }
+        public IEnumerable<string> Restrictions { get; set; }
 
         public StudentDetailViewModel(IStudentRepository StudentRepository,
                                       INewNoteViewModel newNoteViewModel)
@@ -34,57 +36,46 @@ namespace TeddyBlazor.ViewModels
             return Student.Notes ?? new Note[]{};
         }
 
-
-
-        public IEnumerable<string> GetRestrictions()
+        public async Task LoadRestrictionsAsync()
         {
             IEnumerable<string> restrictions = new string[]{};
 
-            IEnumerable<Task<Student>> tasks = new Task<Student>[]{};
             foreach(var studentId in Student.Restrictions)
             {
-                tasks = tasks.Append(StudentRepository.GetStudentAsync(studentId));
+                var restrictedStudent = await StudentRepository.GetStudentAsync(studentId);
+                restrictions = restrictions.Append(restrictedStudent.StudentName);
             }
-            foreach(var task in tasks)
-            {
-                restrictions = restrictions.Append(task.Result.StudentName);
-            }
-            return restrictions;
+            Restrictions = restrictions;
         }
 
-        public async Task AddRestrictionAsync()
+        public void AddRestriction()
         {
-            await StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
+            var t = Task.Run(async () =>
+            {
+                await StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
+                await OnParametersSetAsync();
+            });
+            t.Wait();
         }
 
         public void OnInitialized()
         {
-            throw new NotImplementedException();
+            
         }
 
-        public void OnInitializedAsync()
+        public Task OnInitializedAsync()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public void OnParametersSet()
         {
-            throw new NotImplementedException();
         }
 
-        public void OnParametersSetAsync()
+        public async Task OnParametersSetAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public void OnAfterRender()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnAfterRenderAsync()
-        {
-            throw new NotImplementedException();
-        }
+            await LoadStudentAsync(StudentId);
+            await LoadRestrictionsAsync();
+        } 
     }
 }

@@ -78,32 +78,22 @@ namespace TeddyBlazor.ViewModels
 
         public void OnInitialized()
         {
-            throw new NotImplementedException();
+            
         }
 
-        public void OnInitializedAsync()
+        public async Task OnInitializedAsync()
         {
-            throw new NotImplementedException();
+            await StudentRepository.UpdateStudentsAsync();
         }
 
         public void OnParametersSet()
         {
-            throw new NotImplementedException();
+            
         }
 
-        public void OnParametersSetAsync()
+        public Task OnParametersSetAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public void OnAfterRender()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnAfterRenderAsync()
-        {
-            throw new NotImplementedException();
-        }
+            return Task.CompletedTask;
+        } 
     }
 }

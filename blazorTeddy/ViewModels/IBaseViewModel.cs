@@ -1,13 +1,13 @@
+using System.Threading.Tasks;
+
 namespace TeddyBlazor.ViewModels
 {
     public interface IBaseViewModel
     {
         // https://blazor-tutorial.net/lifecycle-methods
         void OnInitialized();
-        void OnInitializedAsync();
+        Task OnInitializedAsync();
         void OnParametersSet();
-        void OnParametersSetAsync();
-        void OnAfterRender();
-        void OnAfterRenderAsync();
+        Task OnParametersSetAsync();
     }
 }

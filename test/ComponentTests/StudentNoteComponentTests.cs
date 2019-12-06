@@ -15,19 +15,19 @@ namespace Test.ViewModelTests
     {
         public Mock<IStudentRepository> StudentRepoMoq { get; private set; }
 
-        private Mock<ILogger<NewNoteViewModel>> loggerMoq;
-        private NewNoteViewModel viewModel;
+        private Mock<ILogger<StudentNoteViewModel>> loggerMoq;
+        private StudentNoteViewModel viewModel;
 
         [SetUp]
         public void SetUp()
         {
             StudentRepoMoq = new Mock<IStudentRepository>();
-            loggerMoq = new Mock<ILogger<NewNoteViewModel>>();
-            viewModel = new NewNoteViewModel(StudentRepoMoq.Object, loggerMoq.Object);
+            loggerMoq = new Mock<ILogger<StudentNoteViewModel>>();
+            viewModel = new StudentNoteViewModel(StudentRepoMoq.Object, loggerMoq.Object);
         }
 
         [Test]
-        public async Task add_unsigned_note_if_box_checked()
+        public void add_unsigned_note_if_box_checked()
         {
             var adam = new Student(){ StudentName="adam", StudentId = 1 };
             var studentList = new List<Student>() { adam };
@@ -43,7 +43,7 @@ namespace Test.ViewModelTests
             viewModel.Student = adam;
             viewModel.IsAnonymousNote = true;
             viewModel.Note.Content = "a note about adam";
-            await viewModel.AddNoteAsync();
+            viewModel.AddNote();
 
             StudentRepoMoq.Verify();
 

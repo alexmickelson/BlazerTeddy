@@ -13,7 +13,7 @@ namespace TeddyBlazor.ViewModels
         string errorAlert { get; set; }
         int NoteType { get; set; }
 
-        Task AddNoteAsync();
+        void AddNote();
         IEnumerable<(int, string)> GetNoteTypeOptions();
         void SetStudent(Student student);
     }

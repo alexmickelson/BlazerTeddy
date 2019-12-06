@@ -17,7 +17,7 @@
     <br />
     <h3>Restrictions:</h3>
     <ul class="jumbotron centered">
-        @foreach (var restriction in vm.GetRestrictions())
+        @foreach (var restriction in vm.Restrictions)
         {
             <li>@restriction</li>
         }
@@ -27,7 +27,7 @@
            @bind="vm.NewRestrictionId" />
     <button class="btn btn-secondary"
             type="submit"
-            @onclick="(() => runAndReload(async () => await vm.AddRestrictionAsync()))">
+            @onclick="vm.AddRestriction">
         Add Restriction
     </button>
 </div>
@@ -37,11 +37,6 @@
     public int id { get; set; }
 
     public Action Reload { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await vm.LoadStudentAsync(id);
-    }
 
     protected override void OnInitialized()
     {
@@ -58,5 +53,23 @@
         });
         task.Wait();
         Reload();
+    }
+    
+    // protected override void OnInitialized()
+    // {
+    //     vm.OnInitialized();
+    // }
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.OnInitializedAsync();
+    }
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        vm.StudentId = id;
+        await vm.OnParametersSetAsync();
     }
 }
