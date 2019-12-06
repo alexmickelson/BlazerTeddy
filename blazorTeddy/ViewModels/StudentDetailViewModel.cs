@@ -8,7 +8,7 @@ using static TeddyBlazor.Models.Note;
 
 namespace TeddyBlazor.ViewModels
 {
-    public class StudentDetailViewModel : IBaseViewModel
+    public class StudentDetailViewModel : IViewModel
     {
         public readonly IStudentRepository StudentRepository;
         public readonly INewNoteViewModel NewNoteVM;

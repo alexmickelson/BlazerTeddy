@@ -32,7 +32,6 @@ namespace TeddyBlazor
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
             connectionString = PostgresUrlParser.ParseConnectionString(Configuration["DATABASE_URL"]);
             getDbConnection = () => new NpgsqlConnection(connectionString);
 
@@ -49,13 +48,13 @@ namespace TeddyBlazor
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddTransient<Func<IDbConnection>>(c => getDbConnection);
-            services.AddSingleton<IRefreshService, RefreshService>();
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
             services.AddTransient<INewNoteViewModel, StudentNoteViewModel>();
             services.AddTransient<IClassRepository, ClassRepository>();
             services.AddTransient<ClassListViewModel>();
+            services.AddTransient<ClassDetailViewModel>();
         }
 
 
@@ -83,8 +82,8 @@ namespace TeddyBlazor
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
+                endpoints.MapControllers();
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

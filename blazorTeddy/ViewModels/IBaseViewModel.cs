@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace TeddyBlazor.ViewModels
 {
-    public interface IBaseViewModel
+    public interface IViewModel
     {
         // https://blazor-tutorial.net/lifecycle-methods
         void OnInitialized();

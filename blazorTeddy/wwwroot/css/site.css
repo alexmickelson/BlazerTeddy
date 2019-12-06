@@ -143,11 +143,6 @@ app {
     .navbar-toggler {
         display: none;
     }
-
-    .sidebar .collapse {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
-    }
 }
 .notes{
  

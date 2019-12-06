@@ -5,15 +5,13 @@
 @using TeddyBlazor.Components
 @using TeddyBlazor.ViewModels
 
-@inject IRefreshService refreshService
 @inject StudentDetailViewModel vm
 
 <div class="maincanvas">
     <h1>@vm.Student.StudentName</h1>
     <br />
     
-    <StudentNoteComponent vm="@vm" 
-                          ReloadParent="@Reload" />
+    <StudentNoteComponent vm="@vm" />
     <br />
     <h3>Restrictions:</h3>
     <ul class="jumbotron centered">

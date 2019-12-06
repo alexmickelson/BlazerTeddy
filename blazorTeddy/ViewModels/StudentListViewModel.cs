@@ -9,7 +9,7 @@ using TeddyBlazor.Services;
 
 namespace TeddyBlazor.ViewModels
 {
-    public class StudentListViewModel : IBaseViewModel
+    public class StudentListViewModel : IViewModel
     {
         public readonly IStudentRepository StudentRepository;
         private readonly IClassRepository classRepository;

@@ -58,10 +58,6 @@
     [Parameter]
     public StudentDetailViewModel vm { get; set; }
 
-    [Parameter]
-    public Action ReloadParent { get; set; }
-
-
     private void runAndReload(Func<Task> action)
     {
         var task = Task.Run(async () => 
@@ -71,7 +67,6 @@
         task.Wait();
         
         this.StateHasChanged();
-        ReloadParent();
     }
     
     protected override void OnInitialized()

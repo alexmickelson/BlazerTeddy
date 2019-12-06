@@ -10,7 +10,7 @@ using static TeddyBlazor.Models.Note;
 namespace TeddyBlazor.ViewModels
 {
 
-    public class StudentNoteViewModel : INewNoteViewModel, IBaseViewModel
+    public class StudentNoteViewModel : INewNoteViewModel, IViewModel
     {
         public Student Student { get; set; }
         public Note Note { get; set; }

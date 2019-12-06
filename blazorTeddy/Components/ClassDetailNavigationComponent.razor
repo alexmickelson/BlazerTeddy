@@ -1,0 +1,23 @@
+
+<button class="btn active" @onclick="SelectSeatingChart">
+        Seating Chart
+</button>
+<button class="btn" @onclick="SelectCourses">
+        Courses
+</button>
+
+@code
+{
+    [Parameter]
+    public Action<int> SelectTab { get; set; }
+
+    public void SelectSeatingChart()
+    {
+        SelectTab(0);
+    }
+    public void SelectCourses()
+    {
+        SelectTab(1);
+    }
+
+}

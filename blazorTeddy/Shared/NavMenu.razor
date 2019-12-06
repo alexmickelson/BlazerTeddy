@@ -1,43 +1,27 @@
 ﻿
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3" @onmouseover="ToggleClassList">
-            <NavLink class="nav-link" href="classroom">
-                <span class="oi oi-plus" aria-hidden="true"></span> ClassRoom
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="students">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> students
-            </NavLink>
-        </li>
-    </ul>
-    <div class="@collapseClassList">
-        <ClassListComponent></ClassListComponent>
-    </div>
-</div>
+<ul class="nav flex-column left-menu">
+    <li class="nav-item px-3">
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <span class="oi oi-home" aria-hidden="true"></span> Home
+        </NavLink>
+    </li>
+    <li class="nav-item px-3">
+        <NavLink class="nav-link" href="classlist">
+            <span class="oi oi-plus" aria-hidden="true"></span> Classes
+        </NavLink>
+    </li>
+    <li class="nav-item px-3">
+        <NavLink class="nav-link" href="students">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> students
+        </NavLink>
+    </li>
+</ul>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-
-    private bool collapseClassList = true;
-
-    private string classListCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleClassList()
-    {
-        collapseClassList = !collapseClassList;
-    }
+    // private bool collapseClassList = true;]
+    // private string classListCssClass => collapseClassList ? "collapse" : string.Empty;
+    // private void ToggleClassList()
+    // {
+    //     collapseClassList = !collapseClassList;
+    // }
 }

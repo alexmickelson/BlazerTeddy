@@ -1,24 +1,30 @@
+@page "/classlist"
 @using TeddyBlazor.Models
 @using TeddyBlazor.Services
 @using TeddyBlazor.ViewModels
+@using TeddyBlazor.Components
 
 @inject ClassListViewModel vm
 
-<h1>class list</h1>
+<h1>Classes</h1>
+
+<hr>
+
+<div id="ClassCardWrapper" class="d-flex align-content-start flex-wrap">
+@foreach(var classModel in vm.Classes)
+{
+    <ClassCardComponent ThisClass="@classModel"></ClassCardComponent>
+}
+</div>
 
 @code {
 
-    [Parameter]
-    public int TeacherId { get; set; }
-    
     protected override void OnInitialized()
     {
-        vm.TeacherId = TeacherId;
         vm.OnInitialized();
     }
     protected override async Task OnInitializedAsync()
     {
-        vm.TeacherId = TeacherId;
         await vm.OnInitializedAsync();
     }
     protected override void OnParametersSet()

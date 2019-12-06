@@ -6,7 +6,7 @@ using TeddyBlazor.Services;
 
 namespace TeddyBlazor.ViewModels
 {
-    public class ClassListViewModel : IBaseViewModel
+    public class ClassListViewModel : IViewModel
     {
         private readonly IClassRepository classRepository;
 
@@ -16,6 +16,8 @@ namespace TeddyBlazor.ViewModels
         public ClassListViewModel(IClassRepository classRepository)
         {
             this.classRepository = classRepository;
+            Classes = new ClassModel[] {};
+            TeacherId = 1; // TODO: make the logged in user
         }
         public void OnInitialized()
         {
