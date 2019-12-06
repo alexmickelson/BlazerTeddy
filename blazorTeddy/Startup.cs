@@ -42,7 +42,7 @@ namespace TeddyBlazor
             // services.AddIdentity<User, IdentityRole<long>>()
             //     .AddEntityFrameworkStores<ApplicationDbContext,long>()
             //     .AddDefaultTokenProviders();
-            services.AddIdentityCore<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddRazorPages();
