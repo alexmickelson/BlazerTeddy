@@ -1,11 +1,4 @@
 ﻿
-<!--<div class="top-row pl-4 navbar navbar-dark">
-   <a class="navbar-brand" href="">TeddyCam</a>
-   <button class="navbar-toggler" @onclick="ToggleNavMenu">
-       <span class="navbar-toggler-icon"></span>
-   </button>
-</div>-->
-
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
@@ -13,7 +6,7 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        <li class="nav-item px-3">
+        <li class="nav-item px-3" @onmouseover="ToggleClassList">
             <NavLink class="nav-link" href="classroom">
                 <span class="oi oi-plus" aria-hidden="true"></span> ClassRoom
             </NavLink>
@@ -24,6 +17,9 @@
             </NavLink>
         </li>
     </ul>
+    <div class="@collapseClassList">
+        <ClassListComponent></ClassListComponent>
+    </div>
 </div>
 
 @code {
@@ -34,5 +30,14 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private bool collapseClassList = true;
+
+    private string classListCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleClassList()
+    {
+        collapseClassList = !collapseClassList;
     }
 }

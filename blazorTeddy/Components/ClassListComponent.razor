@@ -1,0 +1,32 @@
+@using TeddyBlazor.Models
+@using TeddyBlazor.Services
+@using TeddyBlazor.ViewModels
+
+@inject ClassListViewModel vm
+
+<h1>class list</h1>
+
+@code {
+
+    [Parameter]
+    public int TeacherId { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        vm.TeacherId = TeacherId;
+        vm.OnInitialized();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        vm.TeacherId = TeacherId;
+        await vm.OnInitializedAsync();
+    }
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await vm.OnParametersSetAsync();
+    }
+}
