@@ -15,10 +15,12 @@ namespace TeddyBlazor.Services
         private readonly ILogger<ClassRepository> logger;
 
         public ClassRepository(Func<IDbConnection> getDbConnection,
-                               ILogger<ClassRepository> logger)
+                               ILogger<ClassRepository> logger,
+                               Func<string> getPsqlString)
         {
             this.getDbConnection = getDbConnection;
             this.logger = logger;
+            logger.LogInformation("Docker connection: " + getPsqlString());
         }
 
         public async Task AddClassAsync(ClassModel classModel)

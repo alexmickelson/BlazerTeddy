@@ -21,6 +21,7 @@ namespace TeddyBlazor
         public IConfiguration Configuration { get; }
 
         private string connectionString;
+        private string psqlConnection;
         Func<IDbConnection> getDbConnection;
         public Startup(IConfiguration configuration)
         {
@@ -33,14 +34,12 @@ namespace TeddyBlazor
         public void ConfigureServices(IServiceCollection services)
         {
             connectionString = PostgresUrlParser.ParseConnectionString(Configuration["DATABASE_URL"]);
+            psqlConnection = PostgresUrlParser.PsqlConnection(Configuration["DATABASE_URL"]);
             getDbConnection = () => new NpgsqlConnection(connectionString);
 
 
-             services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
-            // services.AddIdentity<User, IdentityRole<long>>()
-            //     .AddEntityFrameworkStores<ApplicationDbContext,long>()
-            //     .AddDefaultTokenProviders();
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -48,6 +47,7 @@ namespace TeddyBlazor
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddTransient<Func<IDbConnection>>(c => getDbConnection);
+            services.AddTransient<Func<string>>(c => () => psqlConnection );
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();

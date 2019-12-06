@@ -20,6 +20,7 @@ namespace IntegrationTests.RepositoryTests
         private Mock<ILogger<StudentRepository>> studentLoggingMoq;
         private IStudentRepository studentRepository;
         private Mock<ILogger<ClassRepository>> classLoggerMoq;
+        private Func<string> psqlString;
         private ClassRepository classRepository;
 
         [SetUp]
@@ -31,7 +32,8 @@ namespace IntegrationTests.RepositoryTests
             studentRepository = new StudentRepository(getDbConnection,
                                                       studentLoggingMoq.Object);
             classLoggerMoq = new Mock<ILogger<ClassRepository>>();
-            classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object);
+            psqlString = () => string.Empty;
+            classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object, psqlString);
         }
 
         [TearDown]
