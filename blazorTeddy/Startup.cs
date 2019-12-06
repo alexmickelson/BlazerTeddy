@@ -54,6 +54,7 @@ namespace TeddyBlazor
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
             services.AddTransient<INewNoteViewModel, NewNoteViewModel>();
+            services.AddTransient<IClassRepository, ClassRepository>();
         }
 
 

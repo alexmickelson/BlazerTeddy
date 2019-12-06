@@ -9,6 +9,14 @@
 <input type="text"
         @bind-value="vm.NameFilter" 
         @bind-value:event="oninput"/>
+<select @bind-value="vm.ClassIdFilter" 
+        @bind-value:event="oninput">
+    <option value="-1">Class</option>
+    @foreach (var option in vm.GetClassOptions())
+    {
+        <option value="@option.ClassId">@option.ClassName</option>
+    }
+</select> 
 
 @foreach (var student in vm.GetFilteredStudents())
 {

@@ -321,5 +321,36 @@ namespace IntegrationTests.RepositoryTests
         //              .Should().Contain(sam.StudentId);
         // }
 
+        [Test]
+        public async Task add_students_in_class_on_insert()
+        {
+            var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
+            var scienceRoom = new ClassRoom()
+            { 
+                ClassRoomName = "Science Room",
+                SeatsHorizontally = 3,
+                SeatsVertically = 3
+            };
+            var jonathan = new Teacher(){ TeacherName = "jonathan" };
+            var sam = new Student(){ StudentName = "sam"};
+            await classRepository.AddClassRoomAsync(scienceRoom);
+            await classRepository.AddTeacherAsync(jonathan);
+            await studentRepository.AddStudentAsync(sam);
+            var math = new ClassModel()
+            {
+                ClassName = "math",
+                TeacherId = jonathan.TeacherId,
+                ClassRoomId = scienceRoom.ClassRoomId,
+                StudentIds = new int[] { sam.StudentId }
+            };
+            await classRepository.AddClassAsync(math);
+
+            var newMath = await classRepository.GetClassAsync(math.ClassId);
+
+            newMath.StudentIds.Count().Should().Be(1);
+            newMath.StudentIds.First().Should().Be(sam.StudentId);
+            
+        }
+
     }
 }

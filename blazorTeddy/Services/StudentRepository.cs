@@ -88,14 +88,14 @@ namespace TeddyBlazor.Services
         private void updateStudentToDb(IDbConnection dbConnection, Student student)
         {
             dbConnection.Execute(
-                @"UPDATE Student SET StudentName='@studentName' WHERE StudentId=@id;",
+                @"UPDATE Student SET StudentName=@studentName WHERE StudentId=@id;",
                 new { studentName = student.StudentName, id = student.StudentId });
         }
 
         private int addStudentToDb(IDbConnection dbConnection, Student student)
         {
             return dbConnection.QueryFirst<int>(
-                @"INSERT INTO Student (StudentName) Values (@studentName) RETURNING StudentId;",
+                @"INSERT INTO Student (StudentName) Values ( @studentName ) RETURNING StudentId;",
                 new { studentName = student.StudentName });
         }
 
@@ -172,5 +172,18 @@ namespace TeddyBlazor.Services
             await SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Student>> GetStudentsByClassAsync(int classId)
+        {
+            using(var dbConnection = GetDbConnection())
+            {
+                return await dbConnection.QueryAsync<Student>(
+                    @"select * 
+                      from Student s
+                      inner join StudentCourse sc on s.StudentId = sc.StudentId
+                      where sc.ClassId = @classId",
+                    new { classId }
+                );
+            }
+        }
     }
 }

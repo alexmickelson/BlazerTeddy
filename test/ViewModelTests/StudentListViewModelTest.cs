@@ -12,51 +12,77 @@ namespace Test.ViewModelTests
 {
     public class StudentListViewModelTests
     {
-        private Mock<IStudentRepository> TeddyBlazorRepoMoq;
+        private Mock<IStudentRepository> StudentRepoMoq;
+        private Mock<IClassRepository> ClassRepoMoq;
         private StudentListViewModel viewModel;
+        private Course math;
+        private Course science;
+        private Student adam;
+        private Student benny;
+        private Student spencer;
+        private ClassModel mondayAfternoon;
 
         [SetUp]
         public void SetUp()
         {
-            TeddyBlazorRepoMoq = new Mock<IStudentRepository>();
-            viewModel = new StudentListViewModel(TeddyBlazorRepoMoq.Object);
+            StudentRepoMoq = new Mock<IStudentRepository>();
+            ClassRepoMoq = new Mock<IClassRepository>();
+            viewModel = new StudentListViewModel(StudentRepoMoq.Object,
+                                                 ClassRepoMoq.Object);
+
+
+            math = new Course(){ CourseId = 1, CourseName = "math"};
+            science = new Course(){ CourseId = 2, CourseName = "science"};
+            adam = new Student(){ StudentName="adam", StudentId = 1 };
+            benny = new Student(){ StudentName="benny", StudentId = 2 };
+            spencer = new Student(){ StudentName="spencer", StudentId = 3 };
+
+            mondayAfternoon = new ClassModel()
+            {
+                ClassId = 1,
+                ClassName = "monday afternoon's class",
+                StudentIds = new int[] { adam.StudentId, spencer.StudentId }
+            };
+
+            var studentList = new List<Student>()
+                { adam, benny, spencer };
+            var classList = new ClassModel[] { mondayAfternoon };
+            ClassRepoMoq.Setup(cr => cr.GetAllClassesAsync()).ReturnsAsync(classList);
+            StudentRepoMoq.Setup(sr => sr.GetListAsync()).ReturnsAsync(studentList);
+            StudentRepoMoq.Setup(sr => sr.GetStudentsByClassAsync(mondayAfternoon.ClassId))
+                          .ReturnsAsync(new Student[] { adam, spencer });
         }
 
         [Test]
-        public void FilterTeddyBlazorListByName()
+        public void filter_teddy_blazor_list_by_name()
         {
-            var TeddyBlazorlist = new List<Student>()
-            {
-                new Student(){ StudentName="adam"},
-                new Student(){ StudentName="benny"},
-                new Student(){ StudentName="spencer"}
-            };
-            TeddyBlazorRepoMoq.Setup(sr => sr.GetListAsync()).ReturnsAsync(TeddyBlazorlist);
-
             viewModel.NameFilter = "a";
 
             var actual = viewModel.GetFilteredStudents();
             actual.Count().Should().Be(1);
-            actual.First().StudentName.Should().Be("adam");
+            actual.First().StudentName.Should().Be(adam.StudentName);
         }
 
         [Test]
-        public void NoFiltersSetReturnsAllstudents()
+        public void no_filters_set_returns_all_students()
         {
-            var math = new Course(){ CourseId = 1, Name = "math"};
-            var science = new Course(){ CourseId = 2, Name = "science"};
-            var student1 = new Student(){ StudentName="adam"};
-            var student2 = new Student(){ StudentName="benny"};
-            var student3 = new Student(){ StudentName="spencer"};
-
-            var studentList = new List<Student>()
-                { student1, student2, student3 };
-            TeddyBlazorRepoMoq.Setup(sr => sr.GetListAsync()).ReturnsAsync(studentList);
-
             var actual = viewModel.GetFilteredStudents();
-            actual.Should().Contain(student1);
-            actual.Should().Contain(student2);
-            actual.Should().Contain(student3);
+
+            actual.Should().Contain(adam);
+            actual.Should().Contain(benny);
+            actual.Should().Contain(spencer);
+        }
+
+        [Test]
+        public void can_filter_by_class()
+        {
+            viewModel.ClassIdFilter = mondayAfternoon.ClassId;
+
+            var filteredStudents = viewModel.GetFilteredStudents();
+
+            filteredStudents.Count().Should().Be(2);
+            filteredStudents.Should().Contain(adam);
+            filteredStudents.Should().Contain(spencer);
         }
     }
 }

@@ -24,7 +24,21 @@ namespace TeddyBlazor.Services
                 await validateStudentIds(classModel, dbConnection);
                 await validateClassRoomDimensions(classModel, dbConnection);
                 await storeClassInDb(classModel, dbConnection);
+                await enroleStudents(classModel, dbConnection);
                 await storeSeatingChartInDb(classModel, dbConnection);
+            }
+        }
+
+        private async Task enroleStudents(ClassModel classModel, IDbConnection dbConnection)
+        {
+            foreach(var studentId in classModel.StudentIds ?? new int[]{})
+            {
+                await dbConnection.ExecuteAsync(
+                    @"insert into StudentCourse (StudentId, ClassId)
+                    values (@studentId, @classId);",
+                    new { studentId = studentId, classId = classModel.ClassId }
+                );
+
             }
         }
 
@@ -60,7 +74,7 @@ namespace TeddyBlazor.Services
                 where ClassRoomId = @classRoomId",
                 new { classRoomId = classModel.ClassRoomId }
             );
-            if (!sameDimensions(classModel, classRoom))
+            if (seatingChartTooBig(classModel, classRoom))
             {
                 var exceptionString = String.Format(
                     "cannot save seating chart {0},{1} in classroom with dimensions {2},{3}",
@@ -135,10 +149,13 @@ namespace TeddyBlazor.Services
             }
         }
 
-        private bool sameDimensions(ClassModel classModel, ClassRoom classRoom)
+        private bool seatingChartTooBig(ClassModel classModel, ClassRoom classRoom)
         {
-            return classModel.SeatingChartByStudentID.GetLength(0) == classRoom.SeatsHorizontally 
-                && classModel.SeatingChartByStudentID.GetLength(1) == classRoom.SeatsVertically;
+            var seatingChartHorizontal = classModel.SeatingChartByStudentID.GetLength(0);
+            var seatingChartVertical = classModel.SeatingChartByStudentID.GetLength(1);
+            
+            return seatingChartHorizontal > classRoom.SeatsHorizontally 
+                && seatingChartVertical > classRoom.SeatsVertically;
         }
 
         private async Task storeClassInDb(ClassModel classModel, IDbConnection dbConnection)
@@ -192,9 +209,20 @@ namespace TeddyBlazor.Services
             using (var dbConnection = getDbConnection())
             {
                 var classModel = await getClassFromDbAsync(classId, dbConnection);
+                classModel.StudentIds = await getEnroledStudents(classId, dbConnection);
                 classModel.SeatingChartByStudentID = await getSeatingChartFromDbAsync(classModel.ClassId, dbConnection);
                 return classModel;
             }
+        }
+
+        private async Task<IEnumerable<int>> getEnroledStudents(int classId, IDbConnection dbConnection)
+        {
+            return await dbConnection.QueryAsync<int>(
+                @"select StudentId
+                  from StudentCourse 
+                  where ClassId = @classid",
+                new { classId }
+            );
         }
 
         private async Task<int[,]> getSeatingChartFromDbAsync(int classId, IDbConnection dbConnection)
@@ -283,6 +311,16 @@ namespace TeddyBlazor.Services
         public Task<IEnumerable<ClassModel>> GetClassesByTeacherId(int teacherId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<ClassModel>> GetAllClassesAsync()
+        {
+            using(var dbConnection = getDbConnection())
+            {
+                return await dbConnection.QueryAsync<ClassModel>(
+                    @"select * from ClassModel"
+                );
+            }
         }
     }
 }

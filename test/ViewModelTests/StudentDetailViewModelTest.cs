@@ -48,5 +48,31 @@ namespace Test.ViewModelTests
             viewModel.Student.Restrictions.Should().Contain(student2.StudentId);
         }
 
+        [Test]
+        public void get_restrictions_returns_list_of_strings()
+        {
+            var adam = new Student()
+            {
+                StudentName="adam",
+                StudentId = 1,
+                Restrictions = new int[]{ 2 }
+            };
+            var spencer = new Student()
+            {
+                StudentName="spencer",
+                StudentId = 2,
+                Restrictions = new int[]{ 1 }
+            };
+
+            StudentRepoMoq.Setup(sr => sr.GetStudentAsync(1)).ReturnsAsync(adam);
+            StudentRepoMoq.Setup(sr => sr.GetStudentAsync(2)).ReturnsAsync(spencer);
+            viewModel.Student = adam;
+
+            var restrictions = viewModel.GetRestrictions();
+
+            restrictions.Count().Should().Be(1);
+            restrictions.First().Should().Be(spencer.StudentName);
+        }
+
     }
 }

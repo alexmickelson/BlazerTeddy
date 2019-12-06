@@ -71,7 +71,6 @@
 
     private void runAndReload(Func<Task> action)
     {
-
         var task = Task.Run(async () => 
         {
             await action();

@@ -170,5 +170,46 @@ namespace IntegrationTests.RepositoryTests
             
             newJim.Restrictions.Should().Contain(sam.StudentId);
         }
+
+        [Test]
+        public async Task can_get_list_of_students_by_classId()
+        {
+            var sam = new Student()
+            {
+                StudentName = "sam"
+            };
+            var jim = new Student()
+            {
+                StudentName = "jim"
+            };
+            await studentRepository.AddStudentAsync(sam);
+            await studentRepository.AddStudentAsync(jim);
+            var mathRoom = new ClassRoom()
+            {
+                ClassRoomName = "Math room"
+            };
+            await classRepository.AddClassRoomAsync(mathRoom);
+            var jonathan = new Teacher()
+            {
+                TeacherName = "jonathan"
+            };
+            await classRepository.AddTeacherAsync(jonathan);
+            var mathClass = new ClassModel()
+            {
+                ClassName = "Math in the afternoon",
+                StudentIds = new int[] { sam.StudentId, jim.StudentId },
+                ClassRoomId = mathRoom.ClassRoomId,
+                TeacherId = jonathan.TeacherId
+            };
+            await classRepository.AddClassAsync(mathClass);
+
+            var students = await studentRepository.GetStudentsByClassAsync(mathClass.ClassId);
+
+            students.Count().Should().Be(2);
+            var newSam = students.Where(s => s.StudentId == sam.StudentId).First();
+            var newJim = students.Where(s => s.StudentId == jim.StudentId).First();
+            newSam.StudentName.Should().Be(sam.StudentName);
+            newJim.StudentName.Should().Be(jim.StudentName);
+        }
     }
 }

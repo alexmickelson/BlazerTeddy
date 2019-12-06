@@ -14,5 +14,6 @@ namespace TeddyBlazor.Services
         Task AddStudentAsync(Student sam);
         Task AddUnsignedNoteAsync(Student student, Note note);
         Task AddSignedNoteAsync(Student student, Note note, int teacherId);
+        Task<IEnumerable<Student>> GetStudentsByClassAsync(int classId);
     }
 }

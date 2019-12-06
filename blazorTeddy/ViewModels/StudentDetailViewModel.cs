@@ -36,9 +36,20 @@ namespace TeddyBlazor.ViewModels
 
 
 
-        public IEnumerable<int> GetRestrictions()
+        public IEnumerable<string> GetRestrictions()
         {
-            return Student.Restrictions ?? new int[0];
+            IEnumerable<string> restrictions = new string[]{};
+
+            IEnumerable<Task<Student>> tasks = new Task<Student>[]{};
+            foreach(var studentId in Student.Restrictions)
+            {
+                tasks = tasks.Append(StudentRepository.GetStudentAsync(studentId));
+            }
+            foreach(var task in tasks)
+            {
+                restrictions = restrictions.Append(task.Result.StudentName);
+            }
+            return restrictions;
         }
 
         public async Task AddRestrictionAsync()

@@ -16,5 +16,6 @@ namespace TeddyBlazor.Services
         Task UpdateTeacherAsync(Teacher teacher);
         Task UpdateClassAsync(ClassModel classModel);
         Task<IEnumerable<ClassModel>> GetClassesByTeacherId(int teacherId);
+        Task<IEnumerable<ClassModel>> GetAllClassesAsync();
     }
 }

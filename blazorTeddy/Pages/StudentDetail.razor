@@ -27,7 +27,7 @@
            @bind="vm.NewRestrictionId" />
     <button class="btn btn-secondary"
             type="submit"
-            @onclick="(() => runAndReloadAsync(async () => await vm.AddRestrictionAsync()))">
+            @onclick="(() => runAndReload(async () => await vm.AddRestrictionAsync()))">
         Add Restriction
     </button>
 </div>
@@ -49,9 +49,14 @@
 
     }
 
-    private async Task runAndReloadAsync(Action action)
+    private void runAndReload(Func<Task> action)
     {
-        await Task.Run(action);
-        await vm.LoadStudentAsync(id);
+        var task = Task.Run(async () => 
+        {
+            await Task.Run(action);
+            await vm.LoadStudentAsync(id);
+        });
+        task.Wait();
+        Reload();
     }
 }
