@@ -1,0 +1,93 @@
+
+@using TeddyBlazor.Services
+@using TeddyBlazor.Models
+@using TeddyBlazor.Components
+@using TeddyBlazor.ViewModels
+
+<h3>Notes:</h3>
+<div class="notes">
+
+    <div class="notes-item1">
+        <!-- <h1>Positives</h1> -->
+        <div class="jumbotron centered">
+            <table style="width: 100%">
+                <tr>
+                    <th>Type</th>
+                    <th>Content</th>
+                    <th>Signed By</th>
+                    <th>Date Created</th>
+                </tr>
+            @foreach (var note in vm.GetNotes())
+            {
+                <tr>
+                    <td>@Note.TypeToString(note.NoteType)</td>
+                    <td>@note.Content</td>
+                    <td>@note.TeacherId</td>
+                    <td>@note.DateCreated</td>
+                </tr>
+            }
+            </table>
+        </div>
+
+        <input type="text"
+                placeholder="New Note"
+                @bind="vm.NewNote" />
+        <button class="btn btn-secondary"
+                type="submit"
+                @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
+            Add Note
+        </button>
+        <br />
+        <input type="checkbox" bind="@vm.AnonymousNote"/>Dont sign it
+        <select>
+            <option value="0" selected disabled hidden>Note Type</option>
+            @foreach (var option in vm.GetNoteTypeOptions())
+            {
+                <option value="@option.Item1">@option.Item2</option>
+            }
+        </select> 
+        <div class="text-danger">@vm.errorAlert</div>
+    </div>
+    <!-- <div class="note-item2">
+        <h1>Negatives</h1>
+        <div class="jumbotron centered">
+            @foreach (var note in vm.GetNotes())
+            {
+                <p>@note.Content</p>
+            }
+        </div>
+        <input type="text"
+                placeholder="New Note"
+                @bind="vm.NewNote" />
+        <button class="btn btn-secondary"
+                type="submit"
+                @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
+            Add Note
+        </button>
+        <br />
+    </div> -->
+</div>
+
+@code {
+    [Parameter]
+    public StudentDetailViewModel vm { get; set; }
+
+    [Parameter]
+    public Action ReloadParent { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task runAndReloadAsync(Action action)
+    {
+        await Task.Run(action);
+        ReloadParent();
+        StateHasChanged();
+    }
+
+}

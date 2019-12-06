@@ -11,34 +11,9 @@
 <div class="maincanvas">
     <h1>@vm.Student.StudentName</h1>
     <br />
-    <h3>Notes:</h3>
-    <div class="notes">
-
-        <div class="notes-item1">
-            <!-- <h1>Positives</h1> -->
-            <div class="jumbotron centered">
-                <table style="width: 100%">
-                    <tr>
-                        <th>Type</th>
-                        <th>Content</th>
-                        <th>Signed By</th>
-                        <th>Date Created</th>
-                    </tr>
-                @foreach (var note in vm.GetNotes())
-                {
-                    <tr>
-                        <td>@Note.TypeToString(note.NoteType)</td>
-                        <td>@note.Content</td>
-                        <td>@note.TeacherId</td>
-                        <td>@note.DateCreated</td>
-                    </tr>
-                }
-                </table>
-            </div>
-            <NewNoteComponent student="@vm.Student"></NewNoteComponent>
-        </div>
-       
-    </div>
+    
+    <StudentNoteComponent vm="@vm" 
+                          ReloadParent="@Reload"/>
     <br />
     <h3>Restrictions:</h3>
     <ul class="jumbotron centered">
@@ -61,16 +36,23 @@
     [Parameter]
     public int id { get; set; }
 
+    public Action Reload { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
         await vm.LoadStudentAsync(id);
     }
+
+    protected override void OnInitialized()
+    {
+        Reload = () => this.StateHasChanged();
+
+    }
+
     private async Task runAndReloadAsync(Action action)
     {
         await Task.Run(action);
         await vm.LoadStudentAsync(id);
+        Reload();
     }
-
-
-
 }
