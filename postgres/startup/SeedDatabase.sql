@@ -15,7 +15,6 @@ VALUES ('A note about sam', 1, 1, NOW());
 INSERT INTO Course (Name, TeacherId) VALUES ('Math', 1);
 
 INSERT INTO StudentRestriction VALUES(1,2);
-INSERT INTO StudentRestriction VALUES(2,1);
 
 INSERT INTO StudentCourse VALUES(1, 1, 1);
 INSERT INTO StudentCourse VALUES(2, 1, 1);

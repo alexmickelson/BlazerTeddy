@@ -14,13 +14,15 @@ namespace Test.ViewModelTests
     {
         public Mock<IStudentRepository> StudentRepoMoq { get; private set; }
 
+        private Mock<INewNoteViewModel> NewNoteVMMoq;
         private StudentDetailViewModel viewModel;
 
         [SetUp]
         public void SetUp()
         {
             StudentRepoMoq = new Mock<IStudentRepository>();
-            viewModel = new StudentDetailViewModel(StudentRepoMoq.Object);
+            NewNoteVMMoq = new Mock<INewNoteViewModel>();
+            viewModel = new StudentDetailViewModel(StudentRepoMoq.Object, NewNoteVMMoq.Object);
         }
 
         [Test]
@@ -36,6 +38,7 @@ namespace Test.ViewModelTests
                 .ReturnsAsync(studentList.Find(s => s.StudentId == student1.StudentId));
             StudentRepoMoq.Setup(sr => sr.AddRestrictionAsync(student1.StudentId, student2.StudentId))
                 .Callback(() => student1.Restrictions = student1.Restrictions.Append(student2.StudentId));
+            NewNoteVMMoq.Setup(nn => nn.SetStudent(It.IsAny<Student>()));
 
             await viewModel.LoadStudentAsync(1);
             viewModel.NewRestrictionId = student2.StudentId;

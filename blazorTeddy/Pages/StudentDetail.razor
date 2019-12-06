@@ -13,7 +13,7 @@
     <br />
     
     <StudentNoteComponent vm="@vm" 
-                          ReloadParent="@Reload"/>
+                          ReloadParent="@Reload" />
     <br />
     <h3>Restrictions:</h3>
     <ul class="jumbotron centered">
@@ -53,6 +53,5 @@
     {
         await Task.Run(action);
         await vm.LoadStudentAsync(id);
-        Reload();
     }
 }

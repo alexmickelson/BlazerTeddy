@@ -18,19 +18,16 @@ namespace TeddyBlazor.Services
     public class StudentRepository : IStudentRepository
     {
         private readonly ILogger<StudentRepository> logger;
-        private readonly IRefreshService refreshService;
 
         private List<Student> students { get; set; }
         private Func<IDbConnection> GetDbConnection { get; }
 
         public StudentRepository(Func<IDbConnection> getDbConnection,
-                                 ILogger<StudentRepository> logger,
-                                 IRefreshService refreshService)
+                                 ILogger<StudentRepository> logger)
         {
             students = new List<Student>();
             GetDbConnection = getDbConnection;
             this.logger = logger;
-            this.refreshService = refreshService;
         }
         public async Task UpdateStudentsAsync()
         {
@@ -48,7 +45,6 @@ namespace TeddyBlazor.Services
                     student.Restrictions = assignRestrictions(restrictions, student.StudentId);
                 }
             }
-            refreshService.CallRequestRefresh();
         }
 
         private List<Student> safeGetStudentsFromDb(IDbConnection dbConnection)
@@ -129,7 +125,6 @@ namespace TeddyBlazor.Services
                     note);
             }
             student.Notes = student.Notes.Append(note);
-            refreshService.CallRequestRefresh();
         }
 
         public async Task AddSignedNoteAsync(Student student, Note note, int teacherId)
@@ -147,7 +142,6 @@ namespace TeddyBlazor.Services
             }
             initializeEmptyNoteList(student);
             student.Notes = student.Notes.Append(note);
-            refreshService.CallRequestRefresh();
         }
 
         private static void initializeEmptyNoteList(Student student)

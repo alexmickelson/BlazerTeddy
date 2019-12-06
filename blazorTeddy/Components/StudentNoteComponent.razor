@@ -31,41 +31,26 @@
 
         <input type="text"
                 placeholder="New Note"
-                @bind="vm.NewNote" />
+                @bind="vm.NewNoteVM.Note.Content" />
         <button class="btn btn-secondary"
                 type="submit"
-                @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
+                @onclick="(() => runAndReload(async () => await vm.NewNoteVM.AddNoteAsync()))">
             Add Note
         </button>
         <br />
-        <input type="checkbox" bind="@vm.AnonymousNote"/>Dont sign it
+        <input type="checkbox"
+               @bind-value="vm.NewNoteVM.IsAnonymousNote" 
+               @bind-value:event="oninput"/>
+               Dont sign it
         <select>
             <option value="0" selected disabled hidden>Note Type</option>
-            @foreach (var option in vm.GetNoteTypeOptions())
+            @foreach (var option in vm.NewNoteVM.GetNoteTypeOptions())
             {
                 <option value="@option.Item1">@option.Item2</option>
             }
         </select> 
-        <div class="text-danger">@vm.errorAlert</div>
+        <div class="text-danger">@vm.NewNoteVM.errorAlert</div>
     </div>
-    <!-- <div class="note-item2">
-        <h1>Negatives</h1>
-        <div class="jumbotron centered">
-            @foreach (var note in vm.GetNotes())
-            {
-                <p>@note.Content</p>
-            }
-        </div>
-        <input type="text"
-                placeholder="New Note"
-                @bind="vm.NewNote" />
-        <button class="btn btn-secondary"
-                type="submit"
-                @onclick="(() => runAndReloadAsync(async () => await vm.AddNoteAsync()))">
-            Add Note
-        </button>
-        <br />
-    </div> -->
 </div>
 
 @code {
@@ -83,11 +68,17 @@
     {
     }
 
-    private async Task runAndReloadAsync(Action action)
+    private void runAndReload(Func<Task> action)
     {
-        await Task.Run(action);
+
+        var task = Task.Run(async () => 
+        {
+            await action();
+        });
+        task.Wait();
+        
+        this.StateHasChanged();
         ReloadParent();
-        StateHasChanged();
     }
 
 }

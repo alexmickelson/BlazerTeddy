@@ -9,13 +9,14 @@ using static TeddyBlazor.Models.Note;
 
 namespace TeddyBlazor.ViewModels
 {
-    public class NewNoteViewModel
+
+    public class NewNoteViewModel : INewNoteViewModel
     {
         public Student Student { get; set; }
         public Note Note { get; set; }
         public int TeacherId { get; set; }
         public bool IsAnonymousNote { get; set; }
-        public string errorAlert;
+        public string errorAlert { get; set; }
         private readonly IStudentRepository studentRepository;
         private readonly ILogger<NewNoteViewModel> logger;
 
@@ -48,13 +49,17 @@ namespace TeddyBlazor.ViewModels
             {
 
             };
-        
+        }
+
+        public void SetStudent(Student student)
+        {
+            Student = student;
         }
 
         public IEnumerable<(int, string)> GetNoteTypeOptions()
         {
-            IEnumerable<(int, string)> options = new (int, string)[]{};
-            foreach(var type in (NoteTypes[])Enum.GetValues(typeof(NoteTypes)))
+            IEnumerable<(int, string)> options = new (int, string)[] { };
+            foreach (var type in (NoteTypes[])Enum.GetValues(typeof(NoteTypes)))
             {
                 var option = ((int)type, Note.TypeToString(type));
                 options = options.Append(option);
@@ -62,5 +67,5 @@ namespace TeddyBlazor.ViewModels
             return options;
         }
     }
-    
+
 }
