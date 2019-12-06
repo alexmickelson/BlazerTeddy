@@ -9,7 +9,7 @@ using TeddyBlazor.Services;
 
 namespace TeddyBlazor.ViewModels
 {
-    public class StudentListViewModel
+    public class StudentListViewModel : IBaseViewModel
     {
         public readonly IStudentRepository StudentRepository;
         private readonly IClassRepository classRepository;
@@ -74,6 +74,36 @@ namespace TeddyBlazor.ViewModels
         public IEnumerable<Student> filterByName(IEnumerable<Student> students, string namefilter)
         {
             return students.Where(s => s.StudentName.ToLower().StartsWith(namefilter.ToLower()));
+        }
+
+        public void OnInitialized()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnInitializedAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnParametersSet()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnParametersSetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnAfterRender()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnAfterRenderAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

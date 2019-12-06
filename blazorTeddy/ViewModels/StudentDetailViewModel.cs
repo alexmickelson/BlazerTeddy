@@ -8,7 +8,7 @@ using static TeddyBlazor.Models.Note;
 
 namespace TeddyBlazor.ViewModels
 {
-    public class StudentDetailViewModel
+    public class StudentDetailViewModel : IBaseViewModel
     {
         public readonly IStudentRepository StudentRepository;
         public readonly INewNoteViewModel NewNoteVM;
@@ -57,5 +57,34 @@ namespace TeddyBlazor.ViewModels
             await StudentRepository.AddRestrictionAsync(Student.StudentId, NewRestrictionId);
         }
 
+        public void OnInitialized()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnInitializedAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnParametersSet()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnParametersSetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnAfterRender()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnAfterRenderAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

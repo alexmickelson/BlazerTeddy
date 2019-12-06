@@ -10,7 +10,7 @@ using static TeddyBlazor.Models.Note;
 namespace TeddyBlazor.ViewModels
 {
 
-    public class NewNoteViewModel : INewNoteViewModel
+    public class NewNoteViewModel : INewNoteViewModel, IBaseViewModel
     {
         public Student Student { get; set; }
         public Note Note { get; set; }
@@ -67,6 +67,36 @@ namespace TeddyBlazor.ViewModels
                 options = options.Append(option);
             }
             return options;
+        }
+
+        public void OnInitialized()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnInitializedAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnParametersSet()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnParametersSetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnAfterRender()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnAfterRenderAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 
