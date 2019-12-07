@@ -40,14 +40,24 @@ namespace TeddyBlazor
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(
+                options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredUniqueChars = 0;
+                    options.Password.RequiredLength = 0;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddTransient<Func<IDbConnection>>(c => getDbConnection);
-            services.AddTransient<Func<string>>(c => () => psqlConnection );
+            services.AddTransient<Func<string>>(c => () => psqlConnection);
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
             services.AddTransient<INewNoteViewModel, StudentNoteViewModel>();
@@ -57,7 +67,7 @@ namespace TeddyBlazor
             services.AddTransient<ClassListViewModel>();
             services.AddTransient<ClassDetailViewModel>();
             services.AddTransient<SeatingChartViewModel>();
-            
+
         }
 
 
@@ -66,7 +76,7 @@ namespace TeddyBlazor
         {
             var dbConnectionValidator = new DbConnectionValidator(getDbConnection);
             dbConnectionValidator.validateConnection();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
