@@ -15,7 +15,7 @@ VALUES ('Science Room 3:00', 1, 1);
 INSERT INTO Note (Content, StudentId, NoteType, DateCreated)
 VALUES ('A note about sam', 1, 1, NOW());
 
-INSERT INTO Course (Name, TeacherId) VALUES ('Math', 1);
+INSERT INTO Course (CourseName, TeacherId) VALUES ('Math', 1);
 
 INSERT INTO StudentRestriction VALUES(1,2);
 

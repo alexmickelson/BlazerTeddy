@@ -23,6 +23,7 @@ namespace TeddyBlazor.ViewModels
             this.StudentRepository = StudentRepository;
             this.NewNoteVM = newNoteViewModel;
             Student = new Student();
+            Restrictions = new string[] {};
         }
 
         public async Task LoadStudentAsync(int studentId)

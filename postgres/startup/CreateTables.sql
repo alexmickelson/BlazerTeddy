@@ -30,7 +30,7 @@ CREATE TABLE Note(
 );
 CREATE TABLE Course (
     CourseId SERIAL PRIMARY KEY,
-    Name text,
+    CourseName text,
     TeacherId integer REFERENCES Teacher(TeacherId)
 );
 CREATE TABLE StudentRestriction (

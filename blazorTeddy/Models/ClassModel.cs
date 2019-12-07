@@ -8,7 +8,7 @@ namespace TeddyBlazor.Models
         public string ClassName { get; set; }
         public int ClassRoomId { get; set; }
         public int TeacherId { get; set; }
-        public IEnumerable<int> StudentIds { get; set; }
+        public IEnumerable<Enrollment> Enrollments { get; set; }
         public int[,] SeatingChartByStudentID { get; set; } = new int[0,0];
         
     }

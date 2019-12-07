@@ -10,6 +10,7 @@ using FluentAssertions;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Collections.Generic;
 
 namespace IntegrationTests.RepositoryTests
 {
@@ -18,9 +19,11 @@ namespace IntegrationTests.RepositoryTests
         private Func<NpgsqlConnection> getDbConnection;
         private Mock<ILogger<StudentRepository>> studentLoggerMoq;
         private Mock<ILogger<ClassRepository>> classLoggerMoq;
+        private Mock<ILogger<CourseRepository>> courseLoggerMoq;
         private Func<string> psqlString;
         private IClassRepository classRepository;
         private StudentRepository studentRepository;
+        private CourseRepository courseRepository;
         private ClassRoom scienceRoom;
         private Teacher jonathan;
         private Teacher heber;
@@ -30,34 +33,48 @@ namespace IntegrationTests.RepositoryTests
         private ClassModel mathClass;
         private ClassModel scienceClass;
         private ClassModel notScienceClass;
+        private Course math1010;
 
         [SetUp]
         public async Task Setup()
         {
+            initializeObjects();
+            await seedDatabase();
+
+            // await classRepository.EnrollStudentAsync(sam.StudentId, mathClass.ClassId, );
+        }
+
+        private void initializeObjects()
+        {
             getDbConnection = () => new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;");
             studentLoggerMoq = new Mock<ILogger<StudentRepository>>();
             classLoggerMoq = new Mock<ILogger<ClassRepository>>();
+            courseLoggerMoq = new Mock<ILogger<CourseRepository>>();
             psqlString = () => string.Empty;
-            classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object, psqlString);
-
             studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
+            courseRepository = new CourseRepository(getDbConnection, courseLoggerMoq.Object);
+            classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object, psqlString);
+        }
+
+        private async Task seedDatabase()
+        {
             scienceRoom = new ClassRoom()
-            { 
+            {
                 ClassRoomName = "Science Room",
                 SeatsHorizontally = 10,
                 SeatsVertically = 8
             };
             scienceRoom = new ClassRoom()
-            { 
+            {
                 ClassRoomName = "Science Room",
                 SeatsHorizontally = 10,
                 SeatsVertically = 8
             };
-            jonathan = new Teacher(){ TeacherName = "jonathan" };
-            heber = new Teacher(){ TeacherName = "not jonathan" };
-            sam = new Student(){ StudentName = "sam"};
-            ben = new Student(){ StudentName = "ben"};
-            tim = new Student(){ StudentName = "tim"};
+            jonathan = new Teacher() { TeacherName = "jonathan" };
+            heber = new Teacher() { TeacherName = "not jonathan" };
+            sam = new Student() { StudentName = "sam" };
+            ben = new Student() { StudentName = "ben" };
+            tim = new Student() { StudentName = "tim" };
             await classRepository.AddClassRoomAsync(scienceRoom);
             await classRepository.AddTeacherAsync(jonathan);
             await classRepository.AddTeacherAsync(heber);
@@ -68,26 +85,33 @@ namespace IntegrationTests.RepositoryTests
             {
                 ClassName = "math",
                 TeacherId = jonathan.TeacherId,
-                ClassRoomId = scienceRoom.ClassRoomId,
-                StudentIds = new int[]{ sam.StudentId }
+                ClassRoomId = scienceRoom.ClassRoomId
             };
             scienceClass = new ClassModel()
             {
                 ClassName = "science",
                 TeacherId = jonathan.TeacherId,
-                ClassRoomId = scienceRoom.ClassRoomId,
-                StudentIds = new int[]{ sam.StudentId }
+                ClassRoomId = scienceRoom.ClassRoomId
             };
             notScienceClass = new ClassModel()
             {
                 ClassName = "not science",
                 TeacherId = heber.TeacherId,
-                ClassRoomId = scienceRoom.ClassRoomId,
-                StudentIds = new int[]{ sam.StudentId }
+                ClassRoomId = scienceRoom.ClassRoomId
             };
             await classRepository.AddClassAsync(mathClass);
             await classRepository.AddClassAsync(scienceClass);
             await classRepository.AddClassAsync(notScienceClass);
+            math1010 = new Course()
+            {
+                CourseName = "Math 1010",
+                TeacherId = jonathan.TeacherId
+            };
+            await courseRepository.AddCourseAsync(math1010);
+
+            await classRepository.EnrollStudentAsync(sam.StudentId, mathClass.ClassId, math1010.CourseId);
+            await classRepository.EnrollStudentAsync(sam.StudentId, scienceClass.ClassId, math1010.CourseId);
+            await classRepository.EnrollStudentAsync(sam.StudentId, notScienceClass.ClassId, math1010.CourseId);
         }
 
         [TearDown]
@@ -213,12 +237,10 @@ namespace IntegrationTests.RepositoryTests
             var jonathan = new Teacher(){ TeacherName = "jonathan" };
             await classRepository.AddTeacherAsync(jonathan);
 
-
             jonathan.TeacherName = "heber";
-            
             await classRepository.UpdateTeacherAsync(jonathan);
-            var newTeacher = await classRepository.GetTeacherAsync(jonathan.TeacherId);
 
+            var newTeacher = await classRepository.GetTeacherAsync(jonathan.TeacherId);
             newTeacher.TeacherName.Should().Be(jonathan.TeacherName);
         }
 
@@ -259,31 +281,12 @@ namespace IntegrationTests.RepositoryTests
 
             classList.Where(c => c.ClassId == mathClass.ClassId)
                      .First()
-                     .StudentIds
-                     .Should().Contain(sam.StudentId);
+                     .Enrollments.Select(e => e.StudentId)
+                     .Should().Contain(sam.StudentId, "sam is enrolled in the mathclass");
             classList.Where(c => c.ClassId == scienceClass.ClassId)
                      .First()
-                     .StudentIds
-                     .Should().Contain(sam.StudentId);
-        }
-
-        [Test]
-        public async Task add_students_in_class_on_insert()
-        {
-            var math = new ClassModel()
-            {
-                ClassName = "math",
-                TeacherId = jonathan.TeacherId,
-                ClassRoomId = scienceRoom.ClassRoomId,
-                StudentIds = new int[] { sam.StudentId }
-            };
-            await classRepository.AddClassAsync(math);
-
-            var newMath = await classRepository.GetClassAsync(math.ClassId);
-
-            newMath.StudentIds.Count().Should().Be(1);
-            newMath.StudentIds.First().Should().Be(sam.StudentId);
-            
+                     .Enrollments.Select(e => e.StudentId)
+                     .Should().Contain(sam.StudentId, "sam is enrolled in the scienceclass");
         }
 
     }

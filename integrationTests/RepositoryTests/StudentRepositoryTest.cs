@@ -20,20 +20,67 @@ namespace IntegrationTests.RepositoryTests
         private Mock<ILogger<StudentRepository>> studentLoggingMoq;
         private IStudentRepository studentRepository;
         private Mock<ILogger<ClassRepository>> classLoggerMoq;
+        private Mock<ILogger<CourseRepository>> courseLoggerMoq;
         private Func<string> psqlString;
         private ClassRepository classRepository;
+        private CourseRepository courseRepository;
+        private Student sam;
+        private Student jim;
+        private Teacher jonathan;
+        private Course math1010;
+        private ClassModel mathClass;
+        private Note samsNote;
 
         [SetUp]
-        public void Setup()
+        public async Task Setup()
         {
             studentLoggingMoq = new Mock<ILogger<StudentRepository>>();
             Func<IDbConnection> getDbConnection = () =>
                 new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;");
-            studentRepository = new StudentRepository(getDbConnection,
-                                                      studentLoggingMoq.Object);
             classLoggerMoq = new Mock<ILogger<ClassRepository>>();
+            courseLoggerMoq = new Mock<ILogger<CourseRepository>>();
             psqlString = () => string.Empty;
             classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object, psqlString);
+            courseRepository = new CourseRepository(getDbConnection, courseLoggerMoq.Object);
+            
+            studentRepository = new StudentRepository(getDbConnection, studentLoggingMoq.Object);
+
+            await seedDatbase();
+        }
+
+        private async Task seedDatbase()
+        {
+            sam = new Student() { StudentName = "sam" };
+            jim = new Student() { StudentName = "jim" };
+            await studentRepository.AddStudentAsync(sam);
+            await studentRepository.AddStudentAsync(jim);
+            samsNote = new Note(){ Content = "sam's note" };
+            await studentRepository.AddUnsignedNoteAsync(sam, samsNote);
+            var mathRoom = new ClassRoom()
+            {
+                ClassRoomName = "Math room"
+            };
+            await classRepository.AddClassRoomAsync(mathRoom);
+            jonathan = new Teacher()
+            {
+                TeacherName = "jonathan"
+            };
+            await classRepository.AddTeacherAsync(jonathan);
+            math1010 = new Course() 
+            {
+                CourseName = "math 1010",
+                TeacherId = jonathan.TeacherId
+            };
+            await courseRepository.AddCourseAsync(math1010);
+            mathClass = new ClassModel()
+            {
+                ClassName = "Math in the afternoon",
+                ClassRoomId = mathRoom.ClassRoomId,
+                TeacherId = jonathan.TeacherId
+            };
+            await classRepository.AddClassAsync(mathClass);
+            await classRepository.EnrollStudentAsync(sam.StudentId, mathClass.ClassId, math1010.CourseId);
+            await classRepository.EnrollStudentAsync(jim.StudentId, mathClass.ClassId, math1010.CourseId);
         }
 
         [TearDown]
@@ -44,40 +91,21 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_insert_and_retrieve_student()
         {
-            var sam = new Student(){ StudentName = "sam" };
-            
-            await studentRepository.AddStudentAsync(sam);
-
             var newSam = await studentRepository.GetStudentAsync(sam.StudentId);
-            newSam.StudentName.Should().Be("sam");
+            newSam.StudentName.Should().Be(sam.StudentName);
         }
 
         [Test]
         public async Task can_add_note_to_student()
         {
-            var sam = new Student(){ StudentName = "sam" };
-            await studentRepository.AddStudentAsync(sam);
-            var note = new Note(){ Content = "sam's note" };
-            await studentRepository.AddUnsignedNoteAsync(sam, note);
-
             var newSam = await studentRepository.GetStudentAsync(sam.StudentId);
-            newSam.Notes.Where(n => n.Content == note.Content)
+            newSam.Notes.Where(n => n.Content == samsNote.Content)
                 .Should().NotBeNullOrEmpty();
         }
 
         [Test]
         public async Task can_add_signed_note_to_database()
         {
-            var jonathan = new Teacher()
-            {
-                TeacherName = "jonathan"
-            };
-            await classRepository.AddTeacherAsync(jonathan);
-            var sam = new Student()
-            {
-                StudentName = "sam"
-            };
-            await studentRepository.AddStudentAsync(sam);
             var note = new Note()
             {
                 Content = "A positive note about sam",
@@ -111,11 +139,6 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_add_unsigned_note_to_database()
         {
-            var sam = new Student()
-            {
-                StudentName = "sam"
-            };
-            await studentRepository.AddStudentAsync(sam);
             var note = new Note()
             {
                 Content = "A positive note about sam",
@@ -124,7 +147,6 @@ namespace IntegrationTests.RepositoryTests
                 DateCreated = DateTime.Now
             };
 
-            Thread.Sleep(2000);
             await studentRepository.AddUnsignedNoteAsync(sam, note);
 
             var samWithNote = await studentRepository.GetStudentAsync(sam.StudentId);
@@ -150,11 +172,6 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_add_restriction_to_student()
         {
-            var sam = new Student(){ StudentName = "sam" };
-            var jim = new Student(){ StudentName = "jim" };
-            await studentRepository.AddStudentAsync(sam);
-            await studentRepository.AddStudentAsync(jim);
-            
             await studentRepository.AddRestrictionAsync(sam.StudentId, jim.StudentId);
             var newSam = await studentRepository.GetStudentAsync(sam.StudentId);
             
@@ -163,12 +180,7 @@ namespace IntegrationTests.RepositoryTests
 
         [Test]
         public async Task restrictions_are_transative()
-        {
-            var sam = new Student(){ StudentName = "sam" };
-            var jim = new Student(){ StudentName = "jim" };
-            await studentRepository.AddStudentAsync(sam);
-            await studentRepository.AddStudentAsync(jim);
-            
+        {            
             await studentRepository.AddRestrictionAsync(sam.StudentId, jim.StudentId);
             var newJim = await studentRepository.GetStudentAsync(jim.StudentId);
             
@@ -178,34 +190,6 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_get_list_of_students_by_classId()
         {
-            var sam = new Student()
-            {
-                StudentName = "sam"
-            };
-            var jim = new Student()
-            {
-                StudentName = "jim"
-            };
-            await studentRepository.AddStudentAsync(sam);
-            await studentRepository.AddStudentAsync(jim);
-            var mathRoom = new ClassRoom()
-            {
-                ClassRoomName = "Math room"
-            };
-            await classRepository.AddClassRoomAsync(mathRoom);
-            var jonathan = new Teacher()
-            {
-                TeacherName = "jonathan"
-            };
-            await classRepository.AddTeacherAsync(jonathan);
-            var mathClass = new ClassModel()
-            {
-                ClassName = "Math in the afternoon",
-                StudentIds = new int[] { sam.StudentId, jim.StudentId },
-                ClassRoomId = mathRoom.ClassRoomId,
-                TeacherId = jonathan.TeacherId
-            };
-            await classRepository.AddClassAsync(mathClass);
 
             var students = await studentRepository.GetStudentsByClassAsync(mathClass.ClassId);
 

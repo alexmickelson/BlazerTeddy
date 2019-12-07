@@ -48,11 +48,12 @@ namespace TeddyBlazor
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddTransient<Func<IDbConnection>>(c => getDbConnection);
             services.AddTransient<Func<string>>(c => () => psqlConnection );
-            services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<StudentListViewModel>();
             services.AddTransient<StudentDetailViewModel>();
             services.AddTransient<INewNoteViewModel, StudentNoteViewModel>();
+            services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<IClassRepository, ClassRepository>();
+            services.AddTransient<ICourseRepository, CourseRepository>();
             services.AddTransient<ClassListViewModel>();
             services.AddTransient<ClassDetailViewModel>();
             services.AddTransient<SeatingChartViewModel>();
