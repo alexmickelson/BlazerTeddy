@@ -14,7 +14,7 @@ namespace TeddyBlazor.ViewModels.ClassDetail
         public ClassModel SelectedClass { get; set; }
         public ClassRoom ClassRoom { get; set; }
         public Student[,] Students { get; set; }
-        public double HorizontalFraction => (1.0 / this.ClassRoom.SeatsHorizontally) * 100;
+        public double HorizontalFraction => ((1.0 / this.ClassRoom.SeatsHorizontally) * 100) - 1;
         public SeatingChartViewModel(IStudentRepository studentRepository,
                                      IClassRepository classRepository,
                                      ICourseRepository courseRepository)

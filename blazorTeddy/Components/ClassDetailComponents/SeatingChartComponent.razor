@@ -6,32 +6,33 @@
 @inject SeatingChartViewModel vm
 
 <h3>SeatingChart</h3>
-<div class="row" >
-@for(int i = 0; i < vm.ClassRoom.SeatsHorizontally; i++)
+<hr/>
+@for(int j = 0; j < vm.ClassRoom.SeatsVertically; j++)
 {
-    <div class="seatingAssignments"
-         style="width: @vm.HorizontalFraction%;">
-        <hr/>
-    @for(int j = 0; j < vm.ClassRoom.SeatsVertically; j++)
+    <div class="row" style="display: flex; margin-bottom: .3em;" >
+    @for(int i = 0; i < vm.ClassRoom.SeatsHorizontally; i++)
     {
-        <a class="nav-link" 
-           href="@vm.GetStudentLink(i,j)">
-            <div class="card"
-                style="width: 100%;">
-                <div class="card-header">
-                    @vm.Students[i,j].StudentName <span style="visibility: hidden;">a</span>
+        <div class="seatingAssignments"
+            style="width: @vm.HorizontalFraction%; margin-right: 1%;">
+            <a class="nav-link" 
+            href="@vm.GetStudentLink(i,j)"
+            style="height: 100%;">
+                <div class="card"
+                     style="width: 100%; height: 100%;">
+                    <div class="card-header">
+                        @vm.Students[i,j].StudentName <span style="visibility: hidden;">a</span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            @vm.GetCourse(i,j) <span style="visibility: hidden;">a</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        @vm.GetCourse(i,j) <span style="visibility: hidden;">a</span>
-                    </li>
-                </ul>
-            </div>
-        </a>
+            </a>
+        </div>
     }
     </div>
 }
-</div>
 
 @code {
     [Parameter]

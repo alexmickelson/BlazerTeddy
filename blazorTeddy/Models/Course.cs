@@ -7,5 +7,6 @@ namespace TeddyBlazor.Models
         public int CourseId { get; set; }
         public string CourseName { get; set; }
         public int TeacherId { get; set; }
+        public IEnumerable<int> StudentIds { get; set; } = new int[] {};
     }
 }

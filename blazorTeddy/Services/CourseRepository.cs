@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using TeddyBlazor.Models;
@@ -54,12 +55,25 @@ namespace TeddyBlazor.Services
         {
             using (var dbConnection = getDbConnection())
             {
-                return await dbConnection.QueryFirstAsync<Course>(
-                    @"select * from Course
+                var course = await dbConnection.QueryFirstAsync<Course>(
+                    @"select *
+                      from Course
                       where CourseId = @courseId",
                     new { courseId }
                 );
+                course.StudentIds = await getStudentIds(courseId, dbConnection);
+
+                return course;
             }
+        }
+
+        private async Task<IEnumerable<int>> getStudentIds(int courseId, IDbConnection dbConnection)
+        {
+             return await dbConnection.QueryAsync<int>(
+                @"select StudentId from StudentCourse
+                      where CourseId = @courseId",
+                new { courseId }
+            );
         }
 
         public async Task<Course> GetCourseAsync(int studentId, int classId)
@@ -69,10 +83,40 @@ namespace TeddyBlazor.Services
                 return await dbConnection.QueryFirstAsync<Course>(
                     @"select * from Course c
                       inner join StudentCourse sc on c.CourseId = sc.CourseId
-                      where sc.StudentId = @studentId and sc.ClassId = @classId",
+                      where sc.StudentId = @studentId and sc.ClassId = @classId;",
                     new { studentId, classId }
                 );
             }
+        }
+
+        public async Task<IEnumerable<Course>> GetCoursesByClassId(int classId)
+        {
+            using (var dbConnection = getDbConnection())
+            {
+                var courses = await dbConnection.QueryAsync<Course>(
+                    @"select c.* from course c
+                      inner join StudentCourse sc on c.CourseId = sc.CourseId
+                      where sc.ClassId = @classId
+                      group by c.courseid",
+                    new { classId }
+                );
+                foreach(var course in courses)
+                {
+                    course.StudentIds = await getStudentIdsByClassAndCourse(course.CourseId, classId, dbConnection);
+                }
+                return courses;
+            }
+        }
+
+        private async Task<IEnumerable<int>> getStudentIdsByClassAndCourse(int courseId, int classId, IDbConnection dbConnection)
+        {
+             return await dbConnection.QueryAsync<int>(
+                @"select StudentId 
+                  from StudentCourse
+                  where CourseId = @courseId
+                    and ClassId = @classId",
+                new { courseId, classId }
+            );
         }
     }
 }

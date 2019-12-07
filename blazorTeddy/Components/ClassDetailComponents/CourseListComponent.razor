@@ -6,21 +6,28 @@
 
 @inject ClassDetailCourseListViewModel vm
 
-<a class="nav-link" href="#">
-    <div class="card"
-        style="width: 15rem;">
-    <div class="card-header">
-        div
-    </div>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">ClassRoom: </li>
-    </ul>
-    </div>
-</a>
+
+@foreach(var course in vm.Courses)
+{
+    <a class="nav-link" href="/CourseDetail/@course.CourseId"  style="float: left">
+        <div class="card"
+            style="width: 15rem;">
+        <div class="card-header">
+            @course.CourseName
+        </div>
+        <ul class="list-group list-group-flush">
+            @foreach(var studentName in vm.GetStudentNamesByCourse(course.CourseId))
+            {
+                <li class="list-group-item">@studentName</li>
+            }
+        </ul>
+        </div>
+    </a>
+}
 @code
 {
     [Parameter]
-    public IEnumerable<Course> Courses { get; set; }
+    public int classId { get; set; }
 
     protected override void OnInitialized()
     {
@@ -34,13 +41,12 @@
 
     protected override void OnParametersSet()
     {
-        vm.Courses = Courses;
         vm.OnParametersSet();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        vm.Courses = Courses;
+        vm.ClassId = classId;
         await vm.OnParametersSetAsync();
     }
 }

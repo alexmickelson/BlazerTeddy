@@ -15,17 +15,21 @@ VALUES ('Science Room 3:00', 1, 1);
 INSERT INTO Note (Content, StudentId, NoteType, DateCreated)
 VALUES ('A note about sam', 1, 1, NOW());
 
-INSERT INTO Course (CourseName, TeacherId) VALUES ('Math', 1);
+INSERT INTO Course (CourseName, TeacherId) VALUES ('Math 1010', 1);
+INSERT INTO Course (CourseName, TeacherId) VALUES ('Computer Science 1400', 1);
 
 INSERT INTO StudentRestriction VALUES(1,2);
 
---enrole sam and tim in science room at 1 for math
+--enrole sam and tim in science room at 1 for math1010
 INSERT INTO StudentCourse VALUES(1, 1, 1);
 INSERT INTO StudentCourse VALUES(2, 1, 1);
+--enrole spencer in the science room at 1 for computer science
+INSERT INTO StudentCourse VALUES(3, 1, 2);
 
---enrole sam and spencer in science room at 3 for math
-INSERT INTO StudentCourse VALUES(1, 2, 1);
-INSERT INTO StudentCourse VALUES(3, 2, 1);
+--enrole sam and spencer in science room at 3 for computer Science
+INSERT INTO StudentCourse VALUES(1, 2, 2);
+INSERT INTO StudentCourse VALUES(3, 2, 2);
+
 
 INSERT INTO Assignment VALUES(1, 1, 'Math Assignment');
 
@@ -39,7 +43,7 @@ Values (1, 2, 1, 1);
 INSERT INTO SeatingAssignment (ClassId, StudentId, HorizontalCoordinate, VerticalCoordinate)
 Values (2, 1, 0, 3);
 INSERT INTO SeatingAssignment (ClassId, StudentId, HorizontalCoordinate, VerticalCoordinate)
-Values (2, 2, 1, 1);
+Values (2, 3, 1, 1);
 
 -- SELECT * FROM Student;
 -- SELECT * FROM Teacher;

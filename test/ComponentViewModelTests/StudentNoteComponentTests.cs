@@ -9,7 +9,7 @@ using TeddyBlazor.Models;
 using TeddyBlazor.Services;
 using TeddyBlazor.ViewModels;
 
-namespace Test.ViewModelTests
+namespace Test.ComponentViewModelTests
 {
     public class NewNoteComponentTests
     {
