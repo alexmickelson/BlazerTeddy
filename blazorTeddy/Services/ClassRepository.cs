@@ -341,5 +341,10 @@ namespace TeddyBlazor.Services
                 );
             }
         }
+
+        public Task<Course> GetCourseAsync(int studentId, int classId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

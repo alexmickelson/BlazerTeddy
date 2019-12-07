@@ -6,24 +6,24 @@
 @inject SeatingChartViewModel vm
 
 <h3>SeatingChart</h3>
-<div class="row">
+<div class="row" >
 @for(int i = 0; i < vm.ClassRoom.SeatsHorizontally; i++)
 {
     <div class="seatingAssignments"
          style="width: @vm.HorizontalFraction%;">
-    <hr/>
+        <hr/>
     @for(int j = 0; j < vm.ClassRoom.SeatsVertically; j++)
     {
         <a class="nav-link" 
-           href="/ClassDetail/@vm.GetStudentIdOrDefault(i,j)">
+           href="@vm.GetStudentLink(i,j)">
             <div class="card"
                 style="width: 100%;">
                 <div class="card-header">
-                    @vm.GetStudentOrDefault(i,j)
+                    @vm.Students[i,j].StudentName <span style="visibility: hidden;">a</span>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        @vm.GetCourseOrDefault(i,j)
+                        @vm.GetCourse(i,j) <span style="visibility: hidden;">a</span>
                     </li>
                 </ul>
             </div>
