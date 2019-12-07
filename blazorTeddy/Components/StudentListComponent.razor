@@ -4,42 +4,47 @@
 
 @inject StudentListViewModel vm
 
-<h3>StudentList</h3>
 
-<input type="text"
-        @bind-value="vm.NameFilter" 
-        @bind-value:event="oninput"/>
-<select @bind-value="vm.ClassIdFilter" 
-        @bind-value:event="oninput">
-    <option value="-1">Class</option>
-    @foreach (var option in vm.GetClassOptions())
-    {
-        <option value="@option.ClassId">@option.ClassName</option>
-    }
-</select> 
+        <div style="padding: 1rem">
+            <h3 >StudentList</h3>
 
-@foreach (var student in vm.GetFilteredStudents())
-{
- <div><a class="btn btn-secondary" href="/StudentDetail/@student.StudentId">@student.StudentName</a></div>
-}
+            <input type="text" placeholder="Search"
+                   @bind-value="vm.NameFilter"
+                   @bind-value:event="oninput" />
+            <select @bind-value="vm.ClassIdFilter"
+                    @bind-value:event="oninput">
+                <option value="-1">Class</option>
+                @foreach (var option in vm.GetClassOptions())
+                {
+                    <option value="@option.ClassId">@option.ClassName</option>
+                }
+            </select>
 
+            @foreach (var student in vm.GetFilteredStudents())
+            {
+                <div class="nav-item px-3 ">
+                    <a class="nav-link " href="/StudentDetail/@student.StudentId"><span class="oi oi-person" aria-hidden="true"></span><span>@student.StudentName</span></a>
+                </div>
+            }
 
-@code {
-    
-    protected override void OnInitialized()
-    {
-        vm.OnInitialized();
-    }
-    protected override async Task OnInitializedAsync()
-    {
-        await vm.OnInitializedAsync();
-    }
-    protected override void OnParametersSet()
-    {
-        vm.OnParametersSet();
-    }
-    protected override async Task OnParametersSetAsync()
-    {
-        await vm.OnParametersSetAsync();
-    }
-}
+        </div>
+
+        @code {
+
+            protected override void OnInitialized()
+            {
+                vm.OnInitialized();
+            }
+            protected override async Task OnInitializedAsync()
+            {
+                await vm.OnInitializedAsync();
+            }
+            protected override void OnParametersSet()
+            {
+                vm.OnParametersSet();
+            }
+            protected override async Task OnParametersSetAsync()
+            {
+                await vm.OnParametersSetAsync();
+            }
+        }

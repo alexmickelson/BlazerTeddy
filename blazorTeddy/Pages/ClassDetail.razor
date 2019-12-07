@@ -7,48 +7,52 @@
 
 @inject ClassDetailViewModel vm
 
-<h3>Classdetail</h3>
-
-
-<ClassDetailNavigationComponent SelectTab="@vm.SelectTab"></ClassDetailNavigationComponent>
-
-<div class="jumbotron centered">
-    <div class="@vm.SeatingChartCssClass">
-        <SeatingChartComponent 
-            SelectedClass="@vm.SelectedClass">
-        </SeatingChartComponent>
-    </div>
-    <div class="@vm.CourseCssClass">
-        <h1>courses</h1>
-    </div>
-
+<div class="top-row px-4" style="background-color: lightslategray;">
 </div>
 
-@code {
+<div class="jumbotron centered">
+    <h3>Classdetail</h3>
 
-    [Parameter]
-    public int classId { get; set; }
-    
-    protected override void OnInitialized()
-    {
-        vm.Reload = () => this.StateHasChanged();
-        vm.OnInitialized();
-    }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await vm.OnInitializedAsync();
-    }
+    <ClassDetailNavigationComponent SelectTab="@vm.SelectTab"></ClassDetailNavigationComponent>
 
-    protected override void OnParametersSet()
-    {
-        vm.ClassId = classId;
-        vm.OnParametersSet();
-    }
+    <div class="jumbotron centered">
+        <div class="@vm.SeatingChartCssClass">
+            <SeatingChartComponent SelectedClass="@vm.SelectedClass">
+            </SeatingChartComponent>
+        </div>
+        <div class="@vm.CourseCssClass">
+            <h1>courses</h1>
+        </div>
 
-    protected override async Task OnParametersSetAsync()
-    {
-        vm.ClassId = classId;
-        await vm.OnParametersSetAsync();
+    </div>
+    </div>
+
+    @code {
+
+        [Parameter]
+        public int classId { get; set; }
+
+        protected override void OnInitialized()
+        {
+            vm.Reload = () => this.StateHasChanged();
+            vm.OnInitialized();
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await vm.OnInitializedAsync();
+        }
+
+        protected override void OnParametersSet()
+        {
+            vm.ClassId = classId;
+            vm.OnParametersSet();
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            vm.ClassId = classId;
+            await vm.OnParametersSetAsync();
+        }
     }
-}

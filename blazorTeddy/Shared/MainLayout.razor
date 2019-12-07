@@ -1,17 +1,21 @@
 ﻿@inherits LayoutComponentBase
 @using TeddyBlazor.Components
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+    <div class="sidebar">
+        <div class="top-row px-4" style="background-color: lightslategray;"></div>
+            <NavMenu/>
+        </div>
 
-<div class="main">
-    <div class="top-row px-4">
-        <LoginDisplay />
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-    </div>
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
-<div class="sidebar"><StudentListComponent></StudentListComponent></div>
+        <div class="main">
+            <div class="top-row px-4">
+                <LoginDisplay/>
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank"></a>
+            </div>
+            <div class="content px-4">
+                @Body
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="top-row px-4" style="background-color: lightslategray;">
+            </div><StudentListComponent></StudentListComponent>
+        </div>

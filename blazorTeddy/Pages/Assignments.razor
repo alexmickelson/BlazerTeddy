@@ -2,23 +2,28 @@
 
 @using TeddyBlazor.Components
 
-<h3>ClassRoom</h3>
-
-<button class="btn btn-dark">
-    <NavLink class="nav-link" href="seatingchart">
-        Seating Chart
-    </NavLink>
-
-</button>
-<button class="btn btn-dark active">
-    <NavLink class="nav-link" href="assignments">
-        Assignments
-    </NavLink>
-
-</button>
-<div class="jumbotron centered">
-    <AssignmentComponent></AssignmentComponent>
+<div class="top-row px-4" style="background-color: lightslategray;">
 </div>
+
+<div class="jumbotron centered">
+    <h3>ClassRoom</h3>
+
+    <button class="btn btn-dark">
+        <NavLink class="nav-link" href="seatingchart">
+            Seating Chart
+        </NavLink>
+
+    </button>
+    <button class="btn btn-dark active">
+        <NavLink class="nav-link" href="assignments">
+            Assignments
+        </NavLink>
+
+    </button>
+    <div class="jumbotron centered">
+        <AssignmentComponent></AssignmentComponent>
+    </div>
+    </div>
 
     @code {
 
