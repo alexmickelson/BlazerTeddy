@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TeddyBlazor.Models;
 using TeddyBlazor.Services;
 
-namespace TeddyBlazor.ViewModels
+namespace TeddyBlazor.ViewModels.ClassDetail
 {
     public class ClassDetailViewModel : IViewModel
     {

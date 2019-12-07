@@ -3,7 +3,8 @@
 @using TeddyBlazor.Models
 @using TeddyBlazor.Services
 @using TeddyBlazor.Components
-@using TeddyBlazor.ViewModels
+@using TeddyBlazor.Components.ClassDetailComponents
+@using TeddyBlazor.ViewModels.ClassDetail
 
 @inject ClassDetailViewModel vm
 
@@ -22,7 +23,7 @@
             </SeatingChartComponent>
         </div>
         <div class="@vm.CourseCssClass">
-            <h1>courses</h1>
+            <CourseListComponent></CourseListComponent>
         </div>
 
     </div>

@@ -13,6 +13,7 @@ using TeddyBlazor.Areas.Identity;
 using TeddyBlazor.Data;
 using TeddyBlazor.Services;
 using TeddyBlazor.ViewModels;
+using TeddyBlazor.ViewModels.ClassDetail;
 
 namespace TeddyBlazor
 {
@@ -67,6 +68,7 @@ namespace TeddyBlazor
             services.AddTransient<ClassListViewModel>();
             services.AddTransient<ClassDetailViewModel>();
             services.AddTransient<SeatingChartViewModel>();
+            services.AddTransient<ClassDetailCourseListViewModel>();
 
         }
 

@@ -1,0 +1,46 @@
+@using TeddyBlazor.Models
+@using TeddyBlazor.Services
+@using TeddyBlazor.Components
+@using TeddyBlazor.ViewModels.ClassDetail
+@using System.Collections.Generic
+
+@inject ClassDetailCourseListViewModel vm
+
+<a class="nav-link" href="#">
+    <div class="card"
+        style="width: 15rem;">
+    <div class="card-header">
+        div
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">ClassRoom: </li>
+    </ul>
+    </div>
+</a>
+@code
+{
+    [Parameter]
+    public IEnumerable<Course> Courses { get; set; }
+
+    protected override void OnInitialized()
+    {
+        vm.OnInitialized();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        vm.Courses = Courses;
+        vm.OnParametersSet();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        vm.Courses = Courses;
+        await vm.OnParametersSetAsync();
+    }
+}
