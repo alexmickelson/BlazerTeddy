@@ -171,15 +171,17 @@ namespace IntegrationTests.RepositoryTests
                 TeacherId = jonathan.TeacherId,
                 ClassRoomId = scienceRoom.ClassRoomId
             };
-
-            mathClass.SeatingChartByStudentID = new int[3,3];
+            var horizontal = scienceRoom.SeatsHorizontally;
+            var vertical = scienceRoom.SeatsVertically;
+            mathClass.SeatingChartByStudentID = new int[horizontal + 1, vertical + 1];
             mathClass.SeatingChartByStudentID[1,1] = sam.StudentId;
 
             await classRepository
                 .Invoking(async cr => await cr.AddClassAsync(mathClass))
                 .Should()
                 .ThrowAsync<ArgumentException>()
-                .WithMessage("cannot save seating chart 3,3 in classroom with dimensions 2,1");
+                .WithMessage(
+                    $"cannot save seating chart {horizontal + 1},{vertical + 1} in classroom with dimensions {horizontal},{vertical}");
         }
 
         [Test]
@@ -223,18 +225,6 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_update_class()
         {
-            var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
-            var scienceRoom = new ClassRoom()
-            { 
-                ClassRoomName = "Science Room",
-                SeatsHorizontally = 3,
-                SeatsVertically = 3
-            };
-            var jonathan = new Teacher(){ TeacherName = "jonathan" };
-            var sam = new Student(){ StudentName = "sam"};
-            await classRepository.AddClassRoomAsync(scienceRoom);
-            await classRepository.AddTeacherAsync(jonathan);
-            await studentRepository.AddStudentAsync(sam);
             var mathClass = new ClassModel()
             {
                 ClassName = "math",
@@ -259,8 +249,6 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task can_get_classes_by_teacher_id()
         {
-
-
             var classList = await classRepository.GetClassesByTeacherId(jonathan.TeacherId);
 
             classList.Count().Should().Be(2);
@@ -282,18 +270,6 @@ namespace IntegrationTests.RepositoryTests
         [Test]
         public async Task add_students_in_class_on_insert()
         {
-            var studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
-            var scienceRoom = new ClassRoom()
-            { 
-                ClassRoomName = "Science Room",
-                SeatsHorizontally = 3,
-                SeatsVertically = 3
-            };
-            var jonathan = new Teacher(){ TeacherName = "jonathan" };
-            var sam = new Student(){ StudentName = "sam"};
-            await classRepository.AddClassRoomAsync(scienceRoom);
-            await classRepository.AddTeacherAsync(jonathan);
-            await studentRepository.AddStudentAsync(sam);
             var math = new ClassModel()
             {
                 ClassName = "math",
