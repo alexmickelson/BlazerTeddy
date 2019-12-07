@@ -40,8 +40,7 @@ namespace Test.ViewModelTests
             mondayAfternoon = new ClassModel()
             {
                 ClassId = 1,
-                ClassName = "monday afternoon's class",
-                StudentIds = new int[] { adam.StudentId, spencer.StudentId }
+                ClassName = "monday afternoon's class"
             };
 
             var studentList = new List<Student>()

@@ -30,21 +30,7 @@ namespace TeddyBlazor.Services
                 await validateStudentIds(classModel, dbConnection);
                 await validateClassRoomDimensions(classModel, dbConnection);
                 await storeClassInDb(classModel, dbConnection);
-                await enroleStudents(classModel, dbConnection);
                 await storeSeatingChartInDb(classModel, dbConnection);
-            }
-        }
-
-        private async Task enroleStudents(ClassModel classModel, IDbConnection dbConnection)
-        {
-            foreach(var studentId in classModel.StudentIds ?? new int[]{})
-            {
-                await dbConnection.ExecuteAsync(
-                    @"insert into StudentCourse (StudentId, ClassId)
-                    values (@studentId, @classId);",
-                    new { studentId = studentId, classId = classModel.ClassId }
-                );
-
             }
         }
 
@@ -215,16 +201,16 @@ namespace TeddyBlazor.Services
             using (var dbConnection = getDbConnection())
             {
                 var classModel = await getClassFromDbAsync(classId, dbConnection);
-                classModel.StudentIds = await getEnroledStudents(classId, dbConnection);
+                classModel.Enrollments = await getEnrollments(classId, dbConnection);
                 classModel.SeatingChartByStudentID = await getSeatingChartFromDbAsync(classModel.ClassId, dbConnection);
                 return classModel;
             }
         }
 
-        private async Task<IEnumerable<int>> getEnroledStudents(int classId, IDbConnection dbConnection)
+        private async Task<IEnumerable<Enrollment>> getEnrollments(int classId, IDbConnection dbConnection)
         {
-            return await dbConnection.QueryAsync<int>(
-                @"select StudentId
+            return await dbConnection.QueryAsync<Enrollment>(
+                @"select StudentId, CourseId
                   from StudentCourse 
                   where ClassId = @classid",
                 new { classId }
@@ -319,17 +305,22 @@ namespace TeddyBlazor.Services
         {
             using(var dbConnection = getDbConnection())
             {
-                var classes =  await dbConnection.QueryAsync<ClassModel>(
-                    @"select * from ClassModel
-                      where TeacherId = @teacherId",
-                    new { teacherId }
-                );
-                foreach(var classModel in classes)
+                IEnumerable<ClassModel> classes = await getClassesFromDbByTeacherId(teacherId, dbConnection);
+                foreach (var classModel in classes)
                 {
-                    classModel.StudentIds = await getEnroledStudents(classModel.ClassId, dbConnection);
+                    classModel.Enrollments = await getEnrollments(classModel.ClassId, dbConnection);
                 }
                 return classes;
             }
+        }
+
+        private static async Task<IEnumerable<ClassModel>> getClassesFromDbByTeacherId(int teacherId, IDbConnection dbConnection)
+        {
+            return await dbConnection.QueryAsync<ClassModel>(
+                @"select * from ClassModel
+                      where TeacherId = @teacherId",
+                new { teacherId }
+            );
         }
 
         public async Task<IEnumerable<ClassModel>> GetAllClassesAsync()
@@ -342,9 +333,16 @@ namespace TeddyBlazor.Services
             }
         }
 
-        public Task<Course> GetCourseAsync(int studentId, int classId)
+        public async Task EnrollStudentAsync(int studentId, int classId, int courseId)
         {
-            throw new NotImplementedException();
+            using(var dbConnection = getDbConnection())
+            {
+                await dbConnection.ExecuteAsync(
+                    @"insert into StudentCourse (StudentId, ClassId, CourseId)
+                      values (@studentId, @classId, @courseId);",
+                    new { studentId, classId, courseId }
+                );
+            }
         }
     }
 }
