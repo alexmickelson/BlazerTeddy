@@ -29,5 +29,10 @@ namespace TeddyBlazor.Data
             var parser = new PostgresUrlParser(database_url);
             return parser.DotNetConnectionString;
         }
+        public static string PsqlConnection(string database_url)
+        {
+            var parser = new PostgresUrlParser(database_url);
+            return parser.PsqlConnectionCommand;
+        }
     }
 }

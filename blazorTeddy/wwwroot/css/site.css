@@ -180,7 +180,14 @@ app {
     background-color: slategray;
     margin: 20px;
     border:hidden;
-  padding: 20px;
+    padding: 20px;
+}
+
+.seatingAssignments {
+    display: inline-block;
+}
+.seatingAssignments .nav-link {
+    display: inline;
 }
 
 input {

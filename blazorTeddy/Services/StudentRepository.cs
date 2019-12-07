@@ -35,9 +35,9 @@ namespace TeddyBlazor.Services
             using (var dbConnection = GetDbConnection())
             {
                 students = safeGetStudentsFromDb(dbConnection);
-                var notes = dbConnection.Query<Note>(
+                var notes = await dbConnection.QueryAsync<Note>(
                     @"SELECT * FROM Note;");
-                var restrictions = dbConnection.Query<(int, int)>(
+                var restrictions = await dbConnection.QueryAsync<(int, int)>(
                     @"SELECT * FROM StudentRestriction;");
                 foreach (var student in students)
                 {
@@ -75,7 +75,7 @@ namespace TeddyBlazor.Services
                 {
                     if (student.StoredInDatabase)
                     {
-                        updateStudentToDb(dbConnection, student);
+                        await updateStudentToDbAsync(dbConnection, student);
                     }
                     else
                     {
@@ -85,9 +85,9 @@ namespace TeddyBlazor.Services
             }
         }
 
-        private void updateStudentToDb(IDbConnection dbConnection, Student student)
+        private async Task updateStudentToDbAsync(IDbConnection dbConnection, Student student)
         {
-            dbConnection.Execute(
+            await dbConnection.ExecuteAsync(
                 @"UPDATE Student SET StudentName=@studentName WHERE StudentId=@id;",
                 new { studentName = student.StudentName, id = student.StudentId });
         }

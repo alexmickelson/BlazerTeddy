@@ -19,6 +19,8 @@ namespace IntegrationTests.RepositoryTests
     {
         private Mock<ILogger<StudentRepository>> studentLoggingMoq;
         private IStudentRepository studentRepository;
+        private Mock<ILogger<ClassRepository>> classLoggerMoq;
+        private Func<string> psqlString;
         private ClassRepository classRepository;
 
         [SetUp]
@@ -29,7 +31,9 @@ namespace IntegrationTests.RepositoryTests
                 new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;");
             studentRepository = new StudentRepository(getDbConnection,
                                                       studentLoggingMoq.Object);
-            classRepository = new ClassRepository(getDbConnection);
+            classLoggerMoq = new Mock<ILogger<ClassRepository>>();
+            psqlString = () => string.Empty;
+            classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object, psqlString);
         }
 
         [TearDown]
