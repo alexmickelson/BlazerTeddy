@@ -4,6 +4,8 @@
 
 @inject StudentListViewModel vm
 
+<AuthorizeView>
+    <Authorized>
 
         <div style="padding: 1rem">
             <h3 >StudentList</h3>
@@ -28,6 +30,18 @@
             }
 
         </div>
+        
+    </Authorized>
+    <NotAuthorized>
+
+        <div class="top-row px-4" style="background-color: lightslategray;">
+        </div>
+
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
 
         @code {
 
