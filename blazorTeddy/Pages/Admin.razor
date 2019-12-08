@@ -5,20 +5,44 @@
 @using TeddyBlazor.Components
 @using TeddyBlazor.ViewModels
 
-@inject StudentDetailViewModel vm
-
+@inject AdminViewModel vm
 
 <AuthorizeView>
     <Authorized>
         <div class="adminMenue">
-
-                <input type="number"
-                       @bind="vm.NewRestrictionId" />
+            <div class="addStudent jumbotron">
+                <h3>Student's Name</h3>
+                <input type="text"
+                       @bind="vm.Student.StudentName" />
                 <button class="btn btn-secondary"
                         type="submit"
-                        @onclick="vm.AddRestriction">
-                    Add Restriction
+                        @onclick="vm.AddStudent">
+                    Add Student
                 </button>
+            </div>
+            <div class="addTeacher jumbotron">
+                <h3>Teacher's Name</h3>
+                <input type="text"
+                       @bind="vm.Teacher.TeacherName" />
+                <button class="btn btn-secondary"
+                        type="submit"
+                        @onclick="vm.AddTeacher">
+                    Add Teacher
+                </button>
+            </div>
+            <div class="addCourse jumbotron">
+                <h3>Course Name</h3>
+                <input type="text"
+                       @bind="vm.Course.CourseName" />
+                <h3>Teacher's ID</h3>
+                <input type="number"
+                       @bind="vm.Course.CourseId" />
+                <button class="btn btn-secondary"
+                        type="submit"
+                        @onclick="vm.AddCourse">
+                    Add Course
+                </button>
+            </div> 
         </div>
     </Authorized>
     <NotAuthorized>
@@ -33,5 +57,25 @@
 
 
     @code {
+
+
+
+  protected override void OnInitialized()
+   {
+      vm.OnInitialized();
+ }
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.OnInitializedAsync();
+    }
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+       
+        await vm.OnParametersSetAsync();
+    }
 
     }
