@@ -1,12 +1,25 @@
 ﻿@page "/students"
 @using TeddyBlazor.Components
 
-<div class="top-row px-4" style="background-color: lightslategray;">
-</div>
-<div class="jumbotron centered">
-    <StudentListComponent></StudentListComponent>
-</div>
+    <AuthorizeView>
+        <Authorized>
 
-@code {
+            <div class="top-row px-4" style="background-color: lightslategray;">
+            </div>
+            <div class="jumbotron centered">
+                <StudentListComponent></StudentListComponent>
+            </div>
 
-}
+        </Authorized>
+        <NotAuthorized>
+            <div class="top-row px-4" style="background-color: lightslategray;">
+            </div>
+            <div class="jumbotron centered">
+                Sign in to view this Page.
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+
+                    @code {
+
+                    }

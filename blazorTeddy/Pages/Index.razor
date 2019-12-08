@@ -1,25 +1,43 @@
 ﻿@page "/"
 @using TeddyBlazor.Services
 @using TeddyBlazor.Components
+    <AuthorizeView>
+        <Authorized>
+            <div class="top-row px-4" style="background-color: lightslategray;">
+            </div>
 
-    <div class="top-row px-4" style="background-color: lightslategray;">
-    </div>
+
+            <div class="jumbotron centered">
+                <h1>Welcome to the Teacher's Lounge</h1>
+
+                <h3 class="jumbotron centered">@Joke</h3>
+
+            </div>
+
+        </Authorized>
+        <NotAuthorized>
+
+            <div class="top-row px-4" style="background-color: lightslategray;">
+            </div>
 
 
-    <div class="jumbotron centered">
-        <h1>Welcome to the Teacher's Lounge</h1>
+            <div class="jumbotron centered">
+                <h1>Welcome to the Teacher's Lounge</h1>
 
-        <h3 class="jumbotron centered">@Joke</h3>
+                <h3 class="jumbotron centered">@Joke</h3>
 
-    </div>
+            </div>
+            <LoginDisplay />
+        </NotAuthorized>
+    </AuthorizeView>
 
 @code {
 
     private DadJokeService dadJokeService;
-    private string Joke {get;set;}
+    private string Joke { get; set; }
     protected override void OnInitialized()
     {
-        dadJokeService = new DadJokeService{};
+        dadJokeService = new DadJokeService { };
         Joke = dadJokeService.GetDadJoke();
     }
 }

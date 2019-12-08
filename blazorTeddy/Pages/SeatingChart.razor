@@ -1,29 +1,37 @@
 ﻿@page "/seatingchart"
 @using TeddyBlazor.Components
+
+
 <div class="top-row px-4" style="background-color: lightslategray;">
 </div>
-<div class="jumbotron centered">
-    <h3>ClassRoom</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="jumbotron centered">
+            <h3>ClassRoom</h3>
 
 
-    <button class="btn btn-dark active">
-        <NavLink class="nav-link" href="seatingchart">
-            Seating Chart
-        </NavLink>
+            <button class="btn btn-dark active">
+                <NavLink class="nav-link" href="seatingchart">
+                    Seating Chart
+                </NavLink>
 
-    </button>
-    <button class="btn btn-dark">
-        <NavLink class="nav-link" href="assignments">
-            Assignments
-        </NavLink>
+            </button>
+            <button class="btn btn-dark">
+                <NavLink class="nav-link" href="assignments">
+                    Assignments
+                </NavLink>
 
-    </button>
-    <div class="jumbotron centered">
-        <SeatingChartComponent></SeatingChartComponent>
-    </div>
+            </button>
+            <div class="jumbotron centered">
+                <SeatingChartComponent></SeatingChartComponent>
+            </div>
 
-    </div>
+        </div>
 
-    @code {
+    </Authorized>
+</AuthorizeView>
 
-    }
+@code {
+
+}
