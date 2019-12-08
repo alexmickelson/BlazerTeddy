@@ -5,25 +5,38 @@
 
 @inject SeatingChartViewModel vm
 
-<h3>SeatingChart</h3>
+<h3 >SeatingChart</h3>
+<span>
+    <select @bind-value="vm.SelectedStudentId"
+            @bind-value:event="oninput">
+        <option value="-1"></option>
+        @foreach (var student in vm.StudentModels)
+        {
+            <option value="@student.StudentId">@student.StudentName</option>
+        }
+    </select>
+    <button @onclick="vm.AssignSeat">AssignSeat</button>
+</span>
 <hr/>
 @for(int j = 0; j < vm.ClassRoom.SeatsVertically; j++)
 {
-    <div class="row" style="display: flex; margin-bottom: .3em;" >
+    <div class="row"
+         style="display: flex; margin-bottom: .3em;">
     @for(int i = 0; i < vm.ClassRoom.SeatsHorizontally; i++)
     {
         <div class="seatingAssignments"
             style="width: @vm.HorizontalFraction%; margin-right: 1%;">
             <a class="nav-link" 
-            href="@vm.GetStudentLink(i,j)"
-            style="height: 100%;">
+               href="@vm.GetStudentLink(i,j)"
+               style="height: 100%;">
                 <div class="card"
                      style="width: 100%; height: 100%;">
                     <div class="card-header">
-                        @vm.Students[i,j].StudentName <span style="visibility: hidden;">a</span>
+                        @vm.Students[i,j].StudentName 
                     </div>
-                    <div class="card-body">
-                            @vm.GetCourse(i,j) 
+                    <div class="card-body"
+                         style="padding-bottom: 0;">
+                        @vm.GetCourse(i,j) <span style="visibility: hidden;">a</span>
                     </div>
                 </div>
             </a>
