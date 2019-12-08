@@ -234,3 +234,9 @@ input {
     
 }
 
+.loginBox a:hover{
+    background-color: slategray;
+    color: white;
+    text-decoration: none;
+}
+

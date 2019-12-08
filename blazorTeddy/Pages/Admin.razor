@@ -1,0 +1,37 @@
+@page "/admin"
+
+@using TeddyBlazor.Services
+@using TeddyBlazor.Models
+@using TeddyBlazor.Components
+@using TeddyBlazor.ViewModels
+
+@inject StudentDetailViewModel vm
+
+
+<AuthorizeView>
+    <Authorized>
+        <div class="adminMenue">
+
+                <input type="number"
+                       @bind="vm.NewRestrictionId" />
+                <button class="btn btn-secondary"
+                        type="submit"
+                        @onclick="vm.AddRestriction">
+                    Add Restriction
+                </button>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+
+        <div class="top-row px-4" style="background-color: lightslategray;">
+        </div>
+
+        <LoginDisplay2 />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+    @code {
+
+    }
