@@ -56,14 +56,11 @@
 
 
 
-    @code {
-
-
-
-  protected override void OnInitialized()
-   {
+@code {
+    protected override void OnInitialized()
+    {
       vm.OnInitialized();
- }
+    }
     protected override async Task OnInitializedAsync()
     {
         await vm.OnInitializedAsync();
@@ -74,8 +71,6 @@
     }
     protected override async Task OnParametersSetAsync()
     {
-       
         await vm.OnParametersSetAsync();
     }
-
-    }
+}

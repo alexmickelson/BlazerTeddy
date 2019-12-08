@@ -37,7 +37,7 @@ namespace TeddyBlazor.ViewModels
             var t = Task.Run(async () =>
             {
                 await StudentRepository.AddStudentAsync(Student);
-                await OnParametersSetAsync();
+                Student = new Student();
             });
             t.Wait();
         }
@@ -47,7 +47,7 @@ namespace TeddyBlazor.ViewModels
             var t = Task.Run(async () =>
             {
                 await TeacherRepository.AddTeacherAsync(Teacher);
-                await OnParametersSetAsync();
+                Teacher = new Teacher();
             });
             t.Wait();
         }
@@ -56,7 +56,7 @@ namespace TeddyBlazor.ViewModels
             var t = Task.Run(async () =>
             {
                 await CourseRepository.AddCourseAsync(Course);
-                await OnParametersSetAsync();
+                Course = new Course();
             });
             t.Wait();
         }
