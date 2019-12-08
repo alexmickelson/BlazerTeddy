@@ -65,6 +65,7 @@ namespace TeddyBlazor
             services.AddTransient<IStudentRepository, StudentRepository>();
             services.AddTransient<IClassRepository, ClassRepository>();
             services.AddTransient<ICourseRepository, CourseRepository>();
+            services.AddTransient<IAssignmentRepository, AssignmentRepository>();
             services.AddTransient<ClassListViewModel>();
             services.AddTransient<ClassDetailViewModel>();
             services.AddTransient<SeatingChartViewModel>();
