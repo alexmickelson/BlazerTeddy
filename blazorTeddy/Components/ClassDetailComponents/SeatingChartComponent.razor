@@ -22,11 +22,9 @@
                     <div class="card-header">
                         @vm.Students[i,j].StudentName <span style="visibility: hidden;">a</span>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            @vm.GetCourse(i,j) <span style="visibility: hidden;">a</span>
-                        </li>
-                    </ul>
+                    <div class="card-body">
+                            @vm.GetCourse(i,j) 
+                    </div>
                 </div>
             </a>
         </div>
