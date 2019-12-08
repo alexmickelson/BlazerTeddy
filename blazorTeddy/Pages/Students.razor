@@ -1,23 +1,23 @@
 ﻿@page "/students"
 @using TeddyBlazor.Components
 
-    <AuthorizeView>
-        <Authorized>
+<AuthorizeView>
+    <Authorized>
 
-            <div class="top-row px-4" style="background-color: lightslategray;">
-            </div>
-            <div class="jumbotron centered">
-                <StudentListComponent></StudentListComponent>
-            </div>
+        <div class="top-row px-4" style="background-color: lightslategray;">
+        </div>
+        <div class="jumbotron centered">
+            <StudentListComponent></StudentListComponent>
+        </div>
 
-        </Authorized>
-        <NotAuthorized>
-            <div class="top-row px-4" style="background-color: lightslategray;">
-            </div>
-            <LoginDisplay2/>
-        </NotAuthorized>
-    </AuthorizeView>
+    </Authorized>
+    <NotAuthorized>
+        <div class="top-row px-4" style="background-color: lightslategray;">
+        </div>
+        <LoginDisplay2/>
+    </NotAuthorized>
+</AuthorizeView>
 
-                    @code {
+@code {
 
-                    }
+}

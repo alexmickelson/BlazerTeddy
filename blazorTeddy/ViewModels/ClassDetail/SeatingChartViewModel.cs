@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TeddyBlazor.Models;
 using TeddyBlazor.Services;
@@ -10,11 +11,13 @@ namespace TeddyBlazor.ViewModels.ClassDetail
         private readonly IStudentRepository studentRepository;
         private readonly IClassRepository classRepository;
         private readonly ICourseRepository courseRepository;
+        public IEnumerable<Student> StudentModels { get; set; }
 
         public ClassModel SelectedClass { get; set; }
         public ClassRoom ClassRoom { get; set; }
         public Student[,] Students { get; set; }
         public double HorizontalFraction => ((1.0 / this.ClassRoom.SeatsHorizontally) * 100) - 1;
+        public int SelectedStudentId { get; set; }
         public SeatingChartViewModel(IStudentRepository studentRepository,
                                      IClassRepository classRepository,
                                      ICourseRepository courseRepository)
@@ -25,6 +28,12 @@ namespace TeddyBlazor.ViewModels.ClassDetail
             SelectedClass = new ClassModel();
             ClassRoom = new ClassRoom();
             Students = new Student[ClassRoom.SeatsHorizontally, ClassRoom.SeatsVertically];
+            StudentModels = new Student[] {};
+        }
+
+        public void AssignSeat()
+        {
+            return;
         }
 
         public string GetCourse(int i, int j)
@@ -51,7 +60,7 @@ namespace TeddyBlazor.ViewModels.ClassDetail
 
         public string GetStudentLink(int i, int j)
         {
-            var noLink = "#";
+            var noLink = $"/classDetail/{SelectedClass.ClassId}";
             if (!seatInBounds(i, j))
             {
                 return noLink;
@@ -124,6 +133,7 @@ namespace TeddyBlazor.ViewModels.ClassDetail
                 ? ClassRoom
                 : await classRepository.GetClassRoomAsync(SelectedClass.ClassRoomId);
             await LoadStudentsList();
+            StudentModels = await studentRepository.GetStudentsByClassAsync(SelectedClass.ClassId);
         }
     }
 }
