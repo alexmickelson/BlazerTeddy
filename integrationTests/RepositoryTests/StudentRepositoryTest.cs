@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using TeddyBlazor.Services;
 using Npgsql;
-using Docker.DotNet;
 using System.Runtime.InteropServices;
 using System;
 using TeddyBlazor.Models;

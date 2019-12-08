@@ -27,7 +27,7 @@ namespace TeddyBlazor.ViewModels.ClassDetail
 
         public IEnumerable<string> GetStudentNamesByCourse(int courseId)
         {
-            var c = Courses
+            return Courses
                 .Single(c => c.CourseId == courseId)
                 .StudentIds
                 .Join(
@@ -36,7 +36,6 @@ namespace TeddyBlazor.ViewModels.ClassDetail
                     s => s.StudentId,
                     (sid, s) => s.StudentName
                 );
-                return c;
         }
 
         public void OnInitialized()
