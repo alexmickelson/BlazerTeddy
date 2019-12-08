@@ -1,22 +1,24 @@
-﻿
-<ul class="nav flex-column left-menu">
-    <li class="nav-item px-3">
-        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-            <span class="oi oi-home" aria-hidden="true"></span> Home
-        </NavLink>
-    </li>
-    <li class="nav-item px-3">
-        <NavLink class="nav-link" href="classlist">
-            <span class="oi oi-clipboard" aria-hidden="true"></span> Classes
-        </NavLink>
-    </li>
-    <li class="nav-item px-3">
-        <NavLink class="nav-link" href="students">
-            <span class="oi oi-people" aria-hidden="true"></span> students
-        </NavLink>
-    </li>
-</ul>
-
+﻿<AuthorizeView>
+    <Authorized>
+        <ul class="nav flex-column left-menu">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="classlist">
+                    <span class="oi oi-clipboard" aria-hidden="true"></span> Classes
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="students">
+                    <span class="oi oi-people" aria-hidden="true"></span> students
+                </NavLink>
+            </li>
+        </ul>
+    </Authorized>
+</AuthorizeView>
 @code {
     // private bool collapseClassList = true;]
     // private string classListCssClass => collapseClassList ? "collapse" : string.Empty;

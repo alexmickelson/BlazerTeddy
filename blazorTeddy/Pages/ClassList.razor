@@ -7,37 +7,51 @@
 
 @inject ClassListViewModel vm
 
-<div class="top-row px-4" style="background-color: lightslategray;">
-</div>
-<div class="jumbotron centered">
-    <h1>Classes</h1>
+<AuthorizeView>
+    <Authorized>
 
-    <hr>
 
-    <div id="ClassCardWrapper" class="d-flex align-content-start flex-wrap">
-        @foreach (var classModel in vm.Classes)
-        {
-            <ClassCardComponent ThisClass="@classModel"></ClassCardComponent>
-        }
-    </div>
-    </div>
+        <div class="top-row px-4" style="background-color: lightslategray;">
+        </div>
+        <div class="jumbotron centered">
+            <h1>Classes</h1>
 
-    @code {
+            <hr>
 
-        protected override void OnInitialized()
-        {
-            vm.OnInitialized();
-        }
-        protected override async Task OnInitializedAsync()
-        {
-            await vm.OnInitializedAsync();
-        }
-        protected override void OnParametersSet()
-        {
-            vm.OnParametersSet();
-        }
-        protected override async Task OnParametersSetAsync()
-        {
-            await vm.OnParametersSetAsync();
-        }
+            <div id="ClassCardWrapper" class="d-flex align-content-start flex-wrap">
+                @foreach (var classModel in vm.Classes)
+                {
+                    <ClassCardComponent ThisClass="@classModel"></ClassCardComponent>
+                }
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+
+        <div class="top-row px-4" style="background-color: lightslategray;">
+        </div>
+
+        <LoginDisplay />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        vm.OnInitialized();
     }
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.OnInitializedAsync();
+    }
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await vm.OnParametersSetAsync();
+    }
+}
