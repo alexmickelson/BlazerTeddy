@@ -1,31 +1,35 @@
-@page "/classlist"
+@page "/courselist"
 @using TeddyBlazor.Models
 @using TeddyBlazor.Services
 @using TeddyBlazor.ViewModels
 @using TeddyBlazor.Components
-@using TeddyBlazor.Components.ClassDetailComponents
 
-@inject ClassListViewModel vm
+@inject CourseListViewModel vm
 
 <AuthorizeView>
     <Authorized>
         <div class="top-row px-4" style="background-color: lightslategray;">
-            <h1>Classes</h1>
+            <h1>Courses</h1>
         </div>
         <div class="jumbotron centered">
             <div id="ClassCardWrapper" class="d-flex align-content-start flex-wrap">
-                @foreach (var classModel in vm.Classes)
+                @foreach (var course in vm.Courses)
                 {
-                    <ClassCardComponent ThisClass="@classModel"></ClassCardComponent>
+                    <a class="nav-link" href="/CourseDetail/@course.CourseId">
+                        <div class="card"
+                            style="width: 18rem;">
+                            <div class="card-header">
+                                @course.CourseName
+                            </div>
+                        </div>
+                    </a>
                 }
             </div>
         </div>
     </Authorized>
     <NotAuthorized>
-        <div class="top-row px-4" style="background-color: lightslategray;">
-        </div>
-
-        <LoginDisplay2 />
+        <div class="top-row px-4" style="background-color: lightslategray;"></div>
+        <LoginDisplay />
     </NotAuthorized>
 </AuthorizeView>
 

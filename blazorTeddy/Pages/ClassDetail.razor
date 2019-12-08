@@ -13,10 +13,10 @@
     <Authorized>
 
         <div class="top-row px-4" style="background-color: lightslategray;">
+            <h3>Classdetail</h3>
         </div>
 
         <div class="jumbotron centered">
-            <h3>Classdetail</h3>
 
             <ClassDetailNavigationComponent SelectTab="@vm.SelectTab"></ClassDetailNavigationComponent>
 
@@ -28,13 +28,10 @@
                 <div class="@vm.CourseCssClass">
                     <CourseListComponent classId="@vm.SelectedClass.ClassId"></CourseListComponent>
                 </div>
-
             </div>
-            </div>
-        
+        </div>
     </Authorized>
     <NotAuthorized>
-
         <div class="top-row px-4" style="background-color: lightslategray;">
         </div>
 
