@@ -53,6 +53,10 @@ namespace TeddyBlazor.Services
 
         public async Task<Course> GetCourseAsync(int courseId)
         {
+            if(courseId == default(int))
+            {
+                return new Course();
+            }
             using (var dbConnection = getDbConnection())
             {
                 var course = await dbConnection.QueryFirstAsync<Course>(
