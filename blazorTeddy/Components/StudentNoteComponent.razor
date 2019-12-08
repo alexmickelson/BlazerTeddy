@@ -57,17 +57,6 @@
 @code {
     [Parameter]
     public StudentDetailViewModel vm { get; set; }
-
-    private void runAndReload(Func<Task> action)
-    {
-        var task = Task.Run(async () => 
-        {
-            await action();
-        });
-        task.Wait();
-        
-        this.StateHasChanged();
-    }
     
     protected override void OnInitialized()
     {

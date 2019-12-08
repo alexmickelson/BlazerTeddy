@@ -81,9 +81,9 @@ namespace TeddyBlazor.ViewModels
             
         }
 
-        public async Task OnInitializedAsync()
+        public Task OnInitializedAsync()
         {
-            await StudentRepository.UpdateStudentsAsync();
+            return Task.CompletedTask;
         }
 
         public void OnParametersSet()

@@ -111,7 +111,20 @@ namespace IntegrationTests.RepositoryTests
 
             loadedMath1010.StudentIds.Count().Should().Be(1);
             loadedMath1010.StudentIds.Should().Contain(sam.StudentId);
+        }
 
+        [Test]
+        public async Task can_get_courses_by_teacher_id()
+        {
+            var jonathanCourses = await courseRepository.GetCoursesByTeacherId(jonathan.TeacherId);
+
+            jonathanCourses.Count().Should().Be(2);
+            jonathanCourses.First(c => c.CourseId == math1010.CourseId)
+                           .CourseName
+                           .Should().Be(math1010.CourseName);
+            jonathanCourses.First(c => c.CourseId == science1010.CourseId)
+                           .CourseName
+                           .Should().Be(science1010.CourseName);
         }
 
         private void initializeObjects()
