@@ -25,35 +25,32 @@
             @foreach (var student in vm.GetFilteredStudents())
             {
                 <div class="nav-item px-3 ">
-                    <a class="nav-link " href="/StudentDetail/@student.StudentId"><span class="oi oi-person" aria-hidden="true"></span><span>@student.StudentName</span></a>
+                    <a class="nav-link " href="/StudentDetail/@student.StudentId">
+                        <span class="oi oi-person" aria-hidden="true"></span><span>@student.StudentName</span>
+                    </a>
                 </div>
             }
-
         </div>
-        
-    </Authorized>
 
+    </Authorized>
 </AuthorizeView>
 
+@code {
 
-
-
-        @code {
-
-            protected override void OnInitialized()
-            {
-                vm.OnInitialized();
-            }
-            protected override async Task OnInitializedAsync()
-            {
-                await vm.OnInitializedAsync();
-            }
-            protected override void OnParametersSet()
-            {
-                vm.OnParametersSet();
-            }
-            protected override async Task OnParametersSetAsync()
-            {
-                await vm.OnParametersSetAsync();
-            }
-        }
+    protected override void OnInitialized()
+    {
+        vm.OnInitialized();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await vm.OnInitializedAsync();
+    }
+    protected override void OnParametersSet()
+    {
+        vm.OnParametersSet();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await vm.OnParametersSetAsync();
+    }
+}

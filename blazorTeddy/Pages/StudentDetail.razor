@@ -41,44 +41,21 @@
         </div>
 
     </Authorized>
-
-        <NotAuthorized>
-
+    <NotAuthorized>
         <div class="top-row px-4" style="background-color: lightslategray;">
         </div>
-
         <LoginDisplay2 />
     </NotAuthorized>
-
 </AuthorizeView>
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    public Action Reload { get; set; }
-
     protected override void OnInitialized()
     {
-        Reload = () => this.StateHasChanged();
-
+        vm.OnInitialized();
     }
-
-    private void runAndReload(Func<Task> action)
-    {
-        var task = Task.Run(async () =>
-        {
-            await Task.Run(action);
-            await vm.LoadStudentAsync(id);
-        });
-        task.Wait();
-        Reload();
-    }
-
-    // protected override void OnInitialized()
-    // {
-    //     vm.OnInitialized();
-    // }
     protected override async Task OnInitializedAsync()
     {
         await vm.OnInitializedAsync();
