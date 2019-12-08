@@ -8,25 +8,43 @@
 
 @inject ClassDetailViewModel vm
 
-<div class="top-row px-4" style="background-color: lightslategray;">
-</div>
 
-<div class="jumbotron centered">
-    <h3>Classdetail</h3>
+<AuthorizeView>
+    <Authorized>
 
-    <ClassDetailNavigationComponent SelectTab="@vm.SelectTab"></ClassDetailNavigationComponent>
-
-    <div class="jumbotron centered">
-        <div class="@vm.SeatingChartCssClass">
-            <SeatingChartComponent SelectedClass="@vm.SelectedClass">
-            </SeatingChartComponent>
-        </div>
-        <div class="@vm.CourseCssClass">
-            <CourseListComponent classId="@vm.SelectedClass.ClassId"></CourseListComponent>
+        <div class="top-row px-4" style="background-color: lightslategray;">
         </div>
 
-    </div>
-    </div>
+        <div class="jumbotron centered">
+            <h3>Classdetail</h3>
+
+            <ClassDetailNavigationComponent SelectTab="@vm.SelectTab"></ClassDetailNavigationComponent>
+
+            <div class="jumbotron centered">
+                <div class="@vm.SeatingChartCssClass">
+                    <SeatingChartComponent SelectedClass="@vm.SelectedClass">
+                    </SeatingChartComponent>
+                </div>
+                <div class="@vm.CourseCssClass">
+                    <CourseListComponent classId="@vm.SelectedClass.ClassId"></CourseListComponent>
+                </div>
+
+            </div>
+            </div>
+        
+    </Authorized>
+    <NotAuthorized>
+
+        <div class="top-row px-4" style="background-color: lightslategray;">
+        </div>
+
+        <LoginDisplay />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+
 
     @code {
 
