@@ -53,6 +53,7 @@ CREATE TABLE StudentCourse(
 CREATE TABLE Assignment(
     AssignmentId SERIAL PRIMARY KEY,
     CourseId integer REFERENCES Course(CourseId),
-    Description text
+    AssignmentName text,
+    AssignmentDescription text
 );
 

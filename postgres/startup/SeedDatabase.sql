@@ -30,9 +30,6 @@ INSERT INTO StudentCourse VALUES(3, 1, 2);
 INSERT INTO StudentCourse VALUES(1, 2, 2);
 INSERT INTO StudentCourse VALUES(3, 2, 2);
 
-
-INSERT INTO Assignment VALUES(1, 1, 'Math Assignment');
-
 --Science room at 1 seating chart
 INSERT INTO SeatingAssignment (ClassId, StudentId, HorizontalCoordinate, VerticalCoordinate)
 Values (1, 1, 0, 3);
@@ -44,6 +41,13 @@ INSERT INTO SeatingAssignment (ClassId, StudentId, HorizontalCoordinate, Vertica
 Values (2, 1, 0, 3);
 INSERT INTO SeatingAssignment (ClassId, StudentId, HorizontalCoordinate, VerticalCoordinate)
 Values (2, 3, 1, 1);
+
+--add two assignments to math1010
+
+INSERT INTO Assignment (CourseId, AssignmentName, AssignmentDescription)
+VALUES (1, 'read chapter one', 'read all of chapter one');
+INSERT INTO Assignment (CourseId, AssignmentName, AssignmentDescription)
+VALUES (1, 'bookwork', 'do some bookwork');
 
 -- SELECT * FROM Student;
 -- SELECT * FROM Teacher;

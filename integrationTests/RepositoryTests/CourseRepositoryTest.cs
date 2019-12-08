@@ -135,12 +135,6 @@ namespace IntegrationTests.RepositoryTests
                 SeatsHorizontally = 10,
                 SeatsVertically = 8
             };
-            scienceRoom = new ClassRoom()
-            {
-                ClassRoomName = "Science Room",
-                SeatsHorizontally = 10,
-                SeatsVertically = 8
-            };
             jonathan = new Teacher() { TeacherName = "jonathan" };
             heber = new Teacher() { TeacherName = "not jonathan" };
             sam = new Student() { StudentName = "sam" };
@@ -181,7 +175,7 @@ namespace IntegrationTests.RepositoryTests
             };
             science1010 = new Course()
             {
-                CourseName = "math 1010",
+                CourseName = "science 1010",
                 TeacherId = jonathan.TeacherId
             };
             await courseRepository.AddCourseAsync(math1010);
