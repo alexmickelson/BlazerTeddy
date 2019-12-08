@@ -71,6 +71,7 @@ namespace TeddyBlazor
             services.AddTransient<SeatingChartViewModel>();
             services.AddTransient<ClassDetailCourseListViewModel>();
             services.AddTransient<CourseDetailViewModel>();
+            services.AddTransient<CourseListViewModel>();
 
         }
 

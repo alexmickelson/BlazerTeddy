@@ -53,7 +53,7 @@ namespace TeddyBlazor.Services
 
         public async Task<Course> GetCourseAsync(int courseId)
         {
-            if(courseId == default(int))
+            if (courseId == default(int))
             {
                 return new Course();
             }
@@ -73,11 +73,11 @@ namespace TeddyBlazor.Services
 
         private async Task<IEnumerable<int>> getStudentIds(int courseId, IDbConnection dbConnection)
         {
-             return await dbConnection.QueryAsync<int>(
-                @"select StudentId from StudentCourse
+            return await dbConnection.QueryAsync<int>(
+               @"select StudentId from StudentCourse
                       where CourseId = @courseId",
-                new { courseId }
-            );
+               new { courseId }
+           );
         }
 
         public async Task<Course> GetCourseAsync(int studentId, int classId)
@@ -104,7 +104,7 @@ namespace TeddyBlazor.Services
                       group by c.courseid",
                     new { classId }
                 );
-                foreach(var course in courses)
+                foreach (var course in courses)
                 {
                     course.StudentIds = await getStudentIdsByClassAndCourse(course.CourseId, classId, dbConnection);
                 }
@@ -114,13 +114,25 @@ namespace TeddyBlazor.Services
 
         private async Task<IEnumerable<int>> getStudentIdsByClassAndCourse(int courseId, int classId, IDbConnection dbConnection)
         {
-             return await dbConnection.QueryAsync<int>(
-                @"select StudentId 
+            return await dbConnection.QueryAsync<int>(
+               @"select StudentId 
                   from StudentCourse
                   where CourseId = @courseId
                     and ClassId = @classId",
-                new { courseId, classId }
-            );
+               new { courseId, classId }
+           );
+        }
+
+        public async Task<IEnumerable<Course>> GetCoursesByTeacherId(int teacherId)
+        {
+            using (var dbConnection = getDbConnection())
+            {
+                return await dbConnection.QueryAsync<Course>(
+                    @"select * from Course
+                      where TeacherId = @teacherId",
+                    new { teacherId }
+                );
+            }
         }
     }
 }
