@@ -81,6 +81,11 @@ namespace TeddyBlazor
             var dbConnectionValidator = new DbConnectionValidator(getDbConnection);
             dbConnectionValidator.validateConnection();
 
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
