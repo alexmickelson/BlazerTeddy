@@ -242,6 +242,10 @@ namespace TeddyBlazor.Services
 
         private async Task<ClassModel> getClassFromDbAsync(int classId, IDbConnection dbConnection)
         {
+            if(classId == default(int))
+            {
+                return new ClassModel();
+            }
             return await dbConnection.QueryFirstAsync<ClassModel>(
                 @"select * from ClassModel
                 where ClassId = @classId",

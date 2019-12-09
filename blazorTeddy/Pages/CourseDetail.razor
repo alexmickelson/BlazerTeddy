@@ -10,7 +10,10 @@
 
 <AuthorizeView>
     <Authorized>
-    <h1>@vm.Course.CourseName</h1>
+
+    <div class="top-row px-4" style="background-color: lightslategray;">
+        <h1>@vm.Course.CourseName</h1>
+    </div>
     <div class="jumbotron centered">
         <h3>Assignments:</h3>
         <div class="accordion" id="assignmentAccordion">

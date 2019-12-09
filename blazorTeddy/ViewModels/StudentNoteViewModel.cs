@@ -15,7 +15,7 @@ namespace TeddyBlazor.ViewModels
         public Student Student { get; set; }
         public Note Note { get; set; }
         public int TeacherId { get; set; }
-        public bool IsAnonymousNote { get; set; }
+        public bool IsAnonymousNote { get; set; } = true;
         public int NoteType { get; set; }
         public string errorAlert { get; set; }
         private readonly IStudentRepository studentRepository;
@@ -41,14 +41,14 @@ namespace TeddyBlazor.ViewModels
             Note.NoteType = (NoteTypes)NoteType;
             var t = Task.Run(async () =>
             {
-                if (IsAnonymousNote)
-                {
+                // if (IsAnonymousNote)
+                // {
                     await studentRepository.AddUnsignedNoteAsync(Student, Note);
-                }
-                else
-                {
-                    await studentRepository.AddSignedNoteAsync(Student, Note, TeacherId);
-                }
+                // }
+                // else
+                // {
+                //     await studentRepository.AddSignedNoteAsync(Student, Note, TeacherId);
+                // }
             });
             t.Wait();
             errorAlert = "";

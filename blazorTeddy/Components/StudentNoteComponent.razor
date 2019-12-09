@@ -14,7 +14,7 @@
                 <tr>
                     <th>Type</th>
                     <th>Content</th>
-                    <th>Signed By</th>
+                    <!-- <th>Signed By</th> -->
                     <th>Date Created</th>
                 </tr>
             @foreach (var note in vm.GetNotes())
@@ -22,7 +22,7 @@
                 <tr>
                     <td>@Note.TypeToString(note.NoteType)</td>
                     <td>@note.Content</td>
-                    <td>@note.TeacherId</td>
+                    <!-- <td>@note.TeacherId</td> -->
                     <td>@note.DateCreated</td>
                 </tr>
             }
@@ -38,10 +38,10 @@
             Add Note
         </button>
         <br />
-        <input type="checkbox" placeholder="Don't sign"
+        <input type="checkbox" placeholder="Don't sign" hidden
                @bind-value="vm.NewNoteVM.IsAnonymousNote" 
                @bind-value:event="oninput"/>
-               Dont sign it
+               <!-- Dont sign it -->
         <select @bind-value="vm.NewNoteVM.NoteType" 
                 @bind-value:event="oninput">
             <option value="0" selected disabled hidden>Note Type</option>
