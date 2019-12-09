@@ -2,7 +2,7 @@
 
 html, body {
     font-family: 'Roboto Condensed', sans-serif;
-    background-color:#757577;
+    background-color:white;
 }
 
 a, .btn-link {
@@ -59,7 +59,7 @@ app {
 }
 
 .sidebar {
-    background-color: #757577;
+    background-color: White;
 }
 
     .sidebar .top-row {
@@ -238,5 +238,9 @@ input {
     background-color: slategray;
     color: white;
     text-decoration: none;
+}
+
+select{
+    border-radius: 4px;
 }
 
