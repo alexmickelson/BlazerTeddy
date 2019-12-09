@@ -39,8 +39,6 @@ namespace IntegrationTests.RepositoryTests
         {
             initializeObjects();
             await seedDatabase();
-
-            // await classRepository.EnrollStudentAsync(sam.StudentId, mathClass.ClassId, );
         }
 
         private void initializeObjects()

@@ -12,6 +12,7 @@ namespace Test.ComponentViewModelTests
     {
         private Mock<ICourseRepository> courseRepoMoq;
         private Mock<IStudentRepository> studentRepoMoq;
+        private Mock<IClassRepository> classRepoMoq;
         private ClassDetailCourseListViewModel viewModel;
 
         [SetUp]
@@ -19,7 +20,10 @@ namespace Test.ComponentViewModelTests
         {
             courseRepoMoq = new Mock<ICourseRepository>();
             studentRepoMoq = new Mock<IStudentRepository>();
-            viewModel = new ClassDetailCourseListViewModel(courseRepoMoq.Object, studentRepoMoq.Object);
+            classRepoMoq = new Mock<IClassRepository>();
+            viewModel = new ClassDetailCourseListViewModel(courseRepoMoq.Object,
+                                                           studentRepoMoq.Object,
+                                                           classRepoMoq.Object);
         }
 
         [Test]

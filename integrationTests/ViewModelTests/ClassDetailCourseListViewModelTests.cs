@@ -75,14 +75,17 @@ namespace IntegrationTests.ViewModelTests
         private void initializeObjects()
         {
             getDbConnection = () => new NpgsqlConnection("Server=localhost;Port=5433;User ID=teddy;Password=teddy;");
+            Func<string> getString = () => string.Empty;
             studentLoggerMoq = new Mock<ILogger<StudentRepository>>();
             classLoggerMoq = new Mock<ILogger<ClassRepository>>();
             courseLoggerMoq = new Mock<ILogger<CourseRepository>>();
+            classLoggerMoq = new Mock<ILogger<ClassRepository>>();
             psqlString = () => string.Empty;
             classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object, psqlString);
             studentRepository = new StudentRepository(getDbConnection, studentLoggerMoq.Object);
             courseRepository = new CourseRepository(getDbConnection, courseLoggerMoq.Object);
-            viewModel = new ClassDetailCourseListViewModel(courseRepository, studentRepository);
+            classRepository = new ClassRepository(getDbConnection, classLoggerMoq.Object, getString);
+            viewModel = new ClassDetailCourseListViewModel(courseRepository, studentRepository, classRepository);
         }
 
 
