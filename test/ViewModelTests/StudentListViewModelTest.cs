@@ -7,6 +7,7 @@ using TeddyBlazor.ViewModels;
 using System.Linq;
 using FluentAssertions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Test.ViewModelTests
 {
@@ -14,6 +15,7 @@ namespace Test.ViewModelTests
     {
         private Mock<IStudentRepository> StudentRepoMoq;
         private Mock<IClassRepository> ClassRepoMoq;
+        private Mock<IRefreshService> RefreshServiceMoq;
         private StudentListViewModel viewModel;
         private Course math;
         private Course science;
@@ -27,8 +29,12 @@ namespace Test.ViewModelTests
         {
             StudentRepoMoq = new Mock<IStudentRepository>();
             ClassRepoMoq = new Mock<IClassRepository>();
+            RefreshServiceMoq = new Mock<IRefreshService>();
+            var LoggerMoq = new Mock<ILogger<StudentListViewModel>>();
             viewModel = new StudentListViewModel(StudentRepoMoq.Object,
-                                                 ClassRepoMoq.Object);
+                                                 ClassRepoMoq.Object,
+                                                 RefreshServiceMoq.Object,
+                                                 LoggerMoq.Object);
 
 
             math = new Course(){ CourseId = 1, CourseName = "math"};

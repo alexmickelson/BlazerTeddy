@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using TeddyBlazor.Data;
 using TeddyBlazor.Models;
 using TeddyBlazor.Services;
@@ -13,14 +15,25 @@ namespace TeddyBlazor.ViewModels
     {
         public readonly IStudentRepository StudentRepository;
         private readonly IClassRepository classRepository;
+        private readonly IRefreshService refreshService;
+        private readonly ILogger<StudentListViewModel> logger;
         public string NameFilter = "";
         public int ClassIdFilter = -1;
+        public Action Refresh { get; set; }
 
         public StudentListViewModel(IStudentRepository StudentRepository,
-                                    IClassRepository classRepository)
+                                    IClassRepository classRepository,
+                                    IRefreshService refreshService,
+                                    ILogger<StudentListViewModel> logger)
         {
             this.StudentRepository = StudentRepository;
             this.classRepository = classRepository;
+            this.refreshService = refreshService;
+            this.logger = logger;
+        }
+        ~StudentListViewModel()
+        {
+            refreshService.RemoveRefresh(nameof(StudentListViewModel));
         }
 
         public IEnumerable<ClassModel> GetClassOptions()
@@ -63,7 +76,6 @@ namespace TeddyBlazor.ViewModels
                 s => s.StudentId,
                 ns => ns.StudentId,
                 (s, ns) => s);
-    
         }
 
         public IEnumerable<Student> filterByName(IEnumerable<Student> students)
@@ -78,7 +90,8 @@ namespace TeddyBlazor.ViewModels
 
         public void OnInitialized()
         {
-            
+            logger.LogInformation("Adding self to refresh service");
+            refreshService.AddOrUpdateRefresh(nameof(StudentListViewModel), Refresh);
         }
 
         public Task OnInitializedAsync()
@@ -88,7 +101,6 @@ namespace TeddyBlazor.ViewModels
 
         public void OnParametersSet()
         {
-            
         }
 
         public Task OnParametersSetAsync()

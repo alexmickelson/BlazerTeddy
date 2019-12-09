@@ -39,6 +39,9 @@
 
     protected override void OnInitialized()
     {
+        vm.Refresh = () => {
+            InvokeAsync(() => this.StateHasChanged());
+        };
         vm.OnInitialized();
     }
     protected override async Task OnInitializedAsync()

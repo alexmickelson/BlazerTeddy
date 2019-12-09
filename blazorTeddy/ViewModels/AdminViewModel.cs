@@ -14,17 +14,22 @@ namespace TeddyBlazor.ViewModels
         public readonly IStudentRepository StudentRepository;
         public readonly IClassRepository TeacherRepository;
         public readonly ICourseRepository CourseRepository;
+        private readonly IRefreshService refreshService;
         public Student Student;
         public Teacher Teacher;
         public Course Course;
 
         public IEnumerable<string> Restrictions { get; set; }
 
-        public AdminViewModel(IStudentRepository StudentRepository, IClassRepository TeacherRepository, ICourseRepository CourseRepository)
+        public AdminViewModel(IStudentRepository StudentRepository,
+                              IClassRepository TeacherRepository,
+                              ICourseRepository CourseRepository,
+                              IRefreshService refreshService)
         {
             this.StudentRepository = StudentRepository;
             this.TeacherRepository = TeacherRepository;
             this.CourseRepository = CourseRepository;
+            this.refreshService = refreshService;
             Student = new Student();
             Teacher = new Teacher();
             Course = new Course();
@@ -38,6 +43,7 @@ namespace TeddyBlazor.ViewModels
             {
                 await StudentRepository.AddStudentAsync(Student);
                 Student = new Student();
+                refreshService.CallRefresh();
             });
             t.Wait();
         }
@@ -48,6 +54,7 @@ namespace TeddyBlazor.ViewModels
             {
                 await TeacherRepository.AddTeacherAsync(Teacher);
                 Teacher = new Teacher();
+                refreshService.CallRefresh();
             });
             t.Wait();
         }
@@ -57,6 +64,7 @@ namespace TeddyBlazor.ViewModels
             {
                 await CourseRepository.AddCourseAsync(Course);
                 Course = new Course();
+                refreshService.CallRefresh();
             });
             t.Wait();
         }
@@ -78,8 +86,6 @@ namespace TeddyBlazor.ViewModels
         public Task OnParametersSetAsync()
         {
             return Task.CompletedTask;
-            //await LoadStudentAsync(StudentId);
-           // await LoadRestrictionsAsync();
         } 
     }
 }
