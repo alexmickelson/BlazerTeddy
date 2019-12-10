@@ -79,7 +79,7 @@ namespace TeddyBlazor.ViewModels.ClassDetail
             return i < chartHorizontal && j < chartVertical;
         }
 
-        public async Task LoadStudentsList()
+        public async Task LoadSeatingChart()
         {
             var roomHorizontal = ClassRoom.SeatsHorizontally;
             var roomVertical = ClassRoom.SeatsVertically;
@@ -116,23 +116,19 @@ namespace TeddyBlazor.ViewModels.ClassDetail
         public void OnInitialized()
         {
         }
-
         public Task OnInitializedAsync()
         {
             return Task.CompletedTask;
         }
-
         public void OnParametersSet()
         {
-
         }
-
         public async Task OnParametersSetAsync()
         {
             ClassRoom = SelectedClass.ClassRoomId == 0
                 ? ClassRoom
                 : await classRepository.GetClassRoomAsync(SelectedClass.ClassRoomId);
-            await LoadStudentsList();
+            await LoadSeatingChart();
             StudentModels = await studentRepository.GetStudentsByClassAsync(SelectedClass.ClassId);
         }
     }
