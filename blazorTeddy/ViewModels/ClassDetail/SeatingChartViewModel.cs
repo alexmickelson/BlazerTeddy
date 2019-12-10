@@ -79,27 +79,6 @@ namespace TeddyBlazor.ViewModels.ClassDetail
             return i < chartHorizontal && j < chartVertical;
         }
 
-        public async Task LoadSeatingChart()
-        {
-            var roomHorizontal = ClassRoom.SeatsHorizontally;
-            var roomVertical = ClassRoom.SeatsVertically;
-            var chartHorizontal = SelectedClass.SeatingChartByStudentID.GetLength(0);
-            var chartVertical = SelectedClass.SeatingChartByStudentID.GetLength(1);
-            Students = newDefaultStudents(roomHorizontal, roomVertical);
-
-            for (int i = 0; i < chartHorizontal; i++)
-            {
-                for (int j = 0; j < chartVertical; j++)
-                {
-                    var studentId = SelectedClass.SeatingChartByStudentID[i, j];
-                    if (studentId != default(int))
-                    {
-                        Students[i, j] = await studentRepository.GetStudentAsync(studentId);
-                    }
-                }
-            }
-        }
-
         private Student[,] newDefaultStudents(int horizontal, int vertical)
         {
             var students = new Student[horizontal, vertical];
@@ -123,6 +102,7 @@ namespace TeddyBlazor.ViewModels.ClassDetail
         public void OnParametersSet()
         {
         }
+        
         public async Task OnParametersSetAsync()
         {
             ClassRoom = SelectedClass.ClassRoomId == 0
@@ -130,6 +110,27 @@ namespace TeddyBlazor.ViewModels.ClassDetail
                 : await classRepository.GetClassRoomAsync(SelectedClass.ClassRoomId);
             await LoadSeatingChart();
             StudentModels = await studentRepository.GetStudentsByClassAsync(SelectedClass.ClassId);
+        }
+
+        public async Task LoadSeatingChart()
+        {
+            var roomHorizontal = ClassRoom.SeatsHorizontally;
+            var roomVertical = ClassRoom.SeatsVertically;
+            var chartHorizontal = SelectedClass.SeatingChartByStudentID.GetLength(0);
+            var chartVertical = SelectedClass.SeatingChartByStudentID.GetLength(1);
+            Students = newDefaultStudents(roomHorizontal, roomVertical);
+
+            for (int i = 0; i < chartHorizontal; i++)
+            {
+                for (int j = 0; j < chartVertical; j++)
+                {
+                    var studentId = SelectedClass.SeatingChartByStudentID[i, j];
+                    if (studentId != default(int))
+                    {
+                        Students[i, j] = await studentRepository.GetStudentAsync(studentId);
+                    }
+                }
+            }
         }
     }
 }
