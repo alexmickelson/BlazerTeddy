@@ -23,13 +23,12 @@ namespace TeddyBlazor.Services
             if(RefreshActions.ContainsKey(name))
             {
                 logger.LogInformation($"updating refresh action {name}");
-                RefreshActions[name] = newRefreshAction;
             }
             else
             {
                 logger.LogInformation($"adding {name} to the refresh list");
-                RefreshActions[name] = newRefreshAction;
             }
+            RefreshActions[name] = newRefreshAction;
         }
 
         public void RemoveRefresh(string name)
